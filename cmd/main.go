@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"github.com/Orfeo42/admin-panel/handler"
+	"github.com/labstack/echo/v4"
+)
 
 func main() {
-	fmt.Println("Ciao")
+	app := echo.New()
+
+	app.GET("/", handler.HomeShow)
+
+	app.Start(":8080")
 }
