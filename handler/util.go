@@ -7,5 +7,4 @@ import (
 
 func render(component templ.Component, context echo.Context) error {
 	return component.Render(context.Request().Context(), context.Response())
-
 }

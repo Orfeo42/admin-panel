@@ -10,5 +10,7 @@ func main() {
 
 	app.GET("/", handler.HomeShow)
 
+	app.POST("/add-film/", handler.AddFilm)
+
 	app.Start(":8080")
 }

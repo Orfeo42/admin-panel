@@ -1,0 +1,15 @@
+package component
+
+import (
+	"github.com/Orfeo42/admin-panel/model"
+)
+
+templ FilmItemShow(film model.FilmModel) {
+	<li class="list-group-item bg-primary text-white">{ film.Title } - { film.Director }</li>
+}
+
+templ FilmListShow(films []model.FilmModel) {
+	for _, item := range films {
+		@FilmItemShow(item)
+	}
+}
