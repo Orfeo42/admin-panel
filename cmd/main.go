@@ -8,6 +8,8 @@ import (
 func main() {
 	app := echo.New()
 
+	app.Static("/", "web")
+
 	app.GET("/", handler.HomeShow)
 
 	app.POST("/add-film/", handler.AddFilm)
