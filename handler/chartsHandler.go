@@ -7,12 +7,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HomeShow(echoCtx echo.Context) error {
-	echoCtx = utils.SetPage(echoCtx, "HOME")
+func ChartsShow(echoCtx echo.Context) error {
+	echoCtx = utils.SetPage(echoCtx, "charts")
 	films := []model.FilmModel{
-		{Title: "Titolo1", Director: "Director1"},
-		{Title: "Titolo2", Director: "Director2"},
-		{Title: "Titolo3", Director: "Director3"},
+		{Title: "Titolo4", Director: "Director4"},
+		{Title: "Titolo5", Director: "Director5"},
+		{Title: "Titolo6", Director: "Director6"},
 	}
 	return utils.Render(home.HomeView(films), echoCtx)
 }

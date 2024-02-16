@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/utils"
 	component "github.com/Orfeo42/admin-panel/view/component/filmItem"
 	"github.com/labstack/echo/v4"
 )
@@ -14,7 +15,7 @@ func RefeshFilmList(context echo.Context) error {
 		{Title: "Titolo2", Director: "Director2"},
 		{Title: "Titolo3", Director: "Director3"},
 	}
-	return render(component.FilmListShow(films), context)
+	return utils.Render(component.FilmListShow(films), context)
 }
 
 func AddFilm(context echo.Context) error {
@@ -23,5 +24,5 @@ func AddFilm(context echo.Context) error {
 	film := model.FilmModel{Title: req.PostFormValue("title"),
 		Director: req.PostFormValue("director"),
 	}
-	return render(component.FilmItemShow(film), context)
+	return utils.Render(component.FilmItemShow(film), context)
 }
