@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"time"
+	"math/rand"
 
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
@@ -12,10 +12,21 @@ import (
 func InvoiceListShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, "Invoices")
 	echoCtx = utils.SetTitle(echoCtx, "Invoices")
-	invoices := []model.InvoiceModel{
-		{Customer: "Customer1", Amount: 10.5, Date: time.Date(2021, 3, 1, 0, 0, 0, 0, time.UTC), IsPaid: false},
-		{Customer: "Customer2", Amount: 11.5, Date: time.Date(2022, 4, 2, 0, 0, 0, 0, time.UTC), IsPaid: true},
-		{Customer: "Customer3", Amount: 12.5, Date: time.Date(2019, 5, 5, 0, 0, 0, 0, time.UTC), IsPaid: false},
+
+	invoices := []model.InvoiceModel{}
+
+	for i := 0; i < 100; i++ {
+		invoices = append(invoices, genRandomInvoice())
 	}
+
 	return utils.Render(invoice.InvoiceView(invoices), echoCtx)
+}
+
+func genRandomInvoice() model.InvoiceModel {
+	return model.InvoiceModel{
+		Customer: utils.RandomString(25),
+		Amount:   rand.Float64(),
+		Date:     utils.RandomDate(),
+		IsPaid:   rand.Intn(2) == 1,
+	}
 }

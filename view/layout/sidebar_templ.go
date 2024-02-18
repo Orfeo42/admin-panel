@@ -358,7 +358,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
-			isActive:   false,
+			isActive:   utils.GetPage(ctx) == "Invoices",
 			url:        "/invoices",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
