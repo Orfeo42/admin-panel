@@ -5,7 +5,7 @@ import (
 
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
-	invoice "github.com/Orfeo42/admin-panel/view/page/invoice/list"
+	"github.com/Orfeo42/admin-panel/view/page/invoice"
 	"github.com/labstack/echo/v4"
 )
 
