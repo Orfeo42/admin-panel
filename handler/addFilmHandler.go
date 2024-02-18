@@ -5,7 +5,7 @@ import (
 
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
-	component "github.com/Orfeo42/admin-panel/view/component/filmItem"
+	"github.com/Orfeo42/admin-panel/view/page/film"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,14 +15,15 @@ func RefeshFilmList(context echo.Context) error {
 		{Title: "Titolo2", Director: "Director2"},
 		{Title: "Titolo3", Director: "Director3"},
 	}
-	return utils.Render(component.FilmListShow(films), context)
+	return utils.Render(film.FilmListShow(films), context)
 }
 
 func AddFilm(context echo.Context) error {
 	time.Sleep(1 * time.Second)
 	req := context.Request()
-	film := model.FilmModel{Title: req.PostFormValue("title"),
+	filmAggiunto := model.FilmModel{
+		Title:    req.PostFormValue("title"),
 		Director: req.PostFormValue("director"),
 	}
-	return utils.Render(component.FilmItemShow(film), context)
+	return utils.Render(film.FilmItemShow(filmAggiunto), context)
 }

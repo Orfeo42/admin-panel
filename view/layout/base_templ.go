@@ -62,7 +62,7 @@ func BaseView() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div><!-- Bootstrap core JavaScript--><script src=\"/vendor/jquery/jquery.min.js\"></script><script src=\"/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script><!-- Core plugin JavaScript--><script src=\"/vendor/jquery-easing/jquery.easing.min.js\"></script><!-- Custom scripts for all pages--><script src=\"/js/sb-admin-2.min.js\"></script><!-- script solo per le tabelle --><script src=\"js/demo/datatables-demo.js\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div><!-- Bootstrap core JavaScript--><script src=\"/vendor/jquery/jquery.min.js\"></script><script src=\"/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script><!-- Core plugin JavaScript--><script src=\"/vendor/jquery-easing/jquery.easing.min.js\"></script><!-- Custom scripts for all pages--><script src=\"/js/sb-admin-2.min.js\"></script><!-- Script grafici --><script src=\"vendor/chart.js/Chart.min.js\"></script><script src=\"js/demo/chart-area-demo.js\"></script><script src=\"js/demo/chart-pie-demo.js\"></script><!-- script solo per le tabelle --><script src=\"js/demo/datatables-demo.js\"></script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
