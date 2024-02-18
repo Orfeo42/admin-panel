@@ -356,10 +356,10 @@ func sidebar() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = navItem(navItemParams{
-			text:       "Tables",
+			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
 			isActive:   false,
-			url:        "/tables.html",
+			url:        "/invoices",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

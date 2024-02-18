@@ -131,10 +131,10 @@ templ sidebar() {
 			url:        "/charts",
 		})
 		@navItem(navItemParams{
-			text:       "Tables",
+			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
-			isActive:   false,
-			url:        "/tables.html",
+			isActive:   utils.GetPage(ctx) == "Invoices",
+			url:        "/invoices",
 		})
 		@divider("d-none d-md-block")
 		<!-- Sidebar Toggler (Sidebar) -->

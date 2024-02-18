@@ -11,7 +11,10 @@ func main() {
 	app.Static("/", "web")
 
 	app.GET("/", handler.HomeShow)
+
 	app.GET("/charts", handler.ChartsShow)
+
+	app.GET("/invoices", handler.InvoiceListShow)
 
 	app.POST("/add-film/", handler.AddFilm)
 

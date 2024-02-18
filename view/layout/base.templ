@@ -1,11 +1,9 @@
 package layout
 
-type PageParams struct {
-	Title  string
-	Button string
-}
+import "github.com/Orfeo42/admin-panel/utils"
 
-templ BaseView(params PageParams) {
+
+templ BaseView() {
 	<!DOCTYPE html>
 	<html lang="it">
 		<head>
@@ -14,7 +12,7 @@ templ BaseView(params PageParams) {
 			<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 			<meta name="description" content=""/>
 			<meta name="author" content=""/>
-			<title>{ params.Title }</title>
+			<title>{ utils.GetTitle(ctx) }</title>
 			<!-- Custom fonts for this template-->
 			<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
 			<link
@@ -23,6 +21,11 @@ templ BaseView(params PageParams) {
 			/>
 			<!-- Custom styles for this template-->
 			<link href="/css/sb-admin-2.min.css" rel="stylesheet"/>
+
+
+			<!-- Stile solo per le tabelle -->
+			<link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+
 			<!-- HTMX-->
 			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 		</head>
@@ -46,6 +49,9 @@ templ BaseView(params PageParams) {
 			<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 			<!-- Custom scripts for all pages-->
 			<script src="/js/sb-admin-2.min.js"></script>
+
+			<!-- script solo per le tabelle -->
+    		<script src="js/demo/datatables-demo.js"></script>
 		</body>
 	</html>
 }

@@ -10,12 +10,9 @@ import "context"
 import "io"
 import "bytes"
 
-type PageParams struct {
-	Title  string
-	Button string
-}
+import "github.com/Orfeo42/admin-panel/utils"
 
-func BaseView(params PageParams) templ.Component {
+func BaseView() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -33,15 +30,15 @@ func BaseView(params PageParams) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(params.Title)
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(utils.GetTitle(ctx))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/layout/base.templ`, Line: 16, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/layout/base.templ`, Line: 14, Col: 31}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Custom fonts for this template--><link href=\"/vendor/fontawesome-free/css/all.min.css\" rel=\"stylesheet\" type=\"text/css\"><link href=\"https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i\" rel=\"stylesheet\"><!-- Custom styles for this template--><link href=\"/css/sb-admin-2.min.css\" rel=\"stylesheet\"><!-- HTMX--><script src=\"https://unpkg.com/htmx.org@1.9.10\" integrity=\"sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC\" crossorigin=\"anonymous\"></script></head><body id=\"page-top\"><!-- Page Wrapper --><div id=\"wrapper\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Custom fonts for this template--><link href=\"/vendor/fontawesome-free/css/all.min.css\" rel=\"stylesheet\" type=\"text/css\"><link href=\"https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i\" rel=\"stylesheet\"><!-- Custom styles for this template--><link href=\"/css/sb-admin-2.min.css\" rel=\"stylesheet\"><!-- Stile solo per le tabelle --><link href=\"vendor/datatables/dataTables.bootstrap4.min.css\" rel=\"stylesheet\"><!-- HTMX--><script src=\"https://unpkg.com/htmx.org@1.9.10\" integrity=\"sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC\" crossorigin=\"anonymous\"></script></head><body id=\"page-top\"><!-- Page Wrapper --><div id=\"wrapper\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -65,7 +62,7 @@ func BaseView(params PageParams) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div><!-- Bootstrap core JavaScript--><script src=\"/vendor/jquery/jquery.min.js\"></script><script src=\"/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script><!-- Core plugin JavaScript--><script src=\"/vendor/jquery-easing/jquery.easing.min.js\"></script><!-- Custom scripts for all pages--><script src=\"/js/sb-admin-2.min.js\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div><!-- Bootstrap core JavaScript--><script src=\"/vendor/jquery/jquery.min.js\"></script><script src=\"/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script><!-- Core plugin JavaScript--><script src=\"/vendor/jquery-easing/jquery.easing.min.js\"></script><!-- Custom scripts for all pages--><script src=\"/js/sb-admin-2.min.js\"></script><!-- script solo per le tabelle --><script src=\"js/demo/datatables-demo.js\"></script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
