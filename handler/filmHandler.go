@@ -3,6 +3,7 @@ package handler
 import (
 	"time"
 
+	"github.com/Orfeo42/admin-panel/constants"
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/film"
@@ -29,7 +30,8 @@ func AddFilm(context echo.Context) error {
 }
 
 func FilmShow(echoCtx echo.Context) error {
-	echoCtx = utils.SetPage(echoCtx, "FILMS")
+	echoCtx = utils.SetPage(echoCtx, constants.FILMS)
+	echoCtx = utils.SetTitle(echoCtx, "Films")
 	films := []model.FilmModel{
 		{Title: "Titolo1", Director: "Director1"},
 		{Title: "Titolo2", Director: "Director2"},

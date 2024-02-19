@@ -11,6 +11,7 @@ import "io"
 import "bytes"
 
 import "github.com/Orfeo42/admin-panel/utils"
+import "github.com/Orfeo42/admin-panel/constants"
 
 func divider(addCssClass string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -160,19 +161,37 @@ func navItem(params navItemParams) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(params.text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/layout/sidebar.templ`, Line: 30, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/layout/sidebar.templ`, Line: 31, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ_7745c5c3_Var3.Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+		if params.isDropDown {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(params.target))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"collapse\" data-parent=\"#accordionSidebar\"><div class=\"bg-white py-2 collapse-inner rounded\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templ_7745c5c3_Var3.Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</li>")
 		if templ_7745c5c3_Err != nil {
@@ -205,7 +224,7 @@ func heading(text string) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/layout/sidebar.templ`, Line: 38, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/layout/sidebar.templ`, Line: 49, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -235,7 +254,7 @@ func sidebar() templ.Component {
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"navbar-nav bg-gradient-primary sidebar sidebar-dark accordion\" id=\"accordionSidebar\"><a class=\"sidebar-brand d-flex align-items-center justify-content-center\" href=\"/\"><div class=\"sidebar-brand-icon rotate-n-15\"><i class=\"fas fa-laugh-wink\"></i></div><div class=\"sidebar-brand-text mx-3\">HTMX DaskBoard</div></a>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"navbar-nav bg-gradient-primary sidebar sidebar-dark accordion\" id=\"accordionSidebar\"><a class=\"sidebar-brand d-flex align-items-center justify-content-center\" href=\"/\"><div class=\"sidebar-brand-icon rotate-n-15\"><i class=\"fas fa-laugh-wink\"></i></div><div class=\"sidebar-brand-text mx-3\">HTMX Dashboard</div></a>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -246,7 +265,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "HomePage",
 			faCssClass: "fas fa-fw fa-tachometer-alt",
-			isActive:   utils.GetPage(ctx) == "HOME",
+			isActive:   utils.GetPage(ctx) == string(constants.HOME),
 			url:        "/",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -266,7 +285,7 @@ func sidebar() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"collapseTwo\" class=\"collapse\" aria-labelledby=\"headingTwo\" data-parent=\"#accordionSidebar\"><div class=\"bg-white py-2 collapse-inner rounded\"><h6 class=\"collapse-header\">Custom Components:</h6><a class=\"collapse-item\" href=\"/films\">Films</a> <a class=\"collapse-item\" href=\"cards.html\">Cards</a></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h6 class=\"collapse-header\">Custom Components:</h6><a class=\"collapse-item\" href=\"/films\">Films</a> <a class=\"collapse-item\" href=\"cards.html\">Cards</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -278,7 +297,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Components",
 			faCssClass: "fas fa-fw fa-cog",
-			isActive:   false,
+			isActive:   utils.GetPage(ctx) == string(constants.FILMS),
 			url:        "#",
 			isDropDown: true,
 			target:     "collapseTwo",
@@ -292,7 +311,7 @@ func sidebar() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"collapseUtilities\" class=\"collapse\" aria-labelledby=\"headingUtilities\" data-parent=\"#accordionSidebar\"><div class=\"bg-white py-2 collapse-inner rounded\"><h6 class=\"collapse-header\">Custom Utilities:</h6><a class=\"collapse-item\" href=\"utilities-color.html\">Colors</a> <a class=\"collapse-item\" href=\"utilities-border.html\">Borders</a> <a class=\"collapse-item\" href=\"utilities-animation.html\">Animations</a> <a class=\"collapse-item\" href=\"utilities-other.html\">Other</a></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h6 class=\"collapse-header\">Custom Utilities:</h6><a class=\"collapse-item\" href=\"utilities-color.html\">Colors</a> <a class=\"collapse-item\" href=\"utilities-border.html\">Borders</a> <a class=\"collapse-item\" href=\"utilities-animation.html\">Animations</a> <a class=\"collapse-item\" href=\"utilities-other.html\">Other</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -326,7 +345,7 @@ func sidebar() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"collapsePages\" class=\"collapse\" aria-labelledby=\"headingPages\" data-parent=\"#accordionSidebar\"><div class=\"bg-white py-2 collapse-inner rounded\"><h6 class=\"collapse-header\">Login Screens:</h6><a class=\"collapse-item\" href=\"login.html\">Login</a> <a class=\"collapse-item\" href=\"register.html\">Register</a> <a class=\"collapse-item\" href=\"forgot-password.html\">Forgot Password</a><div class=\"collapse-divider\"></div><h6 class=\"collapse-header\">Other Pages:</h6><a class=\"collapse-item\" href=\"404.html\">404 Page</a> <a class=\"collapse-item\" href=\"blank.html\">Blank Page</a></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h6 class=\"collapse-header\">Login Screens:</h6><a class=\"collapse-item\" href=\"login.html\">Login</a> <a class=\"collapse-item\" href=\"register.html\">Register</a> <a class=\"collapse-item\" href=\"forgot-password.html\">Forgot Password</a><div class=\"collapse-divider\"></div><h6 class=\"collapse-header\">Other Pages:</h6><a class=\"collapse-item\" href=\"404.html\">404 Page</a> <a class=\"collapse-item\" href=\"blank.html\">Blank Page</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -349,7 +368,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Charts",
 			faCssClass: "fas fa-fw fa-chart-area",
-			isActive:   utils.GetPage(ctx) == "charts",
+			isActive:   utils.GetPage(ctx) == string(constants.CHARTS),
 			url:        "/charts",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -358,7 +377,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
-			isActive:   utils.GetPage(ctx) == "Invoices",
+			isActive:   utils.GetPage(ctx) == string(constants.INVOICES),
 			url:        "/invoices",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

@@ -2,7 +2,6 @@ package layout
 
 import "github.com/Orfeo42/admin-panel/utils"
 
-
 templ BaseView() {
 	<!DOCTYPE html>
 	<html lang="it">
@@ -21,11 +20,8 @@ templ BaseView() {
 			/>
 			<!-- Custom styles for this template-->
 			<link href="/css/sb-admin-2.min.css" rel="stylesheet"/>
-
-
 			<!-- Stile solo per le tabelle -->
-			<link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
-
+			<link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
 			<!-- HTMX-->
 			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 		</head>
@@ -49,16 +45,12 @@ templ BaseView() {
 			<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 			<!-- Custom scripts for all pages-->
 			<script src="/js/sb-admin-2.min.js"></script>
-
-
 			<!-- Script grafici -->
 			<script src="vendor/chart.js/Chart.min.js"></script>
 			<script src="js/demo/chart-area-demo.js"></script>
 			<script src="js/demo/chart-pie-demo.js"></script>
-
-
 			<!-- script solo per le tabelle -->
-    		<script src="js/demo/datatables-demo.js"></script>
+			<script src="js/demo/datatables-demo.js"></script>
 		</body>
 	</html>
 }

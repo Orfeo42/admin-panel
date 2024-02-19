@@ -1,6 +1,7 @@
 package layout
 
 import "github.com/Orfeo42/admin-panel/utils"
+import "github.com/Orfeo42/admin-panel/constants"
 
 templ divider(addCssClass string) {
 	<hr class={ "sidebar-divider", addCssClass }/>
@@ -30,7 +31,17 @@ templ navItem(params navItemParams) {
 			<i class={ params.faCssClass }></i>
 			<span>{ params.text }</span>
 		</a>
-		{ children... }
+		if params.isDropDown {
+			<div
+				id={ params.target }
+				class="collapse"
+				data-parent="#accordionSidebar"
+			>
+				<div class="bg-white py-2 collapse-inner rounded">
+					{ children... }
+				</div>
+			</div>
+		}
 	</li>
 }
 
@@ -46,13 +57,13 @@ templ sidebar() {
 			<div class="sidebar-brand-icon rotate-n-15">
 				<i class="fas fa-laugh-wink"></i>
 			</div>
-			<div class="sidebar-brand-text mx-3">HTMX DaskBoard</div>
+			<div class="sidebar-brand-text mx-3">HTMX Dashboard</div>
 		</a>
 		@divider("my-0")
 		@navItem(navItemParams{
 			text:       "HomePage",
 			faCssClass: "fas fa-fw fa-tachometer-alt",
-			isActive:   utils.GetPage(ctx) == "HOME",
+			isActive:   utils.GetPage(ctx) == string(constants.HOME),
 			url:        "/",
 		})
 		@divider("")
@@ -60,23 +71,14 @@ templ sidebar() {
 		@navItem(navItemParams{
 			text:       "Components",
 			faCssClass: "fas fa-fw fa-cog",
-			isActive:   false,
+			isActive:   utils.GetPage(ctx) == string(constants.FILMS),
 			url:        "#",
 			isDropDown: true,
 			target:     "collapseTwo",
 		}) {
-			<div
-				id="collapseTwo"
-				class="collapse"
-				aria-labelledby="headingTwo"
-				data-parent="#accordionSidebar"
-			>
-				<div class="bg-white py-2 collapse-inner rounded">
-					<h6 class="collapse-header">Custom Components:</h6>
-					<a class="collapse-item" href="/films">Films</a>
-					<a class="collapse-item" href="cards.html">Cards</a>
-				</div>
-			</div>
+			<h6 class="collapse-header">Custom Components:</h6>
+			<a class="collapse-item" href="/films">Films</a>
+			<a class="collapse-item" href="cards.html">Cards</a>
 		}
 		@navItem(navItemParams{
 			text:       "Utilities",
@@ -86,20 +88,11 @@ templ sidebar() {
 			isDropDown: true,
 			target:     "collapseUtilities",
 		}) {
-			<div
-				id="collapseUtilities"
-				class="collapse"
-				aria-labelledby="headingUtilities"
-				data-parent="#accordionSidebar"
-			>
-				<div class="bg-white py-2 collapse-inner rounded">
-					<h6 class="collapse-header">Custom Utilities:</h6>
-					<a class="collapse-item" href="utilities-color.html">Colors</a>
-					<a class="collapse-item" href="utilities-border.html">Borders</a>
-					<a class="collapse-item" href="utilities-animation.html">Animations</a>
-					<a class="collapse-item" href="utilities-other.html">Other</a>
-				</div>
-			</div>
+			<h6 class="collapse-header">Custom Utilities:</h6>
+			<a class="collapse-item" href="utilities-color.html">Colors</a>
+			<a class="collapse-item" href="utilities-border.html">Borders</a>
+			<a class="collapse-item" href="utilities-animation.html">Animations</a>
+			<a class="collapse-item" href="utilities-other.html">Other</a>
 		}
 		@divider("")
 		@heading("Addons")
@@ -111,29 +104,25 @@ templ sidebar() {
 			isDropDown: true,
 			target:     "collapsePages",
 		}) {
-			<div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-				<div class="bg-white py-2 collapse-inner rounded">
-					<h6 class="collapse-header">Login Screens:</h6>
-					<a class="collapse-item" href="login.html">Login</a>
-					<a class="collapse-item" href="register.html">Register</a>
-					<a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-					<div class="collapse-divider"></div>
-					<h6 class="collapse-header">Other Pages:</h6>
-					<a class="collapse-item" href="404.html">404 Page</a>
-					<a class="collapse-item" href="blank.html">Blank Page</a>
-				</div>
-			</div>
+			<h6 class="collapse-header">Login Screens:</h6>
+			<a class="collapse-item" href="login.html">Login</a>
+			<a class="collapse-item" href="register.html">Register</a>
+			<a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+			<div class="collapse-divider"></div>
+			<h6 class="collapse-header">Other Pages:</h6>
+			<a class="collapse-item" href="404.html">404 Page</a>
+			<a class="collapse-item" href="blank.html">Blank Page</a>
 		}
 		@navItem(navItemParams{
 			text:       "Charts",
 			faCssClass: "fas fa-fw fa-chart-area",
-			isActive:   utils.GetPage(ctx) == "charts",
+			isActive:   utils.GetPage(ctx) == string(constants.CHARTS),
 			url:        "/charts",
 		})
 		@navItem(navItemParams{
 			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
-			isActive:   utils.GetPage(ctx) == "Invoices",
+			isActive:   utils.GetPage(ctx) == string(constants.INVOICES),
 			url:        "/invoices",
 		})
 		@divider("d-none d-md-block")
