@@ -12,6 +12,8 @@ func main() {
 
 	app.GET("/", handler.HomeShow)
 
+	app.GET("/films", handler.FilmShow)
+
 	app.GET("/charts", handler.ChartsShow)
 
 	app.GET("/invoices", handler.InvoiceListShow)

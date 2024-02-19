@@ -27,3 +27,13 @@ func AddFilm(context echo.Context) error {
 	}
 	return utils.Render(film.FilmItemShow(filmAggiunto), context)
 }
+
+func FilmShow(echoCtx echo.Context) error {
+	echoCtx = utils.SetPage(echoCtx, "FILMS")
+	films := []model.FilmModel{
+		{Title: "Titolo1", Director: "Director1"},
+		{Title: "Titolo2", Director: "Director2"},
+		{Title: "Titolo3", Director: "Director3"},
+	}
+	return utils.Render(film.FilmView(films), echoCtx)
+}
