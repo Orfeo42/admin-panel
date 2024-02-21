@@ -3,7 +3,7 @@ package handler
 import (
 	"math/rand"
 
-	"github.com/Orfeo42/admin-panel/constants"
+	"github.com/Orfeo42/admin-panel/enum"
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/invoice"
@@ -11,7 +11,7 @@ import (
 )
 
 func InvoiceListShow(echoCtx echo.Context) error {
-	echoCtx = utils.SetPage(echoCtx, constants.INVOICES)
+	echoCtx = utils.SetPage(echoCtx, enum.INVOICES)
 	echoCtx = utils.SetTitle(echoCtx, "Invoices")
 
 	invoices := []model.InvoiceModel{}

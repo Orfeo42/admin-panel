@@ -1,0 +1,45 @@
+package component
+
+import "strconv"
+import "github.com/Orfeo42/admin-panel/enum"
+
+/*
+	css withStyle( percent float64) {
+		width: { strconv.FormatFloat(percent, 'f', 2, 64) + "%"};
+	}
+*/
+func formatPerc(percent float64) string {
+	return strconv.FormatFloat(percent, 'f', 0, 64)
+}
+
+//TODO GESTIRE LA width della progress
+templ ProgressComp(percent float64, color enum.Color) {
+	<style type="text/css">
+		progressComp {
+			width: { formatPerc(percent) } %;
+		}
+	</style>
+	<div class="progress mb-4">
+		<div
+			class={ "progress-bar", string(color) }
+			role="progressbar"
+			aria-valuenow={ formatPerc(percent) }
+			aria-valuemin="0"
+			aria-valuemax="100"
+		></div>
+	</div>
+}
+
+templ TitledProgressComp(title string, percent float64, color enum.Color) {
+	<h4 class="small font-weight-bold">
+		{ title }
+		<span class="float-right">
+			if (percent == 100) {
+				Complete!
+			} else {
+				{ formatPerc(percent) }% 
+			}
+		</span>
+	</h4>
+	@ProgressComp(percent, color)
+}

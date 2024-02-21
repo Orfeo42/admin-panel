@@ -1,4 +1,4 @@
-package constants
+package enum
 
 type Page string
 

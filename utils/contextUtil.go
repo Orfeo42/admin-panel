@@ -2,9 +2,8 @@ package utils
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/Orfeo42/admin-panel/constants"
+	"github.com/Orfeo42/admin-panel/enum"
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,14 +25,14 @@ func setInContext(echoCtx echo.Context, key contextKey, value any) echo.Context 
 var pageContextKey contextKey = "page"
 
 func GetPage(ctx context.Context) string {
-	fmt.Println(ctx.Value(pageContextKey))
-	if page, ok := ctx.Value(pageContextKey).(constants.Page); ok {
+	//fmt.Println(ctx.Value(pageContextKey))
+	if page, ok := ctx.Value(pageContextKey).(enum.Page); ok {
 		return string(page)
 	}
 	return ""
 }
 
-func SetPage(echoCtx echo.Context, value constants.Page) echo.Context {
+func SetPage(echoCtx echo.Context, value enum.Page) echo.Context {
 	return setInContext(echoCtx, pageContextKey, value)
 }
 

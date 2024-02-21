@@ -1,7 +1,7 @@
 package layout
 
 import "github.com/Orfeo42/admin-panel/utils"
-import "github.com/Orfeo42/admin-panel/constants"
+import "github.com/Orfeo42/admin-panel/enum"
 
 templ divider(addCssClass string) {
 	<hr class={ "sidebar-divider", addCssClass }/>
@@ -63,7 +63,7 @@ templ sidebar() {
 		@navItem(navItemParams{
 			text:       "HomePage",
 			faCssClass: "fas fa-fw fa-tachometer-alt",
-			isActive:   utils.GetPage(ctx) == string(constants.HOME),
+			isActive:   utils.GetPage(ctx) == string(enum.HOME),
 			url:        "/",
 		})
 		@divider("")
@@ -71,7 +71,7 @@ templ sidebar() {
 		@navItem(navItemParams{
 			text:       "Components",
 			faCssClass: "fas fa-fw fa-cog",
-			isActive:   utils.GetPage(ctx) == string(constants.FILMS),
+			isActive:   utils.GetPage(ctx) == string(enum.FILMS),
 			url:        "#",
 			isDropDown: true,
 			target:     "collapseTwo",
@@ -116,13 +116,13 @@ templ sidebar() {
 		@navItem(navItemParams{
 			text:       "Charts",
 			faCssClass: "fas fa-fw fa-chart-area",
-			isActive:   utils.GetPage(ctx) == string(constants.CHARTS),
+			isActive:   utils.GetPage(ctx) == string(enum.CHARTS),
 			url:        "/charts",
 		})
 		@navItem(navItemParams{
 			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
-			isActive:   utils.GetPage(ctx) == string(constants.INVOICES),
+			isActive:   utils.GetPage(ctx) == string(enum.INVOICES),
 			url:        "/invoices",
 		})
 		@divider("d-none d-md-block")

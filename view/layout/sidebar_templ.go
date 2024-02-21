@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import "github.com/Orfeo42/admin-panel/utils"
-import "github.com/Orfeo42/admin-panel/constants"
+import "github.com/Orfeo42/admin-panel/enum"
 
 func divider(addCssClass string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -265,7 +265,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "HomePage",
 			faCssClass: "fas fa-fw fa-tachometer-alt",
-			isActive:   utils.GetPage(ctx) == string(constants.HOME),
+			isActive:   utils.GetPage(ctx) == string(enum.HOME),
 			url:        "/",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -297,7 +297,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Components",
 			faCssClass: "fas fa-fw fa-cog",
-			isActive:   utils.GetPage(ctx) == string(constants.FILMS),
+			isActive:   utils.GetPage(ctx) == string(enum.FILMS),
 			url:        "#",
 			isDropDown: true,
 			target:     "collapseTwo",
@@ -368,7 +368,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Charts",
 			faCssClass: "fas fa-fw fa-chart-area",
-			isActive:   utils.GetPage(ctx) == string(constants.CHARTS),
+			isActive:   utils.GetPage(ctx) == string(enum.CHARTS),
 			url:        "/charts",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -377,7 +377,7 @@ func sidebar() templ.Component {
 		templ_7745c5c3_Err = navItem(navItemParams{
 			text:       "Invoices",
 			faCssClass: "fas fa-fw fa-table",
-			isActive:   utils.GetPage(ctx) == string(constants.INVOICES),
+			isActive:   utils.GetPage(ctx) == string(enum.INVOICES),
 			url:        "/invoices",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
