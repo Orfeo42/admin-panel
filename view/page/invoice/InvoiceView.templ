@@ -6,8 +6,20 @@ import (
 	"strconv"
 )
 
+templ styles() {
+	<!-- Stile solo per le tabelle -->
+	<link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+}
+
+templ scripts() {
+	<!-- script solo per le tabelle -->
+	<script src="vendor/datatables/jquery.dataTables.min.js"></script>
+	<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+	<script src="js/demo/datatables-demo.js"></script>
+}
+
 templ InvoiceView(invoices []model.InvoiceModel) {
-	@layout.BaseView() {
+	@layout.BaseExtendedView(styles(), scripts()) {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
 		<!-- DataTales Example -->
@@ -35,7 +47,7 @@ templ InvoiceView(invoices []model.InvoiceModel) {
 							</tr>
 						</tfoot>
 						<tbody>
- 							@AllInvoiceRowsShow(invoices)
+							@AllInvoiceRowsShow(invoices)
 						</tbody>
 					</table>
 				</div>
@@ -44,13 +56,12 @@ templ InvoiceView(invoices []model.InvoiceModel) {
 	}
 }
 
-
 templ InvoiceRowShow(invoice model.InvoiceModel) {
 	<tr>
-		<td>{invoice.Customer}</td>
-		<td>{invoice.Date.Format("02-01-2006")}</td>
-		<td>{strconv.FormatFloat(invoice.Amount, 'f', 2, 64)} €</td>
-		<td>{strconv.FormatBool(invoice.IsPaid)}</td>
+		<td>{ invoice.Customer }</td>
+		<td>{ invoice.Date.Format("02-01-2006") }</td>
+		<td>{ strconv.FormatFloat(invoice.Amount, 'f', 2, 64) } €</td>
+		<td>{ strconv.FormatBool(invoice.IsPaid) }</td>
 	</tr>
 }
 

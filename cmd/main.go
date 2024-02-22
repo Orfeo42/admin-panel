@@ -14,8 +14,6 @@ func main() {
 
 	app.GET("/films", handler.FilmShow)
 
-	app.GET("/charts", handler.ChartsShow)
-
 	app.GET("/invoices", handler.InvoiceListShow)
 
 	app.POST("/add-film/", handler.AddFilm)
