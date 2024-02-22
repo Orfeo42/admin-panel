@@ -1,5 +1,6 @@
 package layout
 
+import "strconv"
 import "github.com/Orfeo42/admin-panel/utils"
 import "github.com/Orfeo42/admin-panel/enum"
 
@@ -19,12 +20,12 @@ type navItemParams struct {
 templ navItem(params navItemParams) {
 	<li class={ "nav-item", templ.KV("active", params.isActive) }>
 		<a
-			class={ "nav-link" , templ.KV("collapsed", (!params.isActive) && params.isDropDown) }
+			class={ "nav-link", templ.KV("collapsed", (!params.isActive) && params.isDropDown), templ.KV("show", (params.isActive) && params.isDropDown) }
 			href={ templ.SafeURL(params.url) }
 			if params.isDropDown {
 				data-toggle="collapse"
 				data-target={ "#" + params.target }
-				aria-expanded="true"
+				aria-expanded={ strconv.FormatBool(params.isActive) }
 				aria-controls={ params.target }
 			}
 		>
@@ -34,7 +35,7 @@ templ navItem(params navItemParams) {
 		if params.isDropDown {
 			<div
 				id={ params.target }
-				class="collapse"
+				class={ "collapse", templ.KV("show", params.isActive) }
 				data-parent="#accordionSidebar"
 			>
 				<div class="bg-white py-2 collapse-inner rounded">
@@ -77,7 +78,7 @@ templ sidebar() {
 			target:     "collapseTwo",
 		}) {
 			<h6 class="collapse-header">Custom Components:</h6>
-			<a class="collapse-item" href="/films">Films</a>
+			<a class={ "collapse-item", templ.KV("active", utils.GetPage(ctx) == string(enum.FILMS)) } href="/films">Films</a>
 			<a class="collapse-item" href="cards.html">Cards</a>
 		}
 		@navItem(navItemParams{
