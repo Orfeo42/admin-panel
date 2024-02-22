@@ -1,14 +1,14 @@
 package pages
 
-type Page int
+type Page string
 
 const (
-	Home Page = iota
-	InvoiceList
-	InvoiceAdd
-	CustomerList
-	CustomerAdd
-	OrderList
-	OrderAdd
-	FilmList
+	Home         Page = "Home"
+	InvoiceList  Page = "InvoiceList"
+	InvoiceAdd   Page = "InvoiceAdd"
+	CustomerList Page = "CustomerList"
+	CustomerAdd  Page = "CustomerAdd"
+	OrderList    Page = "OrderList"
+	OrderAdd     Page = "OrderAdd"
+	FilmList     Page = "FilmList"
 )
