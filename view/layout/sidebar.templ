@@ -18,21 +18,23 @@ templ sidebar() {
 			<span>Home Page</span>
 		}
 		@divider("")
-		@heading("Interface")
-		@dropDownList(dropDownListParams{
-			target: "collapseTwo",
-			items: []dropDownItemParams{
-				{isHeader: true, text: "Custom Components:"},
-				{isHeader: false, text: "Films", url: "/films", page: enum.FILMS},
-				{isHeader: false, text: "Invoices", url: "/invoices", page: enum.INVOICES},
-			},
-		}) {
-			<i class="fas fa-fw fa-cog"></i>
-			<span>Invoices</span>
+		@heading("Invoices")
+		@navItem("/invoices", enum.INVOICES) {
+			<i class="fas fa-fw fa-list-ul"></i>
+			<span>Invoice List</span>
 		}
-		@navItem("/charts", enum.CHARTS) {
-			<i class="fas fa-fw fa-chart-area"></i>
-			<span>Charts</span>
+		@navItem("/films", enum.FILMS) {
+			<i class="fas fa-fw fa-plus"></i>
+			<span>Add Invoice</span>
+		}
+		@heading("Orders")
+		@navItem("/invoices", enum.INVOICES) {
+			<i class="fas fa-fw fa-list-ul"></i>
+			<span>Order List</span>
+		}
+		@navItem("/films", enum.FILMS) {
+			<i class="fas fa-fw fa-plus"></i>
+			<span>Add Order</span>
 		}
 		@divider("d-none d-md-block")
 		<!-- Sidebar Toggler (Sidebar) -->
