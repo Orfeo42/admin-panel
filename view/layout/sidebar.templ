@@ -4,54 +4,6 @@ import "strconv"
 import "github.com/Orfeo42/admin-panel/utils"
 import "github.com/Orfeo42/admin-panel/enum"
 
-templ divider(addCssClass string) {
-	<hr class={ "sidebar-divider", addCssClass }/>
-}
-
-type navItemParams struct {
-	text       string
-	url        string
-	faCssClass string
-	isActive   bool
-	isDropDown bool
-	target     string
-}
-
-templ navItem(params navItemParams) {
-	<li class={ "nav-item", templ.KV("active", params.isActive) }>
-		<a
-			class={ "nav-link", templ.KV("collapsed", (!params.isActive) && params.isDropDown), templ.KV("show", (params.isActive) && params.isDropDown) }
-			href={ templ.SafeURL(params.url) }
-			if params.isDropDown {
-				data-toggle="collapse"
-				data-target={ "#" + params.target }
-				aria-expanded={ strconv.FormatBool(params.isActive) }
-				aria-controls={ params.target }
-			}
-		>
-			<i class={ params.faCssClass }></i>
-			<span>{ params.text }</span>
-		</a>
-		if params.isDropDown {
-			<div
-				id={ params.target }
-				class={ "collapse", templ.KV("show", params.isActive) }
-				data-parent="#accordionSidebar"
-			>
-				<div class="bg-white py-2 collapse-inner rounded">
-					{ children... }
-				</div>
-			</div>
-		}
-	</li>
-}
-
-templ heading(text string) {
-	<div class="sidebar-heading">
-		{ text }
-	</div>
-}
-
 templ sidebar() {
 	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
@@ -61,75 +13,127 @@ templ sidebar() {
 			<div class="sidebar-brand-text mx-3">HTMX Dashboard</div>
 		</a>
 		@divider("my-0")
-		@navItem(navItemParams{
-			text:       "HomePage",
-			faCssClass: "fas fa-fw fa-tachometer-alt",
-			isActive:   utils.GetPage(ctx) == string(enum.HOME),
-			url:        "/",
-		})
+		@navItem("/", enum.HOME) {
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>Home Page</span>
+		}
 		@divider("")
 		@heading("Interface")
-		@navItem(navItemParams{
-			text:       "Components",
-			faCssClass: "fas fa-fw fa-cog",
-			isActive:   utils.GetPage(ctx) == string(enum.FILMS),
-			url:        "#",
-			isDropDown: true,
-			target:     "collapseTwo",
+		@dropDownList(dropDownListParams{
+			target: "collapseTwo",
+			items: []dropDownItemParams{
+				dropDownItemParams{
+					isHeader: true,
+					text:     "Custom Components:",
+				},
+				dropDownItemParams{
+					isHeader: false,
+					text:     "Films",
+					url:      "/films",
+					page:     enum.FILMS,
+				},
+				dropDownItemParams{
+					isHeader: false,
+					text:     "Invoices",
+					url:      "/invoices",
+					page:     enum.INVOICES,
+				},
+			},
 		}) {
-			<h6 class="collapse-header">Custom Components:</h6>
-			<a class={ "collapse-item", templ.KV("active", utils.GetPage(ctx) == string(enum.FILMS)) } href="/films">Films</a>
-			<a class="collapse-item" href="cards.html">Cards</a>
+			<i class="fas fa-fw fa-cog"></i>
+			<span>Invoices</span>
 		}
-		@navItem(navItemParams{
-			text:       "Utilities",
-			faCssClass: "fas fa-fw fa-wrench",
-			url:        "#",
-			isActive:   false,
-			isDropDown: true,
-			target:     "collapseUtilities",
-		}) {
-			<h6 class="collapse-header">Custom Utilities:</h6>
-			<a class="collapse-item" href="utilities-color.html">Colors</a>
-			<a class="collapse-item" href="utilities-border.html">Borders</a>
-			<a class="collapse-item" href="utilities-animation.html">Animations</a>
-			<a class="collapse-item" href="utilities-other.html">Other</a>
+		@navItem("/charts", enum.CHARTS) {
+			<i class="fas fa-fw fa-chart-area"></i>
+			<span>Charts</span>
 		}
-		@divider("")
-		@heading("Addons")
-		@navItem(navItemParams{
-			text:       "Pages",
-			faCssClass: "fas fa-fw fa-folder",
-			url:        "#",
-			isActive:   false,
-			isDropDown: true,
-			target:     "collapsePages",
-		}) {
-			<h6 class="collapse-header">Login Screens:</h6>
-			<a class="collapse-item" href="login.html">Login</a>
-			<a class="collapse-item" href="register.html">Register</a>
-			<a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-			<div class="collapse-divider"></div>
-			<h6 class="collapse-header">Other Pages:</h6>
-			<a class="collapse-item" href="404.html">404 Page</a>
-			<a class="collapse-item" href="blank.html">Blank Page</a>
-		}
-		@navItem(navItemParams{
-			text:       "Charts",
-			faCssClass: "fas fa-fw fa-chart-area",
-			isActive:   utils.GetPage(ctx) == string(enum.CHARTS),
-			url:        "/charts",
-		})
-		@navItem(navItemParams{
-			text:       "Invoices",
-			faCssClass: "fas fa-fw fa-table",
-			isActive:   utils.GetPage(ctx) == string(enum.INVOICES),
-			url:        "/invoices",
-		})
 		@divider("d-none d-md-block")
 		<!-- Sidebar Toggler (Sidebar) -->
 		<div class="text-center d-none d-md-inline">
 			<button class="rounded-circle border-0" id="sidebarToggle"></button>
 		</div>
 	</ul>
+}
+
+func isActive(ctx context.Context, page enum.Page) bool {
+	return utils.GetPage(ctx) == string(page)
+}
+
+func isSubItemActive(ctx context.Context, items []dropDownItemParams) bool {
+	for _, item := range items {
+		if item.isHeader {
+			continue
+		}
+		if utils.GetPage(ctx) == string(item.page) {
+			return true
+		}
+	}
+	return false
+}
+
+templ navItem(url string, page enum.Page) {
+	<li class={ "nav-item", templ.KV("active", isActive(ctx, page)) }>
+		<a
+			class={ "nav-link" }
+			href={ templ.SafeURL(url) }
+		>
+			{ children... }
+		</a>
+	</li>
+}
+
+type dropDownItemParams struct {
+	isHeader bool
+	url      string
+	text     string
+	page     enum.Page
+}
+
+templ dropDownItem(params dropDownItemParams) {
+	if (params.isHeader) {
+		<h6 class="collapse-header">{ params.text }:</h6>
+	} else {
+		<a class={ "collapse-item", templ.KV("active", isActive(ctx,params.page)) } href={ templ.SafeURL(params.url) }>{ params.text }</a>
+	}
+}
+
+type dropDownListParams struct {
+	items  []dropDownItemParams
+	target string
+}
+
+templ dropDownList(params dropDownListParams) {
+	<li class={ "nav-item", templ.KV("active", isSubItemActive(ctx, params.items)) }>
+		<a
+			class={ "nav-link", templ.KV("collapsed", !isSubItemActive(ctx, params.items)), templ.KV("show", isSubItemActive(ctx, params.items)) }
+			href="#"
+			data-toggle="collapse"
+			data-target={ "#" + params.target }
+			aria-expanded={ strconv.FormatBool(isSubItemActive(ctx, params.items)) }
+			aria-controls={ params.target }
+		>
+			{ children... }
+		</a>
+		<div
+			id={ params.target }
+			class={ "collapse", templ.KV("show", isSubItemActive(ctx, params.items)) }
+			data-parent="#accordionSidebar"
+		>
+			<div class="bg-white py-2 collapse-inner rounded">
+				for _, item := range params.items {
+					@dropDownItem(item)
+				}
+			</div>
+		</div>
+	</li>
+}
+
+templ divider(addCssClass string) {
+	<hr class={ "sidebar-divider", addCssClass }/>
+}
+
+templ heading(text string) {
+	<div class="sidebar-heading">
+		{ text }
+	</div>
 }
