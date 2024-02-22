@@ -22,22 +22,9 @@ templ sidebar() {
 		@dropDownList(dropDownListParams{
 			target: "collapseTwo",
 			items: []dropDownItemParams{
-				dropDownItemParams{
-					isHeader: true,
-					text:     "Custom Components:",
-				},
-				dropDownItemParams{
-					isHeader: false,
-					text:     "Films",
-					url:      "/films",
-					page:     enum.FILMS,
-				},
-				dropDownItemParams{
-					isHeader: false,
-					text:     "Invoices",
-					url:      "/invoices",
-					page:     enum.INVOICES,
-				},
+				{isHeader: true, text: "Custom Components:"},
+				{isHeader: false, text: "Films", url: "/films", page: enum.FILMS},
+				{isHeader: false, text: "Invoices", url: "/invoices", page: enum.INVOICES},
 			},
 		}) {
 			<i class="fas fa-fw fa-cog"></i>
