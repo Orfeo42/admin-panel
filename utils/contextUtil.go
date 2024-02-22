@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 
-	"github.com/Orfeo42/admin-panel/enum"
+	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,13 +26,13 @@ var pageContextKey contextKey = "page"
 
 func GetPage(ctx context.Context) string {
 	//fmt.Println(ctx.Value(pageContextKey))
-	if page, ok := ctx.Value(pageContextKey).(enum.Page); ok {
+	if page, ok := ctx.Value(pageContextKey).(pages.Page); ok {
 		return string(page)
 	}
 	return ""
 }
 
-func SetPage(echoCtx echo.Context, value enum.Page) echo.Context {
+func SetPage(echoCtx echo.Context, value pages.Page) echo.Context {
 	return setInContext(echoCtx, pageContextKey, value)
 }
 

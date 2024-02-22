@@ -12,9 +12,25 @@ func main() {
 
 	app.GET("/", handler.HomeShow)
 
-	app.GET("/films", handler.FilmShow)
+	invoiceGroup := app.Group("/invoice")
 
-	app.GET("/invoices", handler.InvoiceListShow)
+	invoiceGroup.GET("/list", handler.InvoiceListShow)
+
+	invoiceGroup.GET("/add", handler.HomeShow)
+
+	customerGroup := app.Group("/customer")
+
+	customerGroup.GET("/list", handler.CustomerListShow)
+
+	customerGroup.GET("/add", handler.HomeShow)
+
+	orderGroup := app.Group("/order")
+
+	orderGroup.GET("/list", handler.OrderListShow)
+
+	orderGroup.GET("/add", handler.HomeShow)
+
+	app.GET("/films", handler.FilmShow)
 
 	app.POST("/add-film/", handler.AddFilm)
 

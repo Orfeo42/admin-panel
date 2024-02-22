@@ -1,6 +1,6 @@
 package model
 
-type UserModel struct {
+type CustomerModel struct {
 	Name    string
 	Surname string
 }

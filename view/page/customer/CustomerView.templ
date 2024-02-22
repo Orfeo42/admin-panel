@@ -1,9 +1,8 @@
-package invoice
+package customer
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/model"
-	"strconv"
 )
 
 templ styles() {
@@ -18,7 +17,7 @@ templ scripts() {
 	<script src="/js/demo/datatables-demo.js"></script>
 }
 
-templ InvoiceView(items []model.InvoiceModel) {
+templ CustomerView(items []model.CustomerModel) {
 	@layout.BaseExtendedView(styles(), scripts()) {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
@@ -32,22 +31,18 @@ templ InvoiceView(items []model.InvoiceModel) {
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
-								<th>Customer</th>
-								<th>Date</th>
-								<th>Amount</th>
-								<th>Is Paid</th>
+								<th>Name</th>
+								<th>Surname</th>
 							</tr>
 						</thead>
 						<tfoot>
 							<tr>
-								<th>Customer</th>
-								<th>Date</th>
-								<th>Amount</th>
-								<th>Is Paid</th>
+								<th>Name</th>
+								<th>Surname</th>
 							</tr>
 						</tfoot>
 						<tbody>
-							@AllInvoiceRowsShow(items)
+							@AllCustomerRowsShow(items)
 						</tbody>
 					</table>
 				</div>
@@ -56,31 +51,15 @@ templ InvoiceView(items []model.InvoiceModel) {
 	}
 }
 
-templ InvoiceRowShow(item model.InvoiceModel) {
+templ CustomerRowShow(item model.CustomerModel) {
 	<tr>
-		<td>{ item.Customer }</td>
-		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
-		<td style="text-align: right;">{ strconv.FormatFloat(item.Amount, 'f', 2, 64) } €</td>
-		<td style="text-align: center;">
-			@isPaid(item.IsPaid)
-		</td>
+		<td>{ item.Name }</td>
+		<td>{ item.Surname }</td>
 	</tr>
 }
 
-templ AllInvoiceRowsShow(items []model.InvoiceModel) {
+templ AllCustomerRowsShow(items []model.CustomerModel) {
 	for _, item := range items {
-		@InvoiceRowShow(item)
-	}
-}
-
-templ isPaid(isPaid bool) {
-	if isPaid {
-		<div class="btn btn-success btn-circle">
-			<i class="fas fa-check"></i>
-		</div>
-	} else {
-		<div class="btn btn-danger btn-circle">
-			<i class="fas fa-exclamation"></i>
-		</div>
+		@CustomerRowShow(item)
 	}
 }

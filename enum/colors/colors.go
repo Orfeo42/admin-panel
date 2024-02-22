@@ -1,4 +1,4 @@
-package enum
+package colors
 
 type Color string
 

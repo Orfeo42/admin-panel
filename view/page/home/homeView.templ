@@ -3,11 +3,21 @@ package home
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/view/component"
-	"github.com/Orfeo42/admin-panel/enum"
+	"github.com/Orfeo42/admin-panel/enum/colors"
 )
 
+templ styles() {
+}
+
+templ scripts() {
+	<!-- Script grafici -->
+	<script src="/vendor/chart.js/Chart.min.js"></script>
+	<script src="/js/demo/chart-area-demo.js"></script>
+	<script src="/js/demo/chart-pie-demo.js"></script>
+}
+
 templ HomeView() {
-	@layout.BaseView() {
+	@layout.BaseExtendedView(styles(), scripts()) {
 		<!-- Page Heading -->
 		<div class="d-sm-flex align-items-center justify-content-between mb-4">
 			<h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
@@ -143,58 +153,58 @@ templ HomeView() {
 			<!-- Content Column -->
 			<div class="col-lg-6 mb-4">
 				@component.TitledCardComp("Projects") {
-					@component.TitledProgressComp("Server Migration", 20, enum.Danger)
-					@component.TitledProgressComp("Sales Tracking", 40, enum.Warning)
-					@component.TitledProgressComp("Customer Database", 60, enum.Primary)
-					@component.TitledProgressComp("Payout Details", 80, enum.Info)
-					@component.TitledProgressComp("Account Setup", 100, enum.Success)
+					@component.TitledProgressComp("Server Migration", 20, colors.Danger)
+					@component.TitledProgressComp("Sales Tracking", 40, colors.Warning)
+					@component.TitledProgressComp("Customer Database", 60, colors.Primary)
+					@component.TitledProgressComp("Payout Details", 80, colors.Info)
+					@component.TitledProgressComp("Account Setup", 100, colors.Success)
 				}
 				<!-- Color System -->
 				<div class="row">
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Primary) {
+						@component.CardBgComp(colors.Primary) {
 							Primary
 							<div class="text-white-50 small">#4e73df</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Success) {
+						@component.CardBgComp(colors.Success) {
 							Success
 							<div class="text-white-50 small">#1cc88a</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Info) {
+						@component.CardBgComp(colors.Info) {
 							Info
 							<div class="text-white-50 small">#36b9cc</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Warning) {
+						@component.CardBgComp(colors.Warning) {
 							Warning
 							<div class="text-white-50 small">#f6c23e</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Danger) {
+						@component.CardBgComp(colors.Danger) {
 							Danger
 							<div class="text-white-50 small">#e74a3b</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Secondary) {
+						@component.CardBgComp(colors.Secondary) {
 							Secondary
 							<div class="text-white-50 small">#858796</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Light) {
+						@component.CardBgComp(colors.Light) {
 							Light
 							<div class="text-black-50 small">#f8f9fc</div>
 						}
 					</div>
 					<div class="col-lg-6 mb-4">
-						@component.CardBgComp(enum.Dark) {
+						@component.CardBgComp(colors.Dark) {
 							Dark
 							<div class="text-white-50 small">#5a5c69</div>
 						}
@@ -236,9 +246,5 @@ templ HomeView() {
 				}
 			</div>
 		</div>
-		<!-- Script grafici -->
-		<script src="vendor/chart.js/Chart.min.js"></script>
-		<script src="js/demo/chart-area-demo.js"></script>
-		<script src="js/demo/chart-pie-demo.js"></script>
 	}
 }

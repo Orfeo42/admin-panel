@@ -3,7 +3,7 @@ package handler
 import (
 	"time"
 
-	"github.com/Orfeo42/admin-panel/enum"
+	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/film"
@@ -30,7 +30,7 @@ func AddFilm(context echo.Context) error {
 }
 
 func FilmShow(echoCtx echo.Context) error {
-	echoCtx = utils.SetPage(echoCtx, enum.FILMS)
+	echoCtx = utils.SetPage(echoCtx, pages.FilmList)
 	echoCtx = utils.SetTitle(echoCtx, "Films")
 	films := []model.FilmModel{
 		{Title: "Titolo1", Director: "Director1"},

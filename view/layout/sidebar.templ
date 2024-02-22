@@ -2,7 +2,7 @@ package layout
 
 import "strconv"
 import "github.com/Orfeo42/admin-panel/utils"
-import "github.com/Orfeo42/admin-panel/enum"
+import "github.com/Orfeo42/admin-panel/enum/pages"
 
 templ sidebar() {
 	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -13,26 +13,37 @@ templ sidebar() {
 			<div class="sidebar-brand-text mx-3">HTMX Dashboard</div>
 		</a>
 		@divider("my-0")
-		@navItem("/", enum.HOME) {
+		@navItem("/", pages.Home) {
 			<i class="fas fa-fw fa-tachometer-alt"></i>
 			<span>Home Page</span>
 		}
 		@divider("")
+		@heading("Customers")
+		@navItem("/customer/list", pages.CustomerList) {
+			<i class="fas fa-fw fa-list-ul"></i>
+			<span>Customer List</span>
+		}
+		@navItem("/customer/add", pages.CustomerAdd) {
+			<i class="fas fa-fw fa-plus"></i>
+			<span>Add Customer</span>
+		}
+		@divider("")
 		@heading("Invoices")
-		@navItem("/invoices", enum.INVOICES) {
+		@navItem("/invoice/list", pages.InvoiceList) {
 			<i class="fas fa-fw fa-list-ul"></i>
 			<span>Invoice List</span>
 		}
-		@navItem("/films", enum.FILMS) {
+		@navItem("/invoice/add", pages.InvoiceAdd) {
 			<i class="fas fa-fw fa-plus"></i>
 			<span>Add Invoice</span>
 		}
+		@divider("")
 		@heading("Orders")
-		@navItem("/invoices", enum.INVOICES) {
+		@navItem("/order/list", pages.OrderList) {
 			<i class="fas fa-fw fa-list-ul"></i>
 			<span>Order List</span>
 		}
-		@navItem("/films", enum.FILMS) {
+		@navItem("/order/add", pages.OrderAdd) {
 			<i class="fas fa-fw fa-plus"></i>
 			<span>Add Order</span>
 		}
@@ -44,7 +55,7 @@ templ sidebar() {
 	</ul>
 }
 
-func isActive(ctx context.Context, page enum.Page) bool {
+func isActive(ctx context.Context, page pages.Page) bool {
 	return utils.GetPage(ctx) == string(page)
 }
 
@@ -60,7 +71,7 @@ func isSubItemActive(ctx context.Context, items []dropDownItemParams) bool {
 	return false
 }
 
-templ navItem(url string, page enum.Page) {
+templ navItem(url string, page pages.Page) {
 	<li class={ "nav-item", templ.KV("active", isActive(ctx, page)) }>
 		<a
 			class={ "nav-link" }
@@ -75,7 +86,7 @@ type dropDownItemParams struct {
 	isHeader bool
 	url      string
 	text     string
-	page     enum.Page
+	page     pages.Page
 }
 
 templ dropDownItem(params dropDownItemParams) {

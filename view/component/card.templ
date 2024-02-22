@@ -1,6 +1,6 @@
 package component
 
-import "github.com/Orfeo42/admin-panel/enum"
+import "github.com/Orfeo42/admin-panel/enum/colors"
 
 templ CardComp() {
 	<div class="card shadow mb-4">
@@ -19,7 +19,7 @@ templ TitledCardComp(title string) {
 	</div>
 }
 
-templ CardBgComp(color enum.Color) {
+templ CardBgComp(color colors.Color) {
 	<div class={ "card", string(color), "text-white", "shadow" }>
 		<div class="card-body">
 			{ children... }

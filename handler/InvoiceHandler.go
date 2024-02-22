@@ -3,7 +3,7 @@ package handler
 import (
 	"math/rand"
 
-	"github.com/Orfeo42/admin-panel/enum"
+	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/invoice"
@@ -11,16 +11,16 @@ import (
 )
 
 func InvoiceListShow(echoCtx echo.Context) error {
-	echoCtx = utils.SetPage(echoCtx, enum.INVOICES)
+	echoCtx = utils.SetPage(echoCtx, pages.InvoiceList)
 	echoCtx = utils.SetTitle(echoCtx, "Invoices")
 
-	invoices := []model.InvoiceModel{}
+	items := []model.InvoiceModel{}
 
 	for i := 0; i < 100; i++ {
-		invoices = append(invoices, genRandomInvoice())
+		items = append(items, genRandomInvoice())
 	}
 
-	return utils.Render(invoice.InvoiceView(invoices), echoCtx)
+	return utils.Render(invoice.InvoiceView(items), echoCtx)
 }
 
 func genRandomInvoice() model.InvoiceModel {
