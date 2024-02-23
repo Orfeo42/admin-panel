@@ -1,0 +1,14 @@
+package order
+
+import (
+	"github.com/Orfeo42/admin-panel/view/layout"
+	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/view/component"
+)
+
+templ OrderView(item model.OrderModel) {
+	@layout.BaseExtendedView(styles(), scripts()) {
+		@component.TitledCardComp("Prova Nuova") {
+		}
+	}
+}

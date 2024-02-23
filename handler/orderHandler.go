@@ -20,7 +20,14 @@ func OrderListShow(echoCtx echo.Context) error {
 		items = append(items, genRandomOrder())
 	}
 
-	return utils.Render(order.OrderView(items), echoCtx)
+	return utils.Render(order.OrderListView(items), echoCtx)
+}
+
+func OrderShow(echoCtx echo.Context) error {
+	echoCtx = utils.SetPage(echoCtx, pages.OrderAdd)
+	echoCtx = utils.SetTitle(echoCtx, "Invoice")
+
+	return utils.Render(order.OrderView(model.OrderModel{}), echoCtx)
 }
 
 func genRandomOrder() model.OrderModel {

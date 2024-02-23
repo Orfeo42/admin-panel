@@ -5,19 +5,7 @@ import (
 	"github.com/Orfeo42/admin-panel/model"
 )
 
-templ styles() {
-	<!-- Stile solo per le tabelle -->
-	<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
-}
-
-templ scripts() {
-	<!-- script solo per le tabelle -->
-	<script src="/vendor/datatables/jquery.dataTables.min.js"></script>
-	<script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-	<script src="/js/demo/datatables-demo.js"></script>
-}
-
-templ CustomerView(items []model.CustomerModel) {
+templ CustomerListView(items []model.CustomerModel) {
 	@layout.BaseExtendedView(styles(), scripts()) {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>

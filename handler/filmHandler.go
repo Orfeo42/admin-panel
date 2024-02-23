@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"time"
-
 	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/model"
 	"github.com/Orfeo42/admin-panel/utils"
@@ -20,7 +18,7 @@ func RefeshFilmList(context echo.Context) error {
 }
 
 func AddFilm(context echo.Context) error {
-	time.Sleep(1 * time.Second)
+	//time.Sleep(1 * time.Second)
 	req := context.Request()
 	filmAggiunto := model.FilmModel{
 		Title:    req.PostFormValue("title"),

@@ -20,7 +20,14 @@ func InvoiceListShow(echoCtx echo.Context) error {
 		items = append(items, genRandomInvoice())
 	}
 
-	return utils.Render(invoice.InvoiceView(items), echoCtx)
+	return utils.Render(invoice.InvoiceListView(items), echoCtx)
+}
+
+func InvoiceShow(echoCtx echo.Context) error {
+	echoCtx = utils.SetPage(echoCtx, pages.InvoiceAdd)
+	echoCtx = utils.SetTitle(echoCtx, "Invoice")
+
+	return utils.Render(invoice.InvoiceView(model.InvoiceModel{}), echoCtx)
 }
 
 func genRandomInvoice() model.InvoiceModel {

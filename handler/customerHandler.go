@@ -18,7 +18,14 @@ func CustomerListShow(echoCtx echo.Context) error {
 		items = append(items, genRandomCustomer())
 	}
 
-	return utils.Render(customer.CustomerView(items), echoCtx)
+	return utils.Render(customer.CustomerListView(items), echoCtx)
+}
+
+func CustomerShow(echoCtx echo.Context) error {
+	echoCtx = utils.SetPage(echoCtx, pages.CustomerAdd)
+	echoCtx = utils.SetTitle(echoCtx, "Invoice")
+
+	return utils.Render(customer.CustomerView(model.CustomerModel{}), echoCtx)
 }
 
 func genRandomCustomer() model.CustomerModel {
