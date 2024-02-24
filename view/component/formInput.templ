@@ -1,0 +1,20 @@
+package component
+
+type InputType string
+
+const (
+	Text     InputType = "text"
+	Email    InputType = "email"
+	Password InputType = "password"
+)
+
+type FormInputParam struct {
+	Id       string
+	Name     string
+	FormType InputType
+}
+
+templ FormInput(params FormInputParam) {
+	<label for="inputName">{ params.Name }</label>
+	<input type={ string(params.FormType) } class="form-control" id={ params.Id } placeholder={ params.Name }/>
+}
