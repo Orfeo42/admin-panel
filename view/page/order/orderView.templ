@@ -7,7 +7,7 @@ import (
 )
 
 templ OrderView(item model.OrderModel) {
-	@layout.BaseExtendedView(styles(), scripts()) {
+	@layout.BaseView() {
 		@component.TitledCardComp("Prova Nuova") {
 		}
 	}

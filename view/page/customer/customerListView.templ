@@ -6,7 +6,7 @@ import (
 )
 
 templ CustomerListView(items []model.CustomerModel) {
-	@layout.BaseExtendedView(styles(), scripts()) {
+	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
 		<!-- DataTales Example -->
