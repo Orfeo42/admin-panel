@@ -2,11 +2,11 @@ package order
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 	"strconv"
 )
 
-templ OrderListView(items []model.OrderModel) {
+templ OrderListView(items []data.OrderModel) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Order List</h1>
@@ -42,7 +42,7 @@ templ OrderListView(items []model.OrderModel) {
 	}
 }
 
-templ OrderRowShow(item model.OrderModel) {
+templ OrderRowShow(item data.OrderModel) {
 	<tr>
 		<td>{ item.Customer }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
@@ -50,7 +50,7 @@ templ OrderRowShow(item model.OrderModel) {
 	</tr>
 }
 
-templ AllOrderRowsShow(items []model.OrderModel) {
+templ AllOrderRowsShow(items []data.OrderModel) {
 	for _, item := range items {
 		@OrderRowShow(item)
 	}

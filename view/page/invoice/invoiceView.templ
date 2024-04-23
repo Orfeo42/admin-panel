@@ -2,11 +2,11 @@ package invoice
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ InvoiceView(item model.InvoiceModel) {
+templ InvoiceView(item data.InvoiceModel) {
 	@layout.BaseView() {
 		@component.TitledCardComp("Prova Nuova") {
 		}

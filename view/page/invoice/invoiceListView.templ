@@ -2,11 +2,11 @@ package invoice
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 	"strconv"
 )
 
-templ InvoiceListView(items []model.InvoiceModel) {
+templ InvoiceListView(items []data.InvoiceModel) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
@@ -44,7 +44,7 @@ templ InvoiceListView(items []model.InvoiceModel) {
 	}
 }
 
-templ InvoiceRowShow(item model.InvoiceModel) {
+templ InvoiceRowShow(item data.InvoiceModel) {
 	<tr>
 		<td>{ item.Customer }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
@@ -55,7 +55,7 @@ templ InvoiceRowShow(item model.InvoiceModel) {
 	</tr>
 }
 
-templ AllInvoiceRowsShow(items []model.InvoiceModel) {
+templ AllInvoiceRowsShow(items []data.InvoiceModel) {
 	for _, item := range items {
 		@InvoiceRowShow(item)
 	}

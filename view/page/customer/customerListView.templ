@@ -2,10 +2,10 @@ package customer
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 )
 
-templ CustomerListView(items []model.CustomerModel) {
+templ CustomerListView(items []data.CustomerModel) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
@@ -39,14 +39,14 @@ templ CustomerListView(items []model.CustomerModel) {
 	}
 }
 
-templ CustomerRowShow(item model.CustomerModel) {
+templ CustomerRowShow(item data.CustomerModel) {
 	<tr>
 		<td>{ item.Name }</td>
 		<td>{ item.Surname }</td>
 	</tr>
 }
 
-templ AllCustomerRowsShow(items []model.CustomerModel) {
+templ AllCustomerRowsShow(items []data.CustomerModel) {
 	for _, item := range items {
 		@CustomerRowShow(item)
 	}

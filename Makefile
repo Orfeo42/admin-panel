@@ -1,12 +1,8 @@
 build:
 	@templ generate
-	@go build -o bin/admin-panel
+	@go mod tidy
+	@go build -o bin/admin-panel cmd/controllers/main.go
 
 
 run: build
 	@./bin/admin-panel
-
-
-# run:
-# 	@templ generate
-# 	@go run main.go

@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"github.com/Orfeo42/admin-panel/enum/pages"

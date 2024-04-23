@@ -2,13 +2,12 @@ package order
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ OrderView(item model.OrderModel) {
+templ OrderView(item data.OrderModel) {
 	@layout.BaseView() {
-		@component.TitledCardComp("Prova Nuova") {
-		}
+		@component.TitledCardComp("Prova Nuova") {}
 	}
 }

@@ -1,10 +1,9 @@
-package model
+package data
 
 import "time"
 
-type InvoiceModel struct {
+type OrderModel struct {
 	Customer string
 	Amount   float64
 	Date     time.Time
-	IsPaid   bool
 }

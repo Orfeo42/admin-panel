@@ -2,11 +2,11 @@ package customer
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ CustomerView(item model.CustomerModel) {
+templ CustomerView(item data.CustomerModel) {
 	@layout.BaseView() {
 		<form>
 			<div class="row">

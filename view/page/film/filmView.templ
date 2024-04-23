@@ -2,10 +2,10 @@ package film
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/model"
+	"github.com/Orfeo42/admin-panel/data"
 )
 
-templ FilmView(films []model.FilmModel) {
+templ FilmView(films []data.FilmModel) {
 	@layout.BaseView() {
 		<div class="row mt-4 g-4">
 			<div class="col-8">
@@ -37,11 +37,11 @@ templ FilmView(films []model.FilmModel) {
 	}
 }
 
-templ FilmItemShow(film model.FilmModel) {
+templ FilmItemShow(film data.FilmModel) {
 	<li class="list-group-item bg-primary text-white">{ film.Title } - { film.Director }</li>
 }
 
-templ FilmListShow(films []model.FilmModel) {
+templ FilmListShow(films []data.FilmModel) {
 	for _, item := range films {
 		@FilmItemShow(item)
 	}
