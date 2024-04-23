@@ -4,7 +4,7 @@ build:
 
 
 run: build
- 	@./bin/admin-panel
+	@./bin/admin-panel
 
 
 # run:
