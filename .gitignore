@@ -2,3 +2,5 @@
 /view/**/*.go
 
 */.idea/
+
+*/bin/

@@ -1,3 +1,12 @@
-run:
+build:
 	@templ generate
-	@go run cmd/main.go
+	@go build -o bin/admin-panel
+
+
+run: build
+ 	@./bin/admin-panel
+
+
+# run:
+# 	@templ generate
+# 	@go run main.go
