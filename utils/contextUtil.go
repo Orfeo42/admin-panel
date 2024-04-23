@@ -25,7 +25,6 @@ func setInContext(echoCtx echo.Context, key contextKey, value any) echo.Context 
 var pageContextKey contextKey = "page"
 
 func GetPage(ctx context.Context) string {
-	//fmt.Println(ctx.Value(pageContextKey))
 	if page, ok := ctx.Value(pageContextKey).(pages.Page); ok {
 		return string(page)
 	}

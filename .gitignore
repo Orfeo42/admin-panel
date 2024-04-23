@@ -1,2 +1,4 @@
 #Ignore generated file from templ
 /view/**/*.go
+
+*/.idea/
