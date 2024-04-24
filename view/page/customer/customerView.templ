@@ -8,28 +8,33 @@ import (
 
 templ CustomerView(item data.CustomerModel) {
 	@layout.BaseView() {
-		<form>
-			<div class="row">
-				<!-- Content Column -->
-				<div class="col-lg-6 mb-4">
-					@component.TitledCardComp("Anagraphics") {
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								@component.FormInput(component.FormInputParam{Id: "inputName", Name: "Name", FormType: component.Text})
-							</div>
-							<div class="form-group col-md-6">
-								@component.FormInput(component.FormInputParam{Id: "inputSurname", Name: "Surname", FormType: component.Text})
-							</div>
+		@CustomerForm(item)
+	}
+}
+
+templ CustomerForm(item data.CustomerModel) {
+	<form
+		hx-post="/customer"
+		hx-target="this"
+		hx-swap="outerHTML"
+	>
+		<div class="row">
+			<div class="col-lg-6 mb-4">
+				@component.TitledCardComp("Anagraphics") {
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							@component.FormInput(component.FormInputParam{Id: "inputName", Name: "name", Description: "Name", FormType: component.Text, Value: item.Name})
 						</div>
-						<div class="form-group">
-							@component.FormInput(component.FormInputParam{Id: "inputAddress", Name: "Address", FormType: component.Text})
+						<div class="form-group col-md-6">
+							@component.FormInput(component.FormInputParam{Id: "inputSurname", Name: "surname", Description: "Surname", FormType: component.Text, Value: item.Surname})
 						</div>
-						<div class="form-group">
-							@component.FormInput(component.FormInputParam{Id: "inputAddress2", Name: "Address 2", FormType: component.Text})
-						</div>
-						<div class="form-row">
+					</div>
+					<div class="form-group">
+						@component.FormInput(component.FormInputParam{Id: "inputAddress", Name: "address", Description: "Address", FormType: component.Text, Value: item.Address})
+					</div>
+					<!--<div class="form-row">
 							<div class="form-group col-md-6">
-								@component.FormInput(component.FormInputParam{Id: "inputCity", Name: "City", FormType: component.Text})
+								@component.FormInput(component.FormInputParam{Id: "inputCity", Description: "City", FormType: component.Text})
 							</div>
 							<div class="form-group col-md-4">
 								<label for="inputState">State</label>
@@ -39,25 +44,24 @@ templ CustomerView(item data.CustomerModel) {
 								</select>
 							</div>
 							<div class="form-group col-md-2">
-								@component.FormInput(component.FormInputParam{Id: "inputZip", Name: "Zip", FormType: component.Text})
+								@component.FormInput(component.FormInputParam{Id: "inputZip", Description: "Zip", FormType: component.Text})
 							</div>
-						</div>
-					}
-				</div>
-				<div class="col-lg-6 mb-4">
-					@component.TitledCardComp("Contacts") {
-						<div class="form-row">
-							@component.FormInput(component.FormInputParam{Id: "inputEmail", Name: "E-mail", FormType: component.Email})
-						</div>
-						<div class="form-row">
-							@component.FormInput(component.FormInputParam{Id: "inputPhone", Name: "Phone", FormType: component.Text})
-						</div>
-					}
-				</div>
-				<div class="form-row">
-					<button type="submit" class="btn btn-primary">Save</button>
-				</div>
+						</div>-->
+				}
 			</div>
-		</form>
-	}
+			<div class="col-lg-6 mb-4">
+				@component.TitledCardComp("Contacts") {
+					<div class="form-group">
+						@component.FormInput(component.FormInputParam{Id: "inputEmail", Name: "email", Description: "E-mail", FormType: component.Email, Value: item.Email})
+					</div>
+					<div class="form-group">
+						@component.FormInput(component.FormInputParam{Id: "inputPhone", Name: "phone", Description: "Phone", FormType: component.Text, Value: item.Phone})
+					</div>
+				}
+			</div>
+			<div class="form-row">
+				<button type="submit" class="btn btn-primary">Save</button>
+			</div>
+		</div>
+	</form>
 }

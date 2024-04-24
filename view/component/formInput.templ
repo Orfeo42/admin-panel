@@ -9,12 +9,14 @@ const (
 )
 
 type FormInputParam struct {
-	Id       string
-	Name     string
-	FormType InputType
+	Id          string
+	Name        string
+	Description string
+	Value       string
+	FormType    InputType
 }
 
 templ FormInput(params FormInputParam) {
-	<label for="inputName">{ params.Name }</label>
-	<input type={ string(params.FormType) } class="form-control" id={ params.Id } placeholder={ params.Name }/>
+	<label for="inputName">{ params.Description }</label>
+	<input class="form-control" type={ string(params.FormType) } name={ params.Name } id={ params.Id } placeholder={ params.Description } value={ params.Value }/>
 }

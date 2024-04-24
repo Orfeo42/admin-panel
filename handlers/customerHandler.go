@@ -2,20 +2,45 @@ package handlers
 
 import (
 	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/db"
 	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/customer"
 	"github.com/labstack/echo/v4"
 )
 
+func getAllCustomer() ([]data.CustomerModel, error) {
+
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return []data.CustomerModel{}, err
+	}
+
+	var items []data.CustomerModel
+	result := dbInstance.Find(&items)
+
+	return items, result.Error
+}
+
+func createCustomer(customer data.CustomerModel) (data.CustomerModel, error) {
+
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return data.CustomerModel{}, err
+	}
+
+	result := dbInstance.Create(&customer)
+
+	return customer, result.Error
+}
+
 func CustomerListShow(echoCtx echo.Context) error {
+
 	echoCtx = utils.SetPage(echoCtx, pages.CustomerList)
 	echoCtx = utils.SetTitle(echoCtx, "Invoices")
-
-	items := []data.CustomerModel{}
-
-	for i := 0; i < 100; i++ {
-		items = append(items, genRandomCustomer())
+	items, err := getAllCustomer()
+	if err != nil {
+		return err
 	}
 
 	return utils.Render(customer.CustomerListView(items), echoCtx)
@@ -28,9 +53,18 @@ func CustomerShow(echoCtx echo.Context) error {
 	return utils.Render(customer.CustomerView(data.CustomerModel{}), echoCtx)
 }
 
-func genRandomCustomer() data.CustomerModel {
-	return data.CustomerModel{
-		Name:    utils.RandomString(25),
-		Surname: utils.RandomString(25),
+func CustomerAdd(echoCtx echo.Context) error {
+	input := data.CustomerModel{
+		Name:    echoCtx.FormValue("name"),
+		Surname: echoCtx.FormValue("surname"),
+		Address: echoCtx.FormValue("address"),
+		Email:   echoCtx.FormValue("email"),
+		Phone:   echoCtx.FormValue("phone"),
 	}
+	result, err := createCustomer(input)
+	if err != nil {
+		return err
+	}
+
+	return utils.Render(customer.CustomerForm(result), echoCtx)
 }

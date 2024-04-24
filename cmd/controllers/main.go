@@ -1,17 +1,11 @@
 package main
 
 import (
-	"github.com/Orfeo42/admin-panel/db"
 	"github.com/Orfeo42/admin-panel/handlers"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
-
-	_, err := db.CreateDatabase()
-	if err != nil {
-		return
-	}
 
 	app := echo.New()
 
@@ -26,6 +20,8 @@ func main() {
 	customerGroup.GET("/list", handlers.CustomerListShow)
 
 	customerGroup.GET("/add", handlers.CustomerShow)
+
+	customerGroup.POST("", handlers.CustomerAdd)
 
 	/*----------
 	  Invoice Group

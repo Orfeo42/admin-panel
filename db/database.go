@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/Orfeo42/admin-panel/data"
 	"github.com/joho/godotenv"
@@ -10,27 +11,48 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateDatabase() (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(getConnectionString()), &gorm.Config{})
+var (
+	databaseInstance *gorm.DB
+	lock             = &sync.Mutex{}
+)
 
+func GetInstance() (*gorm.DB, error) {
+	if isDBCreated() {
+		return databaseInstance, nil
+	}
+	err := createDatabase()
 	if err != nil {
-		fmt.Println("error in db connection")
-		fmt.Println(err.Error())
 		return nil, err
 	}
-
-	err = initDB(db)
-	if err != nil {
-		fmt.Println("error in db update")
-		return nil, err
-	}
-
-	return db, nil
+	updateSchema()
+	return databaseInstance, nil
 }
 
-func initDB(db *gorm.DB) error {
+func isDBCreated() bool {
+	if databaseInstance != nil {
+		return true
+	}
+
+	lock.Lock()
+	defer lock.Unlock()
+
+	return databaseInstance != nil
+}
+
+func createDatabase() error {
+	db, err := gorm.Open(postgres.Open(getConnectionString()), &gorm.Config{})
+	if err != nil {
+		fmt.Println("Error in db connection")
+		fmt.Println(err.Error())
+		return err
+	}
+	databaseInstance = db
+	return nil
+}
+
+func updateSchema() error {
 	fmt.Println("Updating Schema...")
-	err := db.AutoMigrate(
+	err := databaseInstance.AutoMigrate(
 		&data.CustomerModel{},
 		&data.InvoiceModel{},
 		&data.OrderModel{},
