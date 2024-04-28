@@ -9,19 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func getAllCustomer() ([]data.CustomerModel, error) {
-
-	dbInstance, err := db.GetInstance()
-	if err != nil {
-		return []data.CustomerModel{}, err
-	}
-
-	var items []data.CustomerModel
-	result := dbInstance.Find(&items)
-
-	return items, result.Error
-}
-
 func createCustomer(customer data.CustomerModel) (data.CustomerModel, error) {
 
 	dbInstance, err := db.GetInstance()
@@ -38,7 +25,7 @@ func CustomerListShow(echoCtx echo.Context) error {
 
 	echoCtx = utils.SetPage(echoCtx, pages.CustomerList)
 	echoCtx = utils.SetTitle(echoCtx, "Invoices")
-	items, err := getAllCustomer()
+	items, err := data.GetAllCustomer()
 	if err != nil {
 		return err
 	}

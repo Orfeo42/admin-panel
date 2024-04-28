@@ -5,7 +5,7 @@ $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 build:
 	@templ generate
 	@go mod tidy
-	@go build -o bin/admin-panel cmd/controllers/main.go
+	@go build -o ./bin/admin-panel ./cmd/controllers/main.go
 
 run: build db-up
 	@./bin/admin-panel
@@ -13,6 +13,7 @@ run: build db-up
 db-up: ## Start db.
 	@mkdir -p /home/${USER}/get-good-db
 	@docker-compose -f docker/docker-compose.yaml up -d postgres
+	@go run ./cmd/database/main.go
 	@echo "🚀 Database is up and running!"
 
 db-down: ## Stop db.

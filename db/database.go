@@ -5,7 +5,6 @@ import (
 	"os"
 	"sync"
 
-	"github.com/Orfeo42/admin-panel/data"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,7 +23,6 @@ func GetInstance() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	updateSchema()
 	return databaseInstance, nil
 }
 
@@ -47,21 +45,6 @@ func createDatabase() error {
 		return err
 	}
 	databaseInstance = db
-	return nil
-}
-
-func updateSchema() error {
-	fmt.Println("Updating Schema...")
-	err := databaseInstance.AutoMigrate(
-		&data.CustomerModel{},
-		&data.InvoiceModel{},
-		&data.OrderModel{},
-	)
-	if err != nil {
-		fmt.Println("Error in Updating Schema")
-		return err
-	}
-	fmt.Println("Schema Updated!")
 	return nil
 }
 
