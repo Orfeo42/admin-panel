@@ -9,6 +9,7 @@ import (
 
 func main() {
 	updateSchema()
+	inizializeCustomersData()
 }
 
 func updateSchema() error {
@@ -29,4 +30,24 @@ func updateSchema() error {
 	}
 	fmt.Println("Schema Updated!")
 	return nil
+}
+
+func inizializeCustomersData() ([]data.CustomerModel, error) {
+	customerList := []data.CustomerModel{
+		{
+			Name:    "Pippo",
+			Surname: "Pippos",
+			Address: "Via di pippo 1",
+			Phone:   "0575-617368",
+			Email:   "pippo@aaa.com",
+		},
+		{
+			Name:    "Pluto",
+			Surname: "Plutos",
+			Address: "Via di Pluto 2",
+			Phone:   "0575-666666",
+			Email:   "pluto@bbb.com",
+		},
+	}
+	return data.CreateCustomerList(customerList)
 }

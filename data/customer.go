@@ -26,3 +26,27 @@ func GetAllCustomer() ([]CustomerModel, error) {
 
 	return items, result.Error
 }
+
+func CreateCustomer(customer CustomerModel) (CustomerModel, error) {
+
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return CustomerModel{}, err
+	}
+
+	result := dbInstance.Create(&customer)
+
+	return customer, result.Error
+}
+
+func CreateCustomerList(customerList []CustomerModel) ([]CustomerModel, error) {
+	result := []CustomerModel{}
+	for _, customer := range customerList {
+		ret, err := CreateCustomer(customer)
+		if err != nil {
+			return result, err
+		}
+		result = append(result, ret)
+	}
+	return result, nil
+}

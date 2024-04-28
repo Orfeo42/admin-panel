@@ -13,8 +13,13 @@ run: build db-up
 db-up: ## Start db.
 	@mkdir -p /home/${USER}/get-good-db
 	@docker-compose -f docker/docker-compose.yaml up -d postgres
-	@go run ./cmd/database/main.go
 	@echo "🚀 Database is up and running!"
+
+
+db-init: db-up
+	@sleep 5
+	@go run ./cmd/preload/main.go
+	@echo "🚀 Database is initialized!"
 
 db-down: ## Stop db.
 	@docker-compose -f docker/docker-compose.yaml down --volumes
@@ -24,3 +29,5 @@ db-down: ## Stop db.
 db-drop: db-down ## Completly delete the db
 	@sudo rm -r /home/${USER}/get-good-db
 	@echo " Database deleted!"
+
+db-reset: db-drop db-init
