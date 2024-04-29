@@ -50,12 +50,12 @@ func createDatabase() error {
 
 func getConnectionString() string {
 	godotenv.Load()
-	dbHost := getEnv("DB_HOST", "127.0.0.1")
-	dbPort := getEnv("DB_PORT", "5432")
-	dbName := getEnv("DB_NAME", "database")
-	dbUser := getEnv("DB_USER", "user")
-	dbPassword := getEnv("DB_PASSWORD", "password")
-	dbSSLMode := getEnv("DB_SSLMODE", "disable")
+	dbHost := getEnv("POSTGRES_HOST", "127.0.0.1")
+	dbPort := getEnv("POSTGRES_PORT", "5432")
+	dbName := getEnv("POSTGRES_DB", "database")
+	dbUser := getEnv("POSTGRES_USER", "user")
+	dbPassword := getEnv("POSTGRES_PASSWORD", "password")
+	dbSSLMode := getEnv("POSTGRES_SSLMODE", "disable")
 	uri := fmt.Sprintf("host=%s port=%s dbname=%s sslmode=%s user=%s password=%s", dbHost, dbPort, dbName, dbSSLMode, dbUser, dbPassword)
 	return uri
 }
