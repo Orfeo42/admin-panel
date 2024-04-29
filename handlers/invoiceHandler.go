@@ -35,8 +35,9 @@ func genRandomInvoice() data.Invoice {
 		Customer: data.Customer{
 			Name: utils.RandomString(25),
 		},
-		Amount: rand.Int(),
-		Date:   utils.RandomDate(),
-		IsPaid: rand.Intn(2) == 1,
+		Amount:      rand.Int(),
+		Date:        utils.RandomDate(),
+		PaymentDate: utils.RandomDate(),
+		PaidAmount:  rand.Int(),
 	}
 }

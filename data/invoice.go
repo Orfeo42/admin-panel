@@ -8,12 +8,13 @@ import (
 
 type Invoice struct {
 	gorm.Model
-	CustomerID uint
-	Customer   Customer
-	Amount     int
-	Date       time.Time
-	IsPaid     bool
-	Rows       []InvoiceRow
+	CustomerID  uint
+	Customer    Customer
+	Amount      int
+	PaidAmount  int
+	Date        time.Time
+	PaymentDate time.Time
+	Rows        []InvoiceRow
 }
 
 type InvoiceRow struct {

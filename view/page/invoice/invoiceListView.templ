@@ -22,7 +22,9 @@ templ InvoiceListView(items []data.Invoice) {
 							<tr>
 								<th>Customer</th>
 								<th>Date</th>
+								<th>Paiment Date</th>
 								<th>Amount</th>
+								<th>Paid Amount</th>
 								<th>Is Paid</th>
 							</tr>
 						</thead>
@@ -30,7 +32,9 @@ templ InvoiceListView(items []data.Invoice) {
 							<tr>
 								<th>Customer</th>
 								<th>Date</th>
+								<th>Paiment Date</th>
 								<th>Amount</th>
+								<th>Paid Amount</th>
 								<th>Is Paid</th>
 							</tr>
 						</tfoot>
@@ -48,9 +52,11 @@ templ InvoiceRowShow(item data.Invoice) {
 	<tr>
 		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
+		<td style="text-align: right;">{ item.PaymentDate.Format("02-01-2006") }</td>
 		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>
+		<td style="text-align: right;">{ utils.FormatAmount(item.PaidAmount) } €</td>
 		<td style="text-align: center;">
-			@isPaid(item.IsPaid)
+			@isPaid(item.Amount-item.PaidAmount == 0)
 		</td>
 	</tr>
 }
