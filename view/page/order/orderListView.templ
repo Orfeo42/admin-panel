@@ -3,10 +3,10 @@ package order
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/data"
-	"strconv"
+	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ OrderListView(items []data.OrderModel) {
+templ OrderListView(items []data.Order) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Order List</h1>
@@ -42,15 +42,15 @@ templ OrderListView(items []data.OrderModel) {
 	}
 }
 
-templ OrderRowShow(item data.OrderModel) {
+templ OrderRowShow(item data.Order) {
 	<tr>
-		<td>{ item.Customer }</td>
+		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
-		<td style="text-align: right;">{ strconv.FormatFloat(item.Amount, 'f', 2, 64) } €</td>
+		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>
 	</tr>
 }
 
-templ AllOrderRowsShow(items []data.OrderModel) {
+templ AllOrderRowsShow(items []data.Order) {
 	for _, item := range items {
 		@OrderRowShow(item)
 	}

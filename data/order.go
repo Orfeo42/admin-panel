@@ -6,9 +6,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrderModel struct {
+type Order struct {
 	gorm.Model
-	Customer string
-	Amount   float64
-	Date     time.Time
+	CustomerID uint
+	Customer   Customer
+	Amount     int
+	Date       time.Time
+}
+
+type OrderRow struct {
+	gorm.Model
+	OrderID uint
+	Order   Order `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Number  int
+	Amount  int
 }

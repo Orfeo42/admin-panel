@@ -20,9 +20,11 @@ func updateSchema() error {
 		return errConnection
 	}
 	err := dbInstance.AutoMigrate(
-		&data.CustomerModel{},
-		&data.InvoiceModel{},
-		&data.OrderModel{},
+		&data.Customer{},
+		&data.Invoice{},
+		&data.InvoiceRow{},
+		&data.Order{},
+		&data.OrderRow{},
 	)
 	if err != nil {
 		fmt.Println("Error in Updating Schema")
@@ -32,8 +34,8 @@ func updateSchema() error {
 	return nil
 }
 
-func inizializeCustomersData() ([]data.CustomerModel, error) {
-	customerList := []data.CustomerModel{
+func inizializeCustomersData() ([]data.Customer, error) {
+	customerList := []data.Customer{
 		{
 			Name:    "Pippo",
 			Surname: "Pippos",

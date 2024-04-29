@@ -14,7 +14,7 @@ func InvoiceListShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, pages.InvoiceList)
 	echoCtx = utils.SetTitle(echoCtx, "Invoices")
 
-	items := []data.InvoiceModel{}
+	items := []data.Invoice{}
 
 	for i := 0; i < 100; i++ {
 		items = append(items, genRandomInvoice())
@@ -27,14 +27,16 @@ func InvoiceShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, pages.InvoiceAdd)
 	echoCtx = utils.SetTitle(echoCtx, "Invoice")
 
-	return utils.Render(invoice.InvoiceView(data.InvoiceModel{}), echoCtx)
+	return utils.Render(invoice.InvoiceView(data.Invoice{}), echoCtx)
 }
 
-func genRandomInvoice() data.InvoiceModel {
-	return data.InvoiceModel{
-		Customer: utils.RandomString(25),
-		Amount:   rand.Float64(),
-		Date:     utils.RandomDate(),
-		IsPaid:   rand.Intn(2) == 1,
+func genRandomInvoice() data.Invoice {
+	return data.Invoice{
+		Customer: data.Customer{
+			Name: utils.RandomString(25),
+		},
+		Amount: rand.Int(),
+		Date:   utils.RandomDate(),
+		IsPaid: rand.Intn(2) == 1,
 	}
 }

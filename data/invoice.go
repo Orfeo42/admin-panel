@@ -6,10 +6,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type InvoiceModel struct {
+type Invoice struct {
 	gorm.Model
-	Customer string
-	Amount   float64
-	Date     time.Time
-	IsPaid   bool
+	CustomerID uint
+	Customer   Customer
+	Amount     int
+	Date       time.Time
+	IsPaid     bool
+	Rows       []InvoiceRow
+}
+
+type InvoiceRow struct {
+	gorm.Model
+	InvoiceID uint
+	Invoice   Invoice `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Number    int
+	Amount    int
 }

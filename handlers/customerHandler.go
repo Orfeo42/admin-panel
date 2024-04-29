@@ -23,11 +23,11 @@ func CustomerListShow(echoCtx echo.Context) error {
 func CustomerShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, pages.CustomerAdd)
 	echoCtx = utils.SetTitle(echoCtx, "Invoice")
-	return utils.Render(customer.CustomerView(data.CustomerModel{}), echoCtx)
+	return utils.Render(customer.CustomerView(data.Customer{}), echoCtx)
 }
 
 func CustomerAdd(echoCtx echo.Context) error {
-	input := data.CustomerModel{
+	input := data.Customer{
 		Name:    echoCtx.FormValue("name"),
 		Surname: echoCtx.FormValue("surname"),
 		Address: echoCtx.FormValue("address"),

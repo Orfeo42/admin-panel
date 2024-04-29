@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type CustomerModel struct {
+type Customer struct {
 	gorm.Model
 	Name    string
 	Surname string
@@ -14,24 +14,24 @@ type CustomerModel struct {
 	Email   string
 }
 
-func GetAllCustomer() ([]CustomerModel, error) {
+func GetAllCustomer() ([]Customer, error) {
 
 	dbInstance, err := db.GetInstance()
 	if err != nil {
-		return []CustomerModel{}, err
+		return []Customer{}, err
 	}
 
-	var items []CustomerModel
+	var items []Customer
 	result := dbInstance.Find(&items)
 
 	return items, result.Error
 }
 
-func CreateCustomer(customer CustomerModel) (CustomerModel, error) {
+func CreateCustomer(customer Customer) (Customer, error) {
 
 	dbInstance, err := db.GetInstance()
 	if err != nil {
-		return CustomerModel{}, err
+		return Customer{}, err
 	}
 
 	result := dbInstance.Create(&customer)
@@ -39,8 +39,8 @@ func CreateCustomer(customer CustomerModel) (CustomerModel, error) {
 	return customer, result.Error
 }
 
-func CreateCustomerList(customerList []CustomerModel) ([]CustomerModel, error) {
-	result := []CustomerModel{}
+func CreateCustomerList(customerList []Customer) ([]Customer, error) {
+	result := []Customer{}
 	for _, customer := range customerList {
 		ret, err := CreateCustomer(customer)
 		if err != nil {

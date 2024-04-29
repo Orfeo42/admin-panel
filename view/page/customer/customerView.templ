@@ -6,13 +6,13 @@ import (
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ CustomerView(item data.CustomerModel) {
+templ CustomerView(item data.Customer) {
 	@layout.BaseView() {
 		@CustomerForm(item)
 	}
 }
 
-templ CustomerForm(item data.CustomerModel) {
+templ CustomerForm(item data.Customer) {
 	<form
 		hx-post="/customer"
 		hx-target="this"

@@ -14,7 +14,7 @@ func OrderListShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, pages.OrderList)
 	echoCtx = utils.SetTitle(echoCtx, "Orders")
 
-	items := []data.OrderModel{}
+	items := []data.Order{}
 
 	for i := 0; i < 100; i++ {
 		items = append(items, genRandomOrder())
@@ -27,13 +27,15 @@ func OrderShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, pages.OrderAdd)
 	echoCtx = utils.SetTitle(echoCtx, "Invoice")
 
-	return utils.Render(order.OrderView(data.OrderModel{}), echoCtx)
+	return utils.Render(order.OrderView(data.Order{}), echoCtx)
 }
 
-func genRandomOrder() data.OrderModel {
-	return data.OrderModel{
-		Customer: utils.RandomString(25),
-		Amount:   rand.Float64(),
-		Date:     utils.RandomDate(),
+func genRandomOrder() data.Order {
+	return data.Order{
+		Customer: data.Customer{
+			Name: utils.RandomString(25),
+		},
+		Amount: rand.Int(),
+		Date:   utils.RandomDate(),
 	}
 }

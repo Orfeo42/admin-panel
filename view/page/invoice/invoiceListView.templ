@@ -3,10 +3,10 @@ package invoice
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/data"
-	"strconv"
+	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ InvoiceListView(items []data.InvoiceModel) {
+templ InvoiceListView(items []data.Invoice) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
@@ -44,18 +44,18 @@ templ InvoiceListView(items []data.InvoiceModel) {
 	}
 }
 
-templ InvoiceRowShow(item data.InvoiceModel) {
+templ InvoiceRowShow(item data.Invoice) {
 	<tr>
-		<td>{ item.Customer }</td>
+		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
-		<td style="text-align: right;">{ strconv.FormatFloat(item.Amount, 'f', 2, 64) } €</td>
+		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>
 		<td style="text-align: center;">
 			@isPaid(item.IsPaid)
 		</td>
 	</tr>
 }
 
-templ AllInvoiceRowsShow(items []data.InvoiceModel) {
+templ AllInvoiceRowsShow(items []data.Invoice) {
 	for _, item := range items {
 		@InvoiceRowShow(item)
 	}
