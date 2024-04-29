@@ -28,5 +28,8 @@ build:
 	@go mod tidy
 	@go build -o ./bin/${PROJECT_NAME} ./cmd/controllers/main.go
 
-run: build db-init
+run-fresh: build db-init
+	@./bin/${PROJECT_NAME}
+
+run: build db-up
 	@./bin/${PROJECT_NAME}

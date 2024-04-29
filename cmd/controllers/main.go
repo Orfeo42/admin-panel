@@ -49,9 +49,5 @@ func main() {
 
 	app.GET("/", handlers.HomeShow)
 
-	app.GET("/films", handlers.FilmShow)
-
-	app.POST("/add-film/", handlers.AddFilm)
-
 	app.Start(":8080")
 }
