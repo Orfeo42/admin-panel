@@ -1,6 +1,8 @@
 package data
 
 import (
+	"log"
+
 	"github.com/Orfeo42/admin-panel/db"
 	"gorm.io/gorm"
 )
@@ -41,12 +43,20 @@ func CreateCustomer(customer Customer) (Customer, error) {
 
 func CreateCustomerList(customerList []Customer) ([]Customer, error) {
 	result := []Customer{}
-	for _, customer := range customerList {
-		ret, err := CreateCustomer(customer)
-		if err != nil {
-			return result, err
-		}
-		result = append(result, ret)
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return result, err
 	}
+	dbInstance.Transaction(func(tx *gorm.DB) error {
+		for _, customer := range customerList {
+			if err := tx.Create(&customer).Error; err != nil {
+				log.Fatalln("Error in creating customer!", customer, err)
+				return err
+			}
+			result = append(result, customer)
+		}
+		return nil
+	})
+
 	return result, nil
 }
