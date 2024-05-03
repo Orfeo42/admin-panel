@@ -20,5 +20,13 @@ type FormInputParam struct {
 
 templ FormInput(params FormInputParam) {
 	<label for="inputName">{ params.Description }</label>
-	<input class="form-control" type={ string(params.FormType) } name={ params.Name } id={ params.Id } placeholder={ params.Description } value={ params.Value }/>
+	<input
+		class="form-control"
+		type={ string(params.FormType) }
+		name={ params.Name }
+		id={ params.Id }
+		placeholder={ params.Description }
+		value={ params.Value }
+		step=".01"
+	/>
 }
