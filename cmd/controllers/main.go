@@ -31,6 +31,8 @@ func main() {
 
 	invoiceGroup.GET("/list", handlers.InvoiceListShow)
 
+	invoiceGroup.GET("/filter", handlers.InvoiceFilter)
+
 	invoiceGroup.GET("/add", handlers.InvoiceShow)
 
 	/*----------

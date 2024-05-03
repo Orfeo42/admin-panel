@@ -3,6 +3,8 @@
 
 */.idea/
 /.idea/
+*/.vscode/
+/.vscode/
 
 */bin/
 /bin/

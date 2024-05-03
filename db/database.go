@@ -2,12 +2,15 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -38,7 +41,18 @@ func isDBCreated() bool {
 }
 
 func createDatabase() error {
-	db, err := gorm.Open(postgres.Open(getConnectionString()), &gorm.Config{})
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  logger.Info,
+			IgnoreRecordNotFoundError: true,
+			ParameterizedQueries:      false,
+			Colorful:                  true,
+		},
+	)
+
+	db, err := gorm.Open(postgres.Open(getConnectionString()), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		fmt.Println("Error in db connection")
 		fmt.Println(err.Error())

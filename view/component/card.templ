@@ -26,3 +26,23 @@ templ CardBgComp(color colors.Color) {
 		</div>
 	</div>
 }
+
+templ CollapseCard(title string, id string) {
+	<div class="card shadow mb-4">
+		<a
+			href={ templ.URL("#" + id) }
+			class="d-block card-header py-3"
+			data-toggle="collapse"
+			role="button"
+			aria-expanded="true"
+			aria-controls={ id }
+		>
+			<h6 class="m-0 font-weight-bold text-primary">{ title }</h6>
+		</a>
+		<div class="collapse show" id={ id }>
+			<div class="card-body">
+				{ children... }
+			</div>
+		</div>
+	</div>
+}

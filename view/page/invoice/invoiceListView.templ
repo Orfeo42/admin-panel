@@ -4,53 +4,103 @@ import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/utils"
+	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ InvoiceListView(items []data.Invoice) {
+templ InvoiceListView(items []data.Invoice, filter data.InvoiceFilter) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
-		<!-- DataTales Example -->
-		<div class="card shadow mb-4">
-			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">List</h6>
-			</div>
-			<div class="card-body">
-				<div class="table-responsive">
-					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-						<thead>
-							<tr>
-								<th>Customer</th>
-								<th>Date</th>
-								<th>Paiment Date</th>
-								<th>Amount</th>
-								<th>Paid Amount</th>
-								<th>Is Paid</th>
-							</tr>
-						</thead>
-						<tfoot>
-							<tr>
-								<th>Customer</th>
-								<th>Date</th>
-								<th>Paiment Date</th>
-								<th>Amount</th>
-								<th>Paid Amount</th>
-								<th>Is Paid</th>
-							</tr>
-						</tfoot>
-						<tbody>
-							@AllInvoiceRowsShow(items)
-						</tbody>
-					</table>
+		@component.CollapseCard("Filters", "filter") {
+			<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						@component.FormInput(component.FormInputParam{Id: "customer", Name: "customer", Description: "Customer", FormType: component.Text, Value: utils.FormatUintToFormString(filter.CustomerID)})
+						<!--<input
+								class="form-control"
+								type="search"
+								name="search"
+								placeholder="Begin Typing To Search By customer..."
+								hx-post="/search"
+								hx-trigger="input changed delay:500ms, search"
+								hx-target="#search-results"
+								hx-indicator=".htmx-indicator"
+							/>	-->
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
+					</div>
+					<div class="form-group col-md-3">
+						<label for="isPaid">Payment Status:</label>
+						<select class="form-control" name="isPaid" id="isPaid">
+							<option value="">Both</option>
+							<option value="true">Is Paid</option>
+							<option value="false">Is Not Paid</option>
+						</select>
+					</div>
 				</div>
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "dateFrom", Name: "dateFrom", Description: "Date From", FormType: component.Date, Value: utils.FormatTimeToForm(filter.DateFrom)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "dateTo", Name: "dateTo", Description: "Date To", FormType: component.Date, Value: utils.FormatTimeToForm(filter.DateTo)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "paymentDateFrom", Name: "paymentDateFrom", Description: "Payment Date From", FormType: component.Date, Value: utils.FormatTimeToForm(filter.PaymentDateFrom)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "paymentDateTo", Name: "paymentDateTo", Description: "Payment Date To", FormType: component.Date, Value: utils.FormatTimeToForm(filter.PaymentDateTo)})
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "amount", Name: "amountFrom", Description: "Amount From", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountFrom)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "amountTo", Name: "amountTo", Description: "Amount To", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountTo)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "paidAmountFrom", Name: "paidAmountFrom", Description: "Paid Amount From", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.PaidAmountFrom)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "paidAmountTo", Name: "paidAmountTo", Description: "Paid Amount To", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.PaidAmountTo)})
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-lg-12">
+						<button type="submit" class="btn btn-primary">Filter</button>
+					</div>
+				</div>
+			</form>
+		}
+		@component.CardComp() {
+			<div class="table-responsive">
+				<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Customer</th>
+							<th>Number</th>
+							<th>Date</th>
+							<th>Paiment Date</th>
+							<th>Amount</th>
+							<th>Paid Amount</th>
+							<th>Is Paid</th>
+						</tr>
+					</thead>
+					<tbody id="data">
+						@AllInvoiceRowsShow(items)
+					</tbody>
+				</table>
 			</div>
-		</div>
+		}
 	}
 }
 
 templ InvoiceRowShow(item data.Invoice) {
 	<tr>
 		<td>{ item.Customer.Name }</td>
+		<td style="text-align: right;">{ item.Number }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
 		<td style="text-align: right;">{ item.PaymentDate.Format("02-01-2006") }</td>
 		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>

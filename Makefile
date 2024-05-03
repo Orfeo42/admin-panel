@@ -33,3 +33,4 @@ run-fresh: build db-init
 
 run: build db-up
 	@./bin/${PROJECT_NAME}
+	
