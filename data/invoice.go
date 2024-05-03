@@ -13,14 +13,14 @@ type Invoice struct {
 	CustomerID          uint
 	Customer            Customer
 	Number              string
-	PaymentMethod       string
+	PaymentMethod       *string
 	Amount              int
 	PaidAmount          int
-	Date                time.Time
-	PaymentDate         time.Time
-	ExpectedPaymentDate time.Time
-	Rows                []InvoiceRow
-	Note                string
+	Date                *time.Time
+	PaymentDate         *time.Time
+	ExpectedPaymentDate *time.Time
+	Rows                *[]InvoiceRow
+	Note                *string
 }
 
 type InvoiceRow struct {

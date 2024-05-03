@@ -101,8 +101,8 @@ templ InvoiceRowShow(item data.Invoice) {
 	<tr>
 		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Number }</td>
-		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
-		<td style="text-align: right;">{ item.PaymentDate.Format("02-01-2006") }</td>
+		<td style="text-align: right;">{ utils.FormatTimeToTable(item.Date) }</td>
+		<td style="text-align: right;">{ utils.FormatTimeToTable(item.PaymentDate) }</td>
 		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>
 		<td style="text-align: right;">{ utils.FormatAmount(item.PaidAmount) } €</td>
 		<td style="text-align: center;">

@@ -100,9 +100,9 @@ func csvRowToInvoice(row []string, customers []data.Customer) (data.Invoice, err
 		Amount:              parseAmount(row[3]),
 		PaidAmount:          parseAmount(row[4]),
 		PaymentDate:         parseDate(row[5]),
-		PaymentMethod:       row[6],
+		PaymentMethod:       parseString(row[6]),
 		ExpectedPaymentDate: parseDate(row[7]),
-		Note:                row[8],
+		Note:                parseString(row[8]),
 	}, nil
 }
 
@@ -116,16 +116,16 @@ func findCustomerFromName(customers []data.Customer, name string) (data.Customer
 	return data.Customer{}, errors.New("No customer with name " + name + " found")
 }
 
-func parseDate(date string) time.Time {
+func parseDate(date string) *time.Time {
 	if date == "" {
-		return time.Time{}
+		return nil
 	}
 	parsedDate, err := time.Parse("02/01/2006", date)
 	if err != nil {
 		log.Info("Data non parsata:", date)
-		return time.Time{}
+		return nil
 	}
-	return parsedDate
+	return &parsedDate
 }
 
 func parseAmount(amount string) int {
@@ -139,4 +139,11 @@ func parseAmount(amount string) int {
 		return 0
 	}
 	return int(parsedAmount * 100)
+}
+
+func parseString(value string) *string {
+	if value == "" {
+		return nil
+	}
+	return &value
 }
