@@ -7,21 +7,24 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func UpdateSchemaAndLoadData() {
-	updateSchema()
+func LoadData() {
 	log.Info("Start creating customers")
-	customers, err := inizializeCustomersData()
+	customers, err := initializeCustomersData()
 	if err != nil {
 		log.Fatalf("Error Creating customers")
 		return
 	}
 	log.Info("All customers are created")
 	log.Info("Start creating Invoices")
-	inizializeInvoiceData(customers)
+	_, err = initializeInvoiceData(customers)
+	if err != nil {
+		log.Fatalf("Error creating Invoices")
+		return
+	}
 	log.Info("All Invoices are created")
 }
 
-func updateSchema() error {
+func SchemaUpdate() error {
 	log.Info("Updating Schema...")
 	dbInstance, errConnection := db.GetInstance()
 
@@ -43,11 +46,11 @@ func updateSchema() error {
 	return nil
 }
 
-func inizializeCustomersData() ([]data.Customer, error) {
+func initializeCustomersData() ([]data.Customer, error) {
 	return data.CreateCustomerList(validation.ValidateCustomersCsv())
 }
 
-func inizializeInvoiceData(customers []data.Customer) ([]data.Invoice, error) {
+func initializeInvoiceData(customers []data.Customer) ([]data.Invoice, error) {
 	invoices, err := validation.ValidateInvoiceCsv(customers)
 	if err != nil {
 		log.Fatalf("Error validation invoices")

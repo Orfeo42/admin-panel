@@ -11,16 +11,24 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func ValidateCsv() {
+func ValidateCsv() error {
 	log.Info("Start validating csv")
 	customerList := ValidateCustomersCsv()
-	ValidateInvoiceCsv(customerList)
+	_, err := ValidateInvoiceCsv(customerList)
+	if err != nil {
+		log.Error("Error validating csv: ", err)
+		return err
+	}
+	return nil
 }
 
 func ValidateCustomersCsv() []data.Customer {
-	customerList := []data.Customer{}
+	var customerList []data.Customer
 
-	csvData := utils.ReadCsvFile("resources/customers.csv")
+	csvData, err := utils.ReadCsvFile("resources/customers.csv")
+	if err != nil {
+		return customerList
+	}
 	for number, row := range csvData {
 		if number == 0 {
 			continue
@@ -39,7 +47,7 @@ func csvRowToCustomer(row []string) data.Customer {
 
 func ValidateInvoiceCsv(customers []data.Customer) ([]data.Invoice, error) {
 
-	invList := []data.Invoice{}
+	var invList []data.Invoice
 
 	log.Info("Starting validating invoice 2022")
 	invList2022, err := validateInvoiceSingleCsv("resources/invoices - 2022.csv", customers)
@@ -70,18 +78,20 @@ func ValidateInvoiceCsv(customers []data.Customer) ([]data.Invoice, error) {
 
 func validateInvoiceSingleCsv(csvPath string, customers []data.Customer) ([]data.Invoice, error) {
 
-	invList := []data.Invoice{}
+	var invList []data.Invoice
 
-	csvData := utils.ReadCsvFile(csvPath)
+	csvData, err := utils.ReadCsvFile(csvPath)
+	if err != nil {
+		return invList, err
+	}
 	for number, row := range csvData {
 		if number == 0 {
 			continue
 		}
-		invoice, _ := csvRowToInvoice(row, customers)
-		// if err != nil {
-		// 	//log.Infof("Error in row %d", row)
-		// 	//return nil, err
-		// }
+		invoice, err := csvRowToInvoice(row, customers)
+		if err != nil {
+			log.Errorf("Error in converting csv to invoice in row %d: %+v", number, err)
+		}
 		invList = append(invList, invoice)
 	}
 

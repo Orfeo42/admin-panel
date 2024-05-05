@@ -2,27 +2,35 @@ package utils
 
 import (
 	"encoding/csv"
-	"log"
+	"github.com/labstack/gommon/log"
 	"os"
 )
 
-func ReadCsvFile(path string) [][]string {
+func ReadCsvFile(path string) ([][]string, error) {
 	pwd, err := os.Getwd()
 	if err != nil {
-		log.Fatalln("Unable to find current ", err)
+		log.Error("Unable to find current", err)
+		return [][]string{}, err
 	}
 	absPath := pwd + "/" + path
 	f, err := os.Open(absPath)
 	if err != nil {
-		log.Fatalln("Unable to read input file "+path, err)
+		log.Errorf("Unable to read input file %s: %+v", path, err)
+		return [][]string{}, err
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			log.Errorf("Unable to close file %s: %+v", path, err)
+		}
+	}(f)
 
 	csvReader := csv.NewReader(f)
 	records, err := csvReader.ReadAll()
 	if err != nil {
-		log.Fatalln("Unable to parse file as CSV for "+path, err)
+		log.Errorf("Unable to parse file as CSV for %s: %+v", path, err)
+		return [][]string{}, err
 	}
 
-	return records
+	return records, nil
 }

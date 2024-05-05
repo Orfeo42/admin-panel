@@ -1,7 +1,7 @@
 package data
 
 import (
-	"log"
+	"github.com/labstack/gommon/log"
 
 	"github.com/Orfeo42/admin-panel/db"
 	"gorm.io/gorm"
@@ -9,7 +9,7 @@ import (
 
 type Customer struct {
 	gorm.Model
-	Name    string
+	Name    string `gorm:"unique"`
 	Surname string
 	Address string
 	Phone   string
@@ -42,21 +42,24 @@ func CreateCustomer(customer Customer) (Customer, error) {
 }
 
 func CreateCustomerList(customerList []Customer) ([]Customer, error) {
-	result := []Customer{}
+	var result []Customer
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return result, err
 	}
-	dbInstance.Transaction(func(tx *gorm.DB) error {
+	err = dbInstance.Transaction(func(tx *gorm.DB) error {
 		for _, customer := range customerList {
 			if err := tx.Create(&customer).Error; err != nil {
-				log.Fatalln("Error in creating customer!", customer, err)
+				log.Errorf("Error in creating customer %+v: %+v", customer, err)
 				return err
 			}
 			result = append(result, customer)
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return result, nil
 }

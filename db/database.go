@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"log"
+	"github.com/labstack/gommon/log"
 	"os"
 	"sync"
 	"time"
@@ -42,7 +42,7 @@ func isDBCreated() bool {
 
 func createDatabase() error {
 	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		log.New("Gorm: "),
 		logger.Config{
 			SlowThreshold:             time.Second,
 			LogLevel:                  logger.Silent,
@@ -51,8 +51,8 @@ func createDatabase() error {
 			Colorful:                  true,
 		},
 	)
-
-	db, err := gorm.Open(postgres.Open(getConnectionString()), &gorm.Config{Logger: newLogger})
+	connString, err := getConnectionString()
+	db, err := gorm.Open(postgres.Open(connString), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		fmt.Println("Error in db connection")
 		fmt.Println(err.Error())
@@ -62,8 +62,12 @@ func createDatabase() error {
 	return nil
 }
 
-func getConnectionString() string {
-	godotenv.Load()
+func getConnectionString() (string, error) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Error("Error loading .env file", err)
+		return "", err
+	}
 	dbHost := getEnv("POSTGRES_HOST", "127.0.0.1")
 	dbPort := getEnv("POSTGRES_PORT", "5432")
 	dbName := getEnv("POSTGRES_DB", "database")
@@ -71,7 +75,7 @@ func getConnectionString() string {
 	dbPassword := getEnv("POSTGRES_PASSWORD", "password")
 	dbSSLMode := getEnv("POSTGRES_SSLMODE", "disable")
 	uri := fmt.Sprintf("host=%s port=%s dbname=%s sslmode=%s user=%s password=%s", dbHost, dbPort, dbName, dbSSLMode, dbUser, dbPassword)
-	return uri
+	return uri, nil
 }
 
 func getEnv(name, defaultValue string) string {

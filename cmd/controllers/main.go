@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Orfeo42/admin-panel/handlers"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 func main() {
@@ -51,5 +52,8 @@ func main() {
 
 	app.GET("/", handlers.HomeShow)
 
-	app.Start(":8080")
+	err := app.Start(":8080")
+	if err != nil {
+		log.Fatalf("Error Stating application: %+v", err)
+	}
 }

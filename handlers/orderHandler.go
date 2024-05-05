@@ -14,7 +14,7 @@ func OrderListShow(echoCtx echo.Context) error {
 	echoCtx = utils.SetPage(echoCtx, pages.OrderList)
 	echoCtx = utils.SetTitle(echoCtx, "Orders")
 
-	items := []data.Order{}
+	var items []data.Order
 
 	for i := 0; i < 100; i++ {
 		items = append(items, genRandomOrder())

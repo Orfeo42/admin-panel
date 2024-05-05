@@ -1,7 +1,7 @@
 package data
 
 import (
-	"log"
+	"github.com/labstack/gommon/log"
 	"time"
 
 	"github.com/Orfeo42/admin-panel/db"
@@ -12,7 +12,8 @@ type Invoice struct {
 	gorm.Model
 	CustomerID          uint
 	Customer            Customer
-	Number              string
+	Year                int    `gorm:"uniqueIndex:year_number"`
+	Number              string `gorm:"uniqueIndex:year_number"`
 	PaymentMethod       *string
 	Amount              int
 	PaidAmount          int
@@ -66,7 +67,7 @@ type InvoiceResult struct {
 	PageSize int
 }
 
-func GetAllInvoice(fileter InvoiceFilter) ([]Invoice, error) {
+func GetAllInvoice(filter InvoiceFilter) ([]Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return []Invoice{}, err
@@ -75,41 +76,41 @@ func GetAllInvoice(fileter InvoiceFilter) ([]Invoice, error) {
 	var items []Invoice
 	queryDB := dbInstance.Where("")
 
-	if fileter.CustomerID != nil {
-		queryDB.Where("customer_id = ?", *fileter.CustomerID)
+	if filter.CustomerID != nil {
+		queryDB.Where("customer_id = ?", *filter.CustomerID)
 	}
-	if fileter.Number != nil {
-		queryDB.Where("number = ?", *fileter.Number)
+	if filter.Number != nil {
+		queryDB.Where("number = ?", *filter.Number)
 	}
-	if fileter.DateFrom != nil {
-		queryDB.Where("date >= ?", *fileter.DateFrom)
+	if filter.DateFrom != nil {
+		queryDB.Where("date >= ?", *filter.DateFrom)
 	}
-	if fileter.DateTo != nil {
-		queryDB.Where("date <= ?", *fileter.DateTo)
+	if filter.DateTo != nil {
+		queryDB.Where("date <= ?", *filter.DateTo)
 	}
-	if fileter.PaymentDateFrom != nil {
-		queryDB.Where("payment_date >= ?", *fileter.PaymentDateFrom)
+	if filter.PaymentDateFrom != nil {
+		queryDB.Where("payment_date >= ?", *filter.PaymentDateFrom)
 	}
-	if fileter.PaymentDateTo != nil {
-		queryDB.Where("payment_date <= ?", *fileter.PaymentDateTo)
+	if filter.PaymentDateTo != nil {
+		queryDB.Where("payment_date <= ?", *filter.PaymentDateTo)
 	}
-	if fileter.AmountFrom != nil {
-		queryDB.Where("amount >= ?", *fileter.AmountFrom)
+	if filter.AmountFrom != nil {
+		queryDB.Where("amount >= ?", *filter.AmountFrom)
 	}
-	if fileter.AmountTo != nil {
-		queryDB.Where("amount <= ?", *fileter.AmountTo)
+	if filter.AmountTo != nil {
+		queryDB.Where("amount <= ?", *filter.AmountTo)
 	}
-	if fileter.PaidAmountFrom != nil {
-		queryDB.Where("paid_amount >= ?", *fileter.PaidAmountFrom)
+	if filter.PaidAmountFrom != nil {
+		queryDB.Where("paid_amount >= ?", *filter.PaidAmountFrom)
 	}
-	if fileter.PaidAmountTo != nil {
-		queryDB.Where("paid_amount <= ?", *fileter.PaidAmountTo)
+	if filter.PaidAmountTo != nil {
+		queryDB.Where("paid_amount <= ?", *filter.PaidAmountTo)
 	}
-	if fileter.IsPaid != nil {
-		if *fileter.IsPaid {
+	if filter.IsPaid != nil {
+		if *filter.IsPaid {
 			queryDB.Where("amount = paid_amount")
 		}
-		if !*fileter.IsPaid {
+		if !*filter.IsPaid {
 			queryDB.Where("amount <> paid_amount")
 		}
 	}
@@ -131,21 +132,24 @@ func CreateInvoice(invoice Invoice) (Invoice, error) {
 }
 
 func CreateInvoiceList(invoiceList []Invoice) ([]Invoice, error) {
-	result := []Invoice{}
+	var result []Invoice
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return result, err
 	}
-	dbInstance.Transaction(func(tx *gorm.DB) error {
+	err = dbInstance.Transaction(func(tx *gorm.DB) error {
 		for _, invoice := range invoiceList {
 			if err := tx.Create(&invoice).Error; err != nil {
-				log.Fatalln("Error in creating invoice!", invoice, err)
+				log.Errorf("Error in creating invoice %+v: %+v", invoice, err)
 				return err
 			}
 			result = append(result, invoice)
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return result, nil
 }
