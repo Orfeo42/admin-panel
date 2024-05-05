@@ -8,7 +8,7 @@ import (
 
 func LoadData(customerList *[]data.Customer, invoiceList *[]data.Invoice) {
 	log.Info("Start creating customers")
-	_, err := initializeCustomersData(customerList)
+	customerList, err := initializeCustomersData(customerList)
 	if err != nil {
 		log.Fatalf("Error Creating customers")
 		return
@@ -45,11 +45,11 @@ func SchemaUpdate() error {
 	return nil
 }
 
-func initializeCustomersData(customerList *[]data.Customer) ([]data.Customer, error) {
+func initializeCustomersData(customerList *[]data.Customer) (*[]data.Customer, error) {
 	return data.CreateCustomerList(customerList)
 }
 
-func initializeInvoiceData(invoiceList *[]data.Invoice) ([]data.Invoice, error) {
+func initializeInvoiceData(invoiceList *[]data.Invoice) (*[]data.Invoice, error) {
 	return data.CreateInvoiceList(invoiceList)
 
 }

@@ -131,12 +131,12 @@ func CreateInvoice(invoice Invoice) (Invoice, error) {
 	return invoice, result.Error
 }
 
-func CreateInvoiceList(invoiceList *[]Invoice) ([]Invoice, error) {
-	var result []Invoice
+func CreateInvoiceList(invoiceList *[]Invoice) (*[]Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
-		return result, err
+		return nil, err
 	}
+	var result []Invoice
 	err = dbInstance.Transaction(func(tx *gorm.DB) error {
 		for _, invoice := range *invoiceList {
 			if err := tx.Create(&invoice).Error; err != nil {
@@ -151,5 +151,5 @@ func CreateInvoiceList(invoiceList *[]Invoice) ([]Invoice, error) {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }

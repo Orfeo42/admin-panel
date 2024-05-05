@@ -56,7 +56,7 @@ func ValidateInvoiceCsv(customers *[]data.Customer) (*[]data.Invoice, error) {
 	log.Info("Starting validating invoice 2022")
 	invList2022, err := validateInvoiceSingleCsv("resources/invoices - 2022.csv", customers)
 	if err != nil {
-		log.Infof("Error in adding 2022 invoices")
+		log.Info("Error in adding 2022 invoices")
 		return nil, err
 	}
 	invList = append(invList, invList2022...)
@@ -107,9 +107,12 @@ func csvRowToInvoice(row []string, customers *[]data.Customer) (data.Invoice, er
 	if err != nil {
 		return data.Invoice{}, err
 	}
+	date := parseDate(row[1])
+	year := date.Year()
 	return data.Invoice{
 		Customer:            customer,
-		Date:                parseDate(row[1]),
+		Date:                date,
+		Year:                year,
 		Number:              row[2],
 		Amount:              parseAmount(row[3]),
 		PaidAmount:          parseAmount(row[4]),
