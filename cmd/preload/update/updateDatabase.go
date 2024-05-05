@@ -1,22 +1,21 @@
 package update
 
 import (
-	"github.com/Orfeo42/admin-panel/cmd/preload/validation"
 	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/db"
 	"github.com/labstack/gommon/log"
 )
 
-func LoadData() {
+func LoadData(customerList *[]data.Customer, invoiceList *[]data.Invoice) {
 	log.Info("Start creating customers")
-	customers, err := initializeCustomersData()
+	_, err := initializeCustomersData(customerList)
 	if err != nil {
 		log.Fatalf("Error Creating customers")
 		return
 	}
 	log.Info("All customers are created")
 	log.Info("Start creating Invoices")
-	_, err = initializeInvoiceData(customers)
+	_, err = initializeInvoiceData(invoiceList)
 	if err != nil {
 		log.Fatalf("Error creating Invoices")
 		return
@@ -46,16 +45,11 @@ func SchemaUpdate() error {
 	return nil
 }
 
-func initializeCustomersData() ([]data.Customer, error) {
-	return data.CreateCustomerList(validation.ValidateCustomersCsv())
+func initializeCustomersData(customerList *[]data.Customer) ([]data.Customer, error) {
+	return data.CreateCustomerList(customerList)
 }
 
-func initializeInvoiceData(customers []data.Customer) ([]data.Invoice, error) {
-	invoices, err := validation.ValidateInvoiceCsv(customers)
-	if err != nil {
-		log.Fatalf("Error validation invoices")
-		return nil, err
-	}
-	return data.CreateInvoiceList(invoices)
+func initializeInvoiceData(invoiceList *[]data.Invoice) ([]data.Invoice, error) {
+	return data.CreateInvoiceList(invoiceList)
 
 }

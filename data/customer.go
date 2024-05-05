@@ -41,14 +41,14 @@ func CreateCustomer(customer Customer) (Customer, error) {
 	return customer, result.Error
 }
 
-func CreateCustomerList(customerList []Customer) ([]Customer, error) {
+func CreateCustomerList(customerList *[]Customer) ([]Customer, error) {
 	var result []Customer
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return result, err
 	}
 	err = dbInstance.Transaction(func(tx *gorm.DB) error {
-		for _, customer := range customerList {
+		for _, customer := range *customerList {
 			if err := tx.Create(&customer).Error; err != nil {
 				log.Errorf("Error in creating customer %+v: %+v", customer, err)
 				return err

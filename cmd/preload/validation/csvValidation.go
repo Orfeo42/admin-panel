@@ -11,23 +11,27 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func ValidateCsv() error {
+func ValidateCsv() (*[]data.Customer, *[]data.Invoice, error) {
 	log.Info("Start validating csv")
-	customerList := ValidateCustomersCsv()
-	_, err := ValidateInvoiceCsv(customerList)
+	customerList, err := ValidateCustomersCsv()
 	if err != nil {
 		log.Error("Error validating csv: ", err)
-		return err
+		return nil, nil, err
 	}
-	return nil
+	invoiceList, err := ValidateInvoiceCsv(customerList)
+	if err != nil {
+		log.Error("Error validating csv: ", err)
+		return nil, nil, err
+	}
+	return customerList, invoiceList, nil
 }
 
-func ValidateCustomersCsv() []data.Customer {
+func ValidateCustomersCsv() (*[]data.Customer, error) {
 	var customerList []data.Customer
 
 	csvData, err := utils.ReadCsvFile("resources/customers.csv")
 	if err != nil {
-		return customerList
+		return nil, err
 	}
 	for number, row := range csvData {
 		if number == 0 {
@@ -36,7 +40,7 @@ func ValidateCustomersCsv() []data.Customer {
 		customerList = append(customerList, csvRowToCustomer(row))
 	}
 
-	return customerList
+	return &customerList, nil
 }
 
 func csvRowToCustomer(row []string) data.Customer {
@@ -45,7 +49,7 @@ func csvRowToCustomer(row []string) data.Customer {
 	}
 }
 
-func ValidateInvoiceCsv(customers []data.Customer) ([]data.Invoice, error) {
+func ValidateInvoiceCsv(customers *[]data.Customer) (*[]data.Invoice, error) {
 
 	var invList []data.Invoice
 
@@ -73,10 +77,10 @@ func ValidateInvoiceCsv(customers []data.Customer) ([]data.Invoice, error) {
 	}
 	invList = append(invList, invList2024...)
 
-	return invList, nil
+	return &invList, nil
 }
 
-func validateInvoiceSingleCsv(csvPath string, customers []data.Customer) ([]data.Invoice, error) {
+func validateInvoiceSingleCsv(csvPath string, customers *[]data.Customer) ([]data.Invoice, error) {
 
 	var invList []data.Invoice
 
@@ -98,7 +102,7 @@ func validateInvoiceSingleCsv(csvPath string, customers []data.Customer) ([]data
 	return invList, nil
 }
 
-func csvRowToInvoice(row []string, customers []data.Customer) (data.Invoice, error) {
+func csvRowToInvoice(row []string, customers *[]data.Customer) (data.Invoice, error) {
 	customer, err := findCustomerFromName(customers, row[0])
 	if err != nil {
 		return data.Invoice{}, err
@@ -116,8 +120,8 @@ func csvRowToInvoice(row []string, customers []data.Customer) (data.Invoice, err
 	}, nil
 }
 
-func findCustomerFromName(customers []data.Customer, name string) (data.Customer, error) {
-	for _, customer := range customers {
+func findCustomerFromName(customers *[]data.Customer, name string) (data.Customer, error) {
+	for _, customer := range *customers {
 		if customer.Name == name {
 			return customer, nil
 		}
@@ -132,7 +136,7 @@ func parseDate(date string) *time.Time {
 	}
 	parsedDate, err := time.Parse("02/01/2006", date)
 	if err != nil {
-		log.Info("Data non parsata:", date)
+		log.Info("Date not parsable:", date)
 		return nil
 	}
 	return &parsedDate
@@ -145,7 +149,7 @@ func parseAmount(amount string) int {
 	amount = strings.Replace(amount, ",", ".", -1)
 	parsedAmount, err := strconv.ParseFloat(strings.TrimSpace(amount), 64)
 	if err != nil {
-		log.Info("Importo non parsato:", amount)
+		log.Info("Amount not parsable:", amount)
 		return 0
 	}
 	return int(parsedAmount * 100)
