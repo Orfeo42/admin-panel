@@ -153,3 +153,22 @@ func CreateInvoiceList(invoiceList *[]Invoice) (*[]Invoice, error) {
 
 	return &result, nil
 }
+
+func CreateInvoiceListNoTransaction(invoiceList *[]Invoice) (*[]Invoice, error) {
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return nil, err
+	}
+	var result []Invoice
+	for _, invoice := range *invoiceList {
+		if err := dbInstance.Create(&invoice).Error; err != nil {
+			log.Errorf("Error in creating invoice %+v: %+v", invoice, err)
+			continue
+		}
+		result = append(result, invoice)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}

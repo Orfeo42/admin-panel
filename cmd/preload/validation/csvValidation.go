@@ -80,7 +80,7 @@ func ValidateInvoiceCsv(customers *[]data.Customer) (*[]data.Invoice, error) {
 	return &invList, nil
 }
 
-func validateInvoiceSingleCsv(csvPath string, customers *[]data.Customer) ([]data.Invoice, error) {
+func validateInvoiceSingleCsv(csvPath string, customerList *[]data.Customer) ([]data.Invoice, error) {
 
 	var invList []data.Invoice
 
@@ -92,7 +92,7 @@ func validateInvoiceSingleCsv(csvPath string, customers *[]data.Customer) ([]dat
 		if number == 0 {
 			continue
 		}
-		invoice, err := csvRowToInvoice(row, customers)
+		invoice, err := csvRowToInvoice(row, customerList)
 		if err != nil {
 			log.Errorf("Error in converting csv to invoice in row %d: %+v", number, err)
 		}
@@ -102,8 +102,8 @@ func validateInvoiceSingleCsv(csvPath string, customers *[]data.Customer) ([]dat
 	return invList, nil
 }
 
-func csvRowToInvoice(row []string, customers *[]data.Customer) (data.Invoice, error) {
-	customer, err := findCustomerFromName(customers, row[0])
+func csvRowToInvoice(row []string, customerList *[]data.Customer) (data.Invoice, error) {
+	customer, err := FindCustomerFromName(customerList, row[0])
 	if err != nil {
 		return data.Invoice{}, err
 	}
@@ -123,7 +123,7 @@ func csvRowToInvoice(row []string, customers *[]data.Customer) (data.Invoice, er
 	}, nil
 }
 
-func findCustomerFromName(customers *[]data.Customer, name string) (data.Customer, error) {
+func FindCustomerFromName(customers *[]data.Customer, name string) (data.Customer, error) {
 	for _, customer := range *customers {
 		if customer.Name == name {
 			return customer, nil
