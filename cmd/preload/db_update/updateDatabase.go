@@ -1,4 +1,4 @@
-package update
+package db_update
 
 import (
 	"github.com/Orfeo42/admin-panel/cmd/preload/validation"
