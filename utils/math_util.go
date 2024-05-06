@@ -1,10 +1,24 @@
 package utils
 
 import (
+	"github.com/labstack/gommon/log"
 	"strconv"
 	"strings"
 	"time"
 )
+
+func ParseAmount(amount string) int {
+	if amount == "" {
+		return 0
+	}
+	amount = strings.Replace(amount, ",", ".", -1)
+	parsedAmount, err := strconv.ParseFloat(strings.TrimSpace(amount), 64)
+	if err != nil {
+		log.Info("Amount not parsable:", amount)
+		return 0
+	}
+	return int(parsedAmount * 100)
+}
 
 func FormatAmount(amount int) string {
 	result := float64(amount) / 100

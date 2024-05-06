@@ -12,8 +12,8 @@ type Invoice struct {
 	gorm.Model
 	CustomerID          uint
 	Customer            Customer
-	Year                int    `gorm:"uniqueIndex:year_number"`
-	Number              string `gorm:"uniqueIndex:year_number"`
+	Year                int    //`gorm:"uniqueIndex:year_number"`
+	Number              string //`gorm:"uniqueIndex:year_number"`
 	PaymentMethod       *string
 	Amount              int
 	PaidAmount          int

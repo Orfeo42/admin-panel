@@ -21,11 +21,13 @@ func LoadData(customerList *[]data.Customer, invoiceList *[]data.Invoice) {
 	for number, invoice := range *invoiceList {
 		customer, err := validation.FindCustomerFromName(customerList, invoice.Customer.Name)
 		if err != nil {
+			log.Errorf("Error Finding Customer from Name with name %s: %+v", invoice.Customer.Name, err)
 			continue
 		}
 		invoice.Customer = customer
 		(*invoiceList)[number] = invoice
 	}
+	log.Info("End of customer assignation")
 	_, err = initializeInvoiceData(invoiceList)
 	if err != nil {
 		log.Error("Error creating Invoices", err)

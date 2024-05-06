@@ -1,7 +1,10 @@
 package main
 
-func main() {
+import "github.com/Orfeo42/admin-panel/cmd/preload/validation"
 
+func main() {
+	excelFileName := "resources/Prima Nota.xlsx"
+	validation.ReadExcel(excelFileName)
 	/*csvData := utils.ReadCsvFile("../preload/resources/invoices.csv")
 	//result := []data.Invoice{}
 	for number, row := range csvData {

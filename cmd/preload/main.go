@@ -12,7 +12,7 @@ func main() {
 		log.Error("Error Updating Schema: %v", err)
 		return
 	}
-	customerList, invoiceList, err := validation.ValidateCsv()
+	customerList, invoiceList, err := validation.ValidateExcel()
 	if err != nil {
 		return
 	}
