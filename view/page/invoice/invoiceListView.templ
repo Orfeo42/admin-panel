@@ -64,7 +64,7 @@ templ InvoiceListView(items []data.Invoice, filter data.InvoiceFilter) {
 				</div>
 				<div class="form-row">
 					<div class="form-group col-md-3">
-						@component.FormInput(component.FormInputParam{Id: "amount", Name: "amountFrom", Description: "Amount From", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountFrom)})
+						@component.FormInput(component.FormInputParam{Id: "amountFrom", Name: "amountFrom", Description: "Amount From", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountFrom)})
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "amountTo", Name: "amountTo", Description: "Amount To", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountTo)})

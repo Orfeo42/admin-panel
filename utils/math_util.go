@@ -111,3 +111,8 @@ func FormatUintToFormString(valueFrom *uint) string {
 	u64 := uint64(*valueFrom)
 	return strconv.FormatUint(u64, 10)
 }
+
+func UintToString(valueFrom uint) string {
+	u64 := uint64(valueFrom)
+	return strconv.FormatUint(u64, 10)
+}

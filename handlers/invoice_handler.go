@@ -73,7 +73,7 @@ func InvoiceAdd(echoCtx echo.Context) error {
 	input := data.Invoice{
 		CustomerID:          0,
 		Year:                2022,
-		Number:              echoCtx.FormValue("address"),
+		Number:              "",
 		PaymentMethod:       nil,
 		Amount:              0,
 		PaidAmount:          0,
