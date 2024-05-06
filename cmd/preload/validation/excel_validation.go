@@ -59,6 +59,10 @@ func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
 				if customerName == "" {
 					continue
 				}
+				invoiceNumber := row.Cells[2].String()
+				if invoiceNumber == "" {
+					continue
+				}
 				invoice := excelRowToInvoice(row.Cells)
 				if invoice == nil {
 					continue
