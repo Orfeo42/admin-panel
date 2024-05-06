@@ -12,22 +12,6 @@ import (
 const customerSheetName = "Totale per Cliente"
 const excelFilePath = "resources/Prima Nota.xlsx"
 
-/*
-func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
-	log.Info("Start validating Excel")
-	customerList, err := ValidateCustomersCsv()
-	if err != nil {
-		log.Error("Error validating csv: ", err)
-		return nil, nil, err
-	}
-	invoiceList, err := ValidateInvoiceCsv()
-	if err != nil {
-		log.Error("Error validating csv: ", err)
-		return nil, nil, err
-	}
-	return customerList, invoiceList, nil
-}*/
-
 func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
 	xlFile, err := xlsx.OpenFile(excelFilePath)
 	if err != nil {
@@ -109,7 +93,6 @@ func getNote(cells []*xlsx.Cell) *string {
 func getDateFromExcel(cell *xlsx.Cell) *time.Time {
 	dateValue, err := cell.GetTime(false)
 	if err != nil {
-		//log.Errorf("Errore conversione data fattura: %+v", err)
 		return nil
 	}
 	return &dateValue
