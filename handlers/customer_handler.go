@@ -41,3 +41,7 @@ func CustomerAdd(echoCtx echo.Context) error {
 
 	return utils.Render(customer.CustomerForm(result), echoCtx)
 }
+
+func ShowModal(echoCtx echo.Context) error {
+	return utils.Render(customer.CustomerModal(), echoCtx)
+}

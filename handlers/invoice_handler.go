@@ -1,14 +1,11 @@
 package handlers
 
 import (
-	"encoding/json"
-
 	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/invoice"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 func InvoiceListShow(echoCtx echo.Context) error {
@@ -71,15 +68,25 @@ func InvoiceShow(echoCtx echo.Context) error {
 	return utils.Render(invoice.InvoiceView(data.Invoice{}), echoCtx)
 }
 
-func GetJSONRawBody(c echo.Context) map[string]interface{} {
+func InvoiceAdd(echoCtx echo.Context) error {
 
-	jsonBody := make(map[string]interface{})
-	err := json.NewDecoder(c.Request().Body).Decode(&jsonBody)
+	input := data.Invoice{
+		CustomerID:          0,
+		Year:                2022,
+		Number:              echoCtx.FormValue("address"),
+		PaymentMethod:       nil,
+		Amount:              0,
+		PaidAmount:          0,
+		Date:                nil,
+		PaymentDate:         nil,
+		ExpectedPaymentDate: nil,
+		Rows:                nil,
+		Note:                nil,
+	}
+	result, err := data.CreateInvoice(input)
 	if err != nil {
-
-		log.Error("empty json body")
-		return nil
+		return err
 	}
 
-	return jsonBody
+	return utils.Render(invoice.InvoiceForm(result), echoCtx)
 }

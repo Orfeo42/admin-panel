@@ -24,6 +24,8 @@ func main() {
 
 	customerGroup.POST("", handlers.CustomerAdd)
 
+	customerGroup.GET("/modal", handlers.ShowModal)
+
 	/*----------
 	  Invoice Group
 	------------*/
@@ -35,6 +37,8 @@ func main() {
 	invoiceGroup.GET("/filter", handlers.InvoiceFilter)
 
 	invoiceGroup.GET("/add", handlers.InvoiceShow)
+
+	customerGroup.POST("", handlers.InvoiceAdd)
 
 	/*----------
 	  Order Group

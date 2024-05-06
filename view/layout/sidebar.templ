@@ -73,10 +73,7 @@ func isSubItemActive(ctx context.Context, items []dropDownItemParams) bool {
 
 templ navItem(url string, page pages.Page) {
 	<li class={ "nav-item", templ.KV("active", isActive(ctx, page)) }>
-		<a
-			class={ "nav-link" }
-			href={ templ.SafeURL(url) }
-		>
+		<a class={ "nav-link" } href={ templ.SafeURL(url) }>
 			{ children... }
 		</a>
 	</li>

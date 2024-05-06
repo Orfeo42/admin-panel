@@ -6,6 +6,7 @@ require (
 	github.com/a-h/templ v0.2.663
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
+	github.com/tealeg/xlsx v1.0.5
 )
 
 require (
@@ -14,7 +15,7 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/tealeg/xlsx v1.0.5 // indirect
+	github.com/rogpeppe/go-internal v1.12.0 // indirect
 )
 
 require (

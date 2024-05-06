@@ -8,7 +8,35 @@ import (
 templ CustomerListView(items []data.Customer) {
 	@layout.TableView() {
 		<!-- Page Heading -->
-		<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
+		<div class="row">
+			<div class="col-xl-6 col-md-6 mb-4">
+		        <h1 class="h3 mb-2 text-gray-800">Customer List</h1>
+		    </div>
+			<div class="col-xl-6 col-md-6 mb-4" style="text-align: right;">
+                <button type="submit" class="btn btn-primary" hx-get="/customer/add" hx-target="body" hx-replace-url="true">
+                    <i class="fas fa-fw fa-plus"></i>
+                    Add new
+                </button>
+            </div>
+        </div>
+        <button
+            hx-get="/customer/modal"
+            hx-target="#modals-here"
+            hx-trigger="click"
+            data-bs-toggle="modal"
+            data-bs-target="#modals-here"
+            class="btn btn-primary">Open Modal</button>
+        <div id="modals-here"
+            class="modal modal-blur fade"
+            style="display: none"
+            aria-hidden="false"
+            tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
+
 		<!-- DataTales Example -->
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
@@ -26,15 +54,6 @@ templ CustomerListView(items []data.Customer) {
 								<th>Email</th>
 							</tr>
 						</thead>
-						<tfoot>
-							<tr>
-								<th>Name</th>
-								<th>Surname</th>
-								<th>Address</th>
-								<th>Phone</th>
-								<th>Email</th>
-							</tr>
-						</tfoot>
 						<tbody>
 							@AllCustomerRowsShow(items)
 						</tbody>
