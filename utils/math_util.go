@@ -72,15 +72,6 @@ func StringToString(valueFrom string) *string {
 	return &valueFrom
 }
 
-const tableDateFormat = "02-01-2006"
-
-func FormatTimeToTable(valueFrom *time.Time) string {
-	if valueFrom == nil {
-		return ""
-	}
-	return valueFrom.Format(tableDateFormat)
-}
-
 func FormatStringToForm(valueFrom *string) string {
 	if valueFrom == nil {
 		return ""
@@ -99,8 +90,7 @@ func FormatUintToFormString(valueFrom *uint) string {
 	if valueFrom == nil {
 		return ""
 	}
-	u64 := uint64(*valueFrom)
-	return strconv.FormatUint(u64, 10)
+	return UintToString(*valueFrom)
 }
 
 func UintToString(valueFrom uint) string {

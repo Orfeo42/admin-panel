@@ -26,10 +26,10 @@ templ InvoiceForm(item data.Invoice) {
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "date", Name: "date", Description: "Date", FormType: component.Date, Value: utils.FormatTimeToForm(item.Date)})
+                    @component.FormInput(component.FormInputParam{Id: "date", Name: "date", Description: "Date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
                 </div>
                 <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "paymentDate", Name: "paymentDate", Description: "Payment Date", FormType: component.Date, Value: utils.FormatTimeToForm(item.PaymentDate)})
+                    @component.FormInput(component.FormInputParam{Id: "paymentDate", Name: "paymentDate", Description: "Payment Date", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
                 </div>
             </div>
             <div class="form-row">

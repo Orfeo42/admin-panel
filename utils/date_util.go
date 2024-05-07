@@ -5,11 +5,15 @@ import (
 	"time"
 )
 
+const formDateFormat = "2006-01-02"
+const dateFormat = "02-01-2006"
+const parseDateFormat = "02/01/2006"
+
 func ParseDate(date string) *time.Time {
 	if date == "" {
 		return nil
 	}
-	parsedDate, err := time.Parse("02/01/2006", date)
+	parsedDate, err := time.Parse(parseDateFormat, date)
 	if err != nil {
 		log.Info("Date not parsable:", date)
 		return nil
@@ -17,21 +21,24 @@ func ParseDate(date string) *time.Time {
 	return &parsedDate
 }
 
-func FormatTimeToForm(valueFrom *time.Time) string {
+func FormatTimePToForm(valueFrom *time.Time) string {
 	if valueFrom == nil {
 		return ""
 	}
-	return DateToString(*valueFrom)
+	return FormatTimeToForm(*valueFrom)
 }
 
-const formDateFormat = "2006-01-02"
-
-func FormDateToString(valueFrom time.Time) string {
+func FormatTimeToForm(valueFrom time.Time) string {
 	return valueFrom.Format(formDateFormat)
 }
 
-const DateFormat = "02-01-2006"
+func FormatTimePToTable(valueFrom *time.Time) string {
+	if valueFrom == nil {
+		return ""
+	}
+	return valueFrom.Format(dateFormat)
+}
 
-func DateToString(valueFrom time.Time) string {
-	return valueFrom.Format(DateFormat)
+func FormatTimeToTable(valueFrom time.Time) string {
+	return valueFrom.Format(dateFormat)
 }

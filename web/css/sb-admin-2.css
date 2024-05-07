@@ -1498,6 +1498,7 @@ pre code {
 .table thead th {
   vertical-align: bottom;
   border-bottom: 2px solid #e3e6f0;
+  white-space: nowrap;
 }
 
 .table tbody + tbody {

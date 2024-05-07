@@ -62,7 +62,7 @@ func excelRowToInvoice(row []*xlsx.Cell) *data.Invoice {
 	}
 	invoiceNumber := row[2].String()
 	if invoiceNumber == "" {
-		invoiceNumber = "Cassa del: " + utils.DateToString(*date)
+		invoiceNumber = "Cassa del: " + utils.FormatTimeToString(*date)
 	}
 	year := date.Year()
 	paymentDate := getDateFromExcel(row[5])

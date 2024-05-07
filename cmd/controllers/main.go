@@ -1,7 +1,10 @@
 package main
 
 import (
-	"github.com/Orfeo42/admin-panel/handlers"
+	"github.com/Orfeo42/admin-panel/controllers"
+	"github.com/Orfeo42/admin-panel/enum/pages"
+	"github.com/Orfeo42/admin-panel/utils"
+	"github.com/Orfeo42/admin-panel/view/page/home"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -12,49 +15,17 @@ func main() {
 
 	app.Static("/", "web")
 
-	/*----------
-	  Customer Group
-	------------*/
+	controllers.CustomerController(app)
 
-	customerGroup := app.Group("/customer")
+	controllers.InvoiceController(app)
 
-	customerGroup.GET("/list", handlers.CustomerListShow)
+	controllers.OrderController(app)
 
-	customerGroup.GET("/add", handlers.CustomerShow)
-
-	customerGroup.POST("", handlers.CustomerAdd)
-
-	customerGroup.GET("/modal", handlers.ShowModal)
-
-	/*----------
-	  Invoice Group
-	------------*/
-
-	invoiceGroup := app.Group("/invoice")
-
-	invoiceGroup.GET("/list", handlers.InvoiceListShow)
-
-	invoiceGroup.GET("/filter", handlers.InvoiceFilter)
-
-	invoiceGroup.GET("/add", handlers.InvoiceShow)
-
-	customerGroup.POST("", handlers.InvoiceAdd)
-
-	/*----------
-	  Order Group
-	------------*/
-
-	orderGroup := app.Group("/order")
-
-	orderGroup.GET("/list", handlers.OrderListShow)
-
-	orderGroup.GET("/add", handlers.OrderShow)
-
-	/*----------
-	  Other
-	------------*/
-
-	app.GET("/", handlers.HomeShow)
+	app.GET("/", func(echoCtx echo.Context) error {
+		echoCtx = utils.SetPage(echoCtx, pages.Home)
+		echoCtx = utils.SetTitle(echoCtx, "Home Page")
+		return utils.Render(home.HomeView(), echoCtx)
+	})
 
 	err := app.Start(":8080")
 	if err != nil {

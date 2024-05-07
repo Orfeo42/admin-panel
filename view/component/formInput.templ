@@ -20,6 +20,9 @@ type FormInputParam struct {
 
 templ FormInput(params FormInputParam) {
 	<label for={ params.Id }>{ params.Description }</label>
+    @Input(params)
+}
+templ Input(params FormInputParam) {
 	<input
 		class="form-control"
 		type={ string(params.FormType) }
