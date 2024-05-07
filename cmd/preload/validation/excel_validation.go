@@ -43,10 +43,6 @@ func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
 				if customerName == "" {
 					continue
 				}
-				invoiceNumber := row.Cells[2].String()
-				if invoiceNumber == "" {
-					continue
-				}
 				invoice := excelRowToInvoice(row.Cells)
 				if invoice == nil {
 					continue
@@ -64,6 +60,10 @@ func excelRowToInvoice(row []*xlsx.Cell) *data.Invoice {
 	if date == nil {
 		return nil
 	}
+	invoiceNumber := row[2].String()
+	if invoiceNumber == "" {
+		invoiceNumber = "Cassa del: " + utils.DateToString(*date)
+	}
 	year := date.Year()
 	paymentDate := getDateFromExcel(row[5])
 	expectedPaymentDate := getDateFromExcel(row[7])
@@ -72,7 +72,7 @@ func excelRowToInvoice(row []*xlsx.Cell) *data.Invoice {
 		Customer:            data.Customer{Name: row[0].String()},
 		Date:                date,
 		Year:                year,
-		Number:              row[2].String(),
+		Number:              invoiceNumber,
 		Amount:              utils.ParseAmount(row[3].Value),
 		PaidAmount:          utils.ParseAmount(row[4].Value),
 		PaymentDate:         paymentDate,

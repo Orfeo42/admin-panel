@@ -16,3 +16,16 @@ func ParseDate(date string) *time.Time {
 	}
 	return &parsedDate
 }
+
+func FormatTimeToForm(valueFrom *time.Time) string {
+	if valueFrom == nil {
+		return ""
+	}
+	return DateToString(*valueFrom)
+}
+
+const formDateFormat = "2006-01-02"
+
+func DateToString(valueFrom time.Time) string {
+	return valueFrom.Format(formDateFormat)
+}

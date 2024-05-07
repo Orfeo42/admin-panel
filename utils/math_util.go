@@ -72,15 +72,6 @@ func StringToString(valueFrom string) *string {
 	return &valueFrom
 }
 
-const formDateFormat = "2006-01-02"
-
-func FormatTimeToForm(valueFrom *time.Time) string {
-	if valueFrom == nil {
-		return ""
-	}
-	return valueFrom.Format(formDateFormat)
-}
-
 const tableDateFormat = "02-01-2006"
 
 func FormatTimeToTable(valueFrom *time.Time) string {
