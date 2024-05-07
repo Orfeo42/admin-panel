@@ -26,6 +26,12 @@ func FormatTimeToForm(valueFrom *time.Time) string {
 
 const formDateFormat = "2006-01-02"
 
-func DateToString(valueFrom time.Time) string {
+func FormDateToString(valueFrom time.Time) string {
 	return valueFrom.Format(formDateFormat)
+}
+
+const DateFormat = "02-01-2006"
+
+func DateToString(valueFrom time.Time) string {
+	return valueFrom.Format(DateFormat)
 }
