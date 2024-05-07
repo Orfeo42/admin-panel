@@ -25,7 +25,20 @@ func InvoiceController(application *echo.Echo) {
 	})
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
-		filter := getFilterFromRequest(echoCtx)
+		filter := repositories.InvoiceFilter{
+			CustomerID:      utils.StringToUint(echoCtx.FormValue("customer")),
+			Number:          utils.StringToString(echoCtx.FormValue("number")),
+			DateFrom:        utils.StringToTime(echoCtx.FormValue("dateFrom")),
+			DateTo:          utils.StringToTime(echoCtx.FormValue("dateTo")),
+			PaymentDateFrom: utils.StringToTime(echoCtx.FormValue("paymentDateFrom")),
+			PaymentDateTo:   utils.StringToTime(echoCtx.FormValue("paymentDateTo")),
+			AmountFrom:      utils.StringToInt(echoCtx.FormValue("amountFrom")),
+			AmountTo:        utils.StringToInt(echoCtx.FormValue("amountTo")),
+			PaidAmountFrom:  utils.StringToInt(echoCtx.FormValue("paidAmountFrom")),
+			PaidAmountTo:    utils.StringToInt(echoCtx.FormValue("paidAmountTo")),
+			IsPaid:          isPaidToBool(echoCtx.FormValue("isPaid")),
+		}
+
 		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
@@ -69,8 +82,32 @@ func InvoiceController(application *echo.Echo) {
 		if err != nil {
 			return err
 		}
+		number := echoCtx.FormValue("number")
+		date := utils.StringToTime(echoCtx.FormValue("date"))
+		paymentDate := utils.StringToTime(echoCtx.FormValue("paymentDate"))
+		amount := utils.StringToInt(echoCtx.FormValue("amount"))
+		paidAmount := utils.StringToInt(echoCtx.FormValue("paidAmount"))
 
-		return utils.Render(invoice.InvoiceRowEdit(*inv), echoCtx)
+		inv.Number = number
+		inv.Date = date
+		inv.PaymentDate = paymentDate
+		zero := 0
+		if amount == nil {
+			amount = &zero
+		}
+		inv.Amount = *amount
+
+		if paidAmount == nil {
+			paidAmount = &zero
+		}
+		inv.PaidAmount = *paidAmount
+
+		updateInvoice, err := repositories.UpdateInvoice(*inv)
+		if err != nil {
+			return err
+		}
+
+		return utils.Render(invoice.InvoiceRowShow(updateInvoice), echoCtx)
 	})
 
 	invoiceGroup.POST("", func(echoCtx echo.Context) error {
@@ -95,24 +132,6 @@ func InvoiceController(application *echo.Echo) {
 
 		return utils.Render(invoice.InvoiceForm(result), echoCtx)
 	})
-}
-
-func getFilterFromRequest(echoCtx echo.Context) repositories.InvoiceFilter {
-	result := repositories.InvoiceFilter{
-		CustomerID:      utils.StringToUint(echoCtx.FormValue("customer")),
-		Number:          utils.StringToString(echoCtx.FormValue("number")),
-		DateFrom:        utils.StringToTime(echoCtx.FormValue("dateFrom")),
-		DateTo:          utils.StringToTime(echoCtx.FormValue("dateTo")),
-		PaymentDateFrom: utils.StringToTime(echoCtx.FormValue("paymentDateFrom")),
-		PaymentDateTo:   utils.StringToTime(echoCtx.FormValue("paymentDateTo")),
-		AmountFrom:      utils.StringToInt(echoCtx.FormValue("amountFrom")),
-		AmountTo:        utils.StringToInt(echoCtx.FormValue("amountTo")),
-		PaidAmountFrom:  utils.StringToInt(echoCtx.FormValue("paidAmountFrom")),
-		PaidAmountTo:    utils.StringToInt(echoCtx.FormValue("paidAmountTo")),
-		IsPaid:          isPaidToBool(echoCtx.FormValue("isPaid")),
-	}
-
-	return result
 }
 
 func isPaidToBool(valueFrom string) *bool {

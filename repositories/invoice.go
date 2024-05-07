@@ -75,7 +75,7 @@ func GetAllInvoice(filter InvoiceFilter) ([]Invoice, error) {
 
 	var items []Invoice
 	queryDB := dbInstance.Order("date desc, number desc")
-
+	queryDB.Preload("Customer")
 	if filter.CustomerID != nil {
 		queryDB.Where("customer_id = ?", *filter.CustomerID)
 	}
@@ -138,7 +138,7 @@ func GetInvoiceByIDString(id string) (*Invoice, error) {
 		return nil, err
 	}
 	var invoice Invoice
-	tx := dbInstance.First(&invoice, id)
+	tx := dbInstance.Preload("Customer").First(&invoice, id)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -153,6 +153,18 @@ func CreateInvoice(invoice Invoice) (Invoice, error) {
 	}
 
 	result := dbInstance.Create(&invoice)
+
+	return invoice, result.Error
+}
+
+func UpdateInvoice(invoice Invoice) (Invoice, error) {
+
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return Invoice{}, err
+	}
+
+	result := dbInstance.Save(&invoice)
 
 	return invoice, result.Error
 }

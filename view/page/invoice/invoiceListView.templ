@@ -195,6 +195,22 @@ templ isPaid(isPaid bool) {
 		<div class="btn btn-success btn-circle">
 			<i class="fa-solid fa-check"></i>
 		</div>
+
+		<!--
+		    TODO SETTERE A PAGATO CON UN CLICK E APRIRE POPUP CHE CHIEDE LA DATA DI PAGAMENTO, NON OBBLIGATORIA
+		    const { value: date } = await Swal.fire({
+              title: "select departure date",
+              input: "date",
+              didOpen: () => {
+                const today = (new Date()).toISOString();
+                Swal.getInput().min = today.split("T")[0];
+              }
+            });
+            if (date) {
+              Swal.fire("Departure date", date);
+            }
+            -->
+
 	} else {
 		<div class="btn btn-danger btn-circle">
 			<i class="fa-solid fa-xmark"></i>
