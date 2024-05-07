@@ -1,7 +1,7 @@
 package validation
 
 import (
-	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/labstack/gommon/log"
 	"github.com/tealeg/xlsx"
@@ -12,14 +12,14 @@ import (
 const customerSheetName = "Totale per Cliente"
 const excelFilePath = "resources/Prima Nota.xlsx"
 
-func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
+func ValidateExcel() (*[]repositories.Customer, *[]repositories.Invoice, error) {
 	xlFile, err := xlsx.OpenFile(excelFilePath)
 	if err != nil {
 		log.Errorf("Error reading excel %s, %+v", excelFilePath, err)
 		return nil, nil, err
 	}
 	log.Infof("Reading customer sheet")
-	var customerList []data.Customer
+	var customerList []repositories.Customer
 	for _, sheet := range xlFile.Sheets {
 		if sheet.Name == customerSheetName {
 			for _, row := range sheet.Rows {
@@ -27,14 +27,14 @@ func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
 				if text == "" {
 					continue
 				}
-				customerList = append(customerList, data.Customer{Name: row.Cells[0].String()})
+				customerList = append(customerList, repositories.Customer{Name: row.Cells[0].String()})
 			}
 		}
 	}
 	log.Infof("Found %d customers", len(customerList))
 
 	log.Info("Reading Invoices sheets")
-	var invoiceList []data.Invoice
+	var invoiceList []repositories.Invoice
 	for _, sheet := range xlFile.Sheets {
 		if _, err := strconv.Atoi(sheet.Name); err == nil {
 			log.Infof("Reading sheet %s", sheet.Name)
@@ -55,7 +55,7 @@ func ValidateExcel() (*[]data.Customer, *[]data.Invoice, error) {
 	return &customerList, &invoiceList, nil
 }
 
-func excelRowToInvoice(row []*xlsx.Cell) *data.Invoice {
+func excelRowToInvoice(row []*xlsx.Cell) *repositories.Invoice {
 	date := getDateFromExcel(row[1])
 	if date == nil {
 		return nil
@@ -68,8 +68,8 @@ func excelRowToInvoice(row []*xlsx.Cell) *data.Invoice {
 	paymentDate := getDateFromExcel(row[5])
 	expectedPaymentDate := getDateFromExcel(row[7])
 
-	return &data.Invoice{
-		Customer:            data.Customer{Name: row[0].String()},
+	return &repositories.Invoice{
+		Customer:            repositories.Customer{Name: row[0].String()},
 		Date:                date,
 		Year:                year,
 		Number:              invoiceNumber,

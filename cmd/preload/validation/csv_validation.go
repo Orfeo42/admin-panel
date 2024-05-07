@@ -2,12 +2,12 @@ package validation
 
 import (
 	"errors"
-	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/labstack/gommon/log"
 )
 
-func ValidateCsv() (*[]data.Customer, *[]data.Invoice, error) {
+func ValidateCsv() (*[]repositories.Customer, *[]repositories.Invoice, error) {
 	log.Info("Start validating csv")
 	customerList, err := ValidateCustomersCsv()
 	if err != nil {
@@ -22,8 +22,8 @@ func ValidateCsv() (*[]data.Customer, *[]data.Invoice, error) {
 	return customerList, invoiceList, nil
 }
 
-func ValidateCustomersCsv() (*[]data.Customer, error) {
-	var customerList []data.Customer
+func ValidateCustomersCsv() (*[]repositories.Customer, error) {
+	var customerList []repositories.Customer
 
 	csvData, err := utils.ReadCsvFile("resources/customers.csv")
 	if err != nil {
@@ -39,15 +39,15 @@ func ValidateCustomersCsv() (*[]data.Customer, error) {
 	return &customerList, nil
 }
 
-func csvRowToCustomer(row []string) data.Customer {
-	return data.Customer{
+func csvRowToCustomer(row []string) repositories.Customer {
+	return repositories.Customer{
 		Name: row[0],
 	}
 }
 
-func ValidateInvoiceCsv() (*[]data.Invoice, error) {
+func ValidateInvoiceCsv() (*[]repositories.Invoice, error) {
 
-	var invList []data.Invoice
+	var invList []repositories.Invoice
 
 	log.Info("Starting validating invoice 2022")
 	invList2022, err := validateInvoiceSingleCsv("resources/invoices - 2022.csv")
@@ -76,9 +76,9 @@ func ValidateInvoiceCsv() (*[]data.Invoice, error) {
 	return &invList, nil
 }
 
-func validateInvoiceSingleCsv(csvPath string) ([]data.Invoice, error) {
+func validateInvoiceSingleCsv(csvPath string) ([]repositories.Invoice, error) {
 
-	var invList []data.Invoice
+	var invList []repositories.Invoice
 
 	csvData, err := utils.ReadCsvFile(csvPath)
 	if err != nil {
@@ -101,11 +101,11 @@ func validateInvoiceSingleCsv(csvPath string) ([]data.Invoice, error) {
 	return invList, nil
 }
 
-func csvRowToInvoice(row []string) (data.Invoice, error) {
+func csvRowToInvoice(row []string) (repositories.Invoice, error) {
 	date := utils.ParseDate(row[1])
 	year := date.Year()
-	return data.Invoice{
-		Customer:            data.Customer{Name: row[0]},
+	return repositories.Invoice{
+		Customer:            repositories.Customer{Name: row[0]},
 		Date:                date,
 		Year:                year,
 		Number:              row[2],
@@ -118,12 +118,12 @@ func csvRowToInvoice(row []string) (data.Invoice, error) {
 	}, nil
 }
 
-func FindCustomerFromName(customers *[]data.Customer, name string) (data.Customer, error) {
+func FindCustomerFromName(customers *[]repositories.Customer, name string) (repositories.Customer, error) {
 	for _, customer := range *customers {
 		if customer.Name == name {
 			return customer, nil
 		}
 	}
 	log.Infof("No customer with name '%s' found", name)
-	return data.Customer{}, errors.New("No customer with name " + name + " found")
+	return repositories.Customer{}, errors.New("No customer with name " + name + " found")
 }

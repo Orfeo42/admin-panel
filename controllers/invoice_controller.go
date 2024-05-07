@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/enum/pages"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/page/invoice"
 	"github.com/labstack/echo/v4"
@@ -15,9 +15,9 @@ func InvoiceController(application *echo.Echo) {
 		echoCtx = utils.SetPage(echoCtx, pages.InvoiceList)
 		echoCtx = utils.SetTitle(echoCtx, "Invoices")
 
-		filter := data.NewBaseFilter()
+		filter := repositories.NewBaseFilter()
 
-		items, err := data.GetAllInvoice(filter)
+		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
 		}
@@ -26,7 +26,7 @@ func InvoiceController(application *echo.Echo) {
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
 		filter := getFilterFromRequest(echoCtx)
-		items, err := data.GetAllInvoice(filter)
+		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
 		}
@@ -37,13 +37,13 @@ func InvoiceController(application *echo.Echo) {
 		echoCtx = utils.SetPage(echoCtx, pages.InvoiceAdd)
 		echoCtx = utils.SetTitle(echoCtx, "Invoice")
 
-		return utils.Render(invoice.InvoiceView(data.Invoice{}), echoCtx)
+		return utils.Render(invoice.InvoiceView(repositories.Invoice{}), echoCtx)
 	})
 
 	invoiceGroup.GET("/:id/edit", func(echoCtx echo.Context) error {
 		id := echoCtx.Param("id")
 
-		inv, err := data.GetInvoiceByIDString(id)
+		inv, err := repositories.GetInvoiceByIDString(id)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ func InvoiceController(application *echo.Echo) {
 	invoiceGroup.GET("/:id", func(echoCtx echo.Context) error {
 		id := echoCtx.Param("id")
 
-		inv, err := data.GetInvoiceByIDString(id)
+		inv, err := repositories.GetInvoiceByIDString(id)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ func InvoiceController(application *echo.Echo) {
 	invoiceGroup.PUT("/:id", func(echoCtx echo.Context) error {
 		id := echoCtx.Param("id")
 
-		inv, err := data.GetInvoiceByIDString(id)
+		inv, err := repositories.GetInvoiceByIDString(id)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ func InvoiceController(application *echo.Echo) {
 
 	invoiceGroup.POST("", func(echoCtx echo.Context) error {
 
-		input := data.Invoice{
+		input := repositories.Invoice{
 			CustomerID:          0,
 			Year:                2022,
 			Number:              "",
@@ -88,7 +88,7 @@ func InvoiceController(application *echo.Echo) {
 			Rows:                nil,
 			Note:                nil,
 		}
-		result, err := data.CreateInvoice(input)
+		result, err := repositories.CreateInvoice(input)
 		if err != nil {
 			return err
 		}
@@ -97,8 +97,8 @@ func InvoiceController(application *echo.Echo) {
 	})
 }
 
-func getFilterFromRequest(echoCtx echo.Context) data.InvoiceFilter {
-	result := data.InvoiceFilter{
+func getFilterFromRequest(echoCtx echo.Context) repositories.InvoiceFilter {
+	result := repositories.InvoiceFilter{
 		CustomerID:      utils.StringToUint(echoCtx.FormValue("customer")),
 		Number:          utils.StringToString(echoCtx.FormValue("number")),
 		DateFrom:        utils.StringToTime(echoCtx.FormValue("dateFrom")),

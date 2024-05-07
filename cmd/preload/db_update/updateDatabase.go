@@ -2,12 +2,12 @@ package db_update
 
 import (
 	"github.com/Orfeo42/admin-panel/cmd/preload/validation"
-	"github.com/Orfeo42/admin-panel/data"
 	"github.com/Orfeo42/admin-panel/db"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/labstack/gommon/log"
 )
 
-func LoadData(customerList *[]data.Customer, invoiceList *[]data.Invoice) {
+func LoadData(customerList *[]repositories.Customer, invoiceList *[]repositories.Invoice) {
 	log.Info("Start creating customers")
 	customerList, err := initializeCustomersData(customerList)
 	if err != nil {
@@ -44,11 +44,11 @@ func SchemaUpdate() error {
 		return errConnection
 	}
 	err := dbInstance.AutoMigrate(
-		&data.Customer{},
-		&data.Invoice{},
-		&data.InvoiceRow{},
-		&data.Order{},
-		&data.OrderRow{},
+		&repositories.Customer{},
+		&repositories.Invoice{},
+		&repositories.InvoiceRow{},
+		&repositories.Order{},
+		&repositories.OrderRow{},
 	)
 	if err != nil {
 		log.Fatalf("Error in Updating Schema")
@@ -58,11 +58,11 @@ func SchemaUpdate() error {
 	return nil
 }
 
-func initializeCustomersData(customerList *[]data.Customer) (*[]data.Customer, error) {
-	return data.CreateCustomerList(customerList)
+func initializeCustomersData(customerList *[]repositories.Customer) (*[]repositories.Customer, error) {
+	return repositories.CreateCustomerList(customerList)
 }
 
-func initializeInvoiceData(invoiceList *[]data.Invoice) (*[]data.Invoice, error) {
-	return data.CreateInvoiceListNoTransaction(invoiceList)
+func initializeInvoiceData(invoiceList *[]repositories.Invoice) (*[]repositories.Invoice, error) {
+	return repositories.CreateInvoiceListNoTransaction(invoiceList)
 
 }

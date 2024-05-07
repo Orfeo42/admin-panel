@@ -2,18 +2,18 @@ package invoice
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/view/component"
 	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ InvoiceView(item data.Invoice) {
+templ InvoiceView(item repositories.Invoice) {
 	@layout.BaseView() {
 		@InvoiceForm(item)
 	}
 }
 
-templ InvoiceForm(item data.Invoice) {
+templ InvoiceForm(item repositories.Invoice) {
     @component.TitledCardComp("New Invoice") {
         <form hx-post="/invoice" hx-target="this" hx-swap="outerHTML">
             <div class="form-row">

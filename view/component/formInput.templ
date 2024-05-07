@@ -10,18 +10,25 @@ const (
 	Number   InputType = "number"
 )
 
+type ComboItem struct {
+    Value string
+    Text  string
+}
+
 type FormInputParam struct {
 	Id          string
 	Name        string
 	Description string
 	Value       string
 	FormType    InputType
+	ComboItems  []ComboItem
 }
 
 templ FormInput(params FormInputParam) {
 	<label for={ params.Id }>{ params.Description }</label>
     @Input(params)
 }
+
 templ Input(params FormInputParam) {
 	<input
 		class="form-control"

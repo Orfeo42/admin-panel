@@ -2,16 +2,16 @@ package customer
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ CustomerView(item data.Customer) {
+templ CustomerView(item repositories.Customer) {
 	@layout.BaseView() {
 		@CustomerForm(item)
 	}
 }
-templ CustomerForm(item data.Customer) {
+templ CustomerForm(item repositories.Customer) {
 	<form
 		hx-post="/customer"
 		hx-target="this"

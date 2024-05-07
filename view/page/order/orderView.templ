@@ -2,11 +2,11 @@ package order
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ OrderView(item data.Order) {
+templ OrderView(item repositories.Order) {
 	@layout.BaseView() {
 		@component.TitledCardComp("Prova Nuova")
 	}

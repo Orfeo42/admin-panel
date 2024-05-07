@@ -2,7 +2,7 @@ package main
 
 func main() {
 	/*csvData := utils.ReadCsvFile("../preload/resources/invoices.csv")
-	//result := []data.Invoice{}
+	//result := []repositories.Invoice{}
 	for number, row := range csvData {
 		if number == 0 {
 			continue
@@ -11,12 +11,12 @@ func main() {
 	}*/
 }
 
-/*func csvRowToInvoice(row []string) data.Invoice {
+/*func csvRowToInvoice(row []string) repositories.Invoice {
 
 	//Cliente,Data Fattura,Numero Fattura,Importo Fattura,Importo Pagato,Data Pagamenti,Modalità pagamento,Data Pagamento prevista,Note
 
-	return data.Invoice{
-		Customer: data.Customer{
+	return repositories.Invoice{
+		Customer: repositories.Customer{
 			Name: row[0],
 		},
 		Date:                parseDate(row[1]),

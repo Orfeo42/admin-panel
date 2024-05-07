@@ -9,7 +9,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - /home/${USER}/${PROJECT_NAME}:/var/lib/postgresql/data
+      - /home/${USER}/${PROJECT_NAME}:/var/lib/postgresql/repositories
     healthcheck:
       test:
         [

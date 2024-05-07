@@ -2,10 +2,10 @@ package customer
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
-	"github.com/Orfeo42/admin-panel/data"
+	"github.com/Orfeo42/admin-panel/repositories"
 )
 
-templ CustomerListView(items []data.Customer) {
+templ CustomerListView(items []repositories.Customer) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<div class="row">
@@ -19,23 +19,6 @@ templ CustomerListView(items []data.Customer) {
                 </button>
             </div>
         </div>
-        <button
-            hx-get="/customer/modal"
-            hx-target="#modals-here"
-            hx-trigger="click"
-            data-bs-toggle="modal"
-            data-bs-target="#modals-here"
-            class="btn btn-primary">Open Modal</button>
-        <div id="modals-here"
-            class="modal modal-blur fade"
-            style="display: none"
-            aria-hidden="false"
-            tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content"></div>
-            </div>
-        </div>
-
 
 		<!-- DataTales Example -->
 		<div class="card shadow mb-4">
@@ -64,7 +47,7 @@ templ CustomerListView(items []data.Customer) {
 	}
 }
 
-templ CustomerRowShow(item data.Customer) {
+templ CustomerRowShow(item repositories.Customer) {
 	<tr>
 		<td>{ item.Name }</td>
 		<td>{ item.Surname }</td>
@@ -74,7 +57,7 @@ templ CustomerRowShow(item data.Customer) {
 	</tr>
 }
 
-templ AllCustomerRowsShow(items []data.Customer) {
+templ AllCustomerRowsShow(items []repositories.Customer) {
 	for _, item := range items {
 		@CustomerRowShow(item)
 	}
