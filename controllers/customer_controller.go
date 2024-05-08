@@ -26,17 +26,22 @@ func CustomerController(application *echo.Echo) {
 
 	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
 		id := echoCtx.Param("id")
-		echoCtx = utils.SetTitle(echoCtx, "Customer detail")
+		echoCtx = utils.SetPage(echoCtx, pages.CustomerList)
 
 		item, err := repositories.GetCustomerByIDString(id)
 		if err != nil {
 			return err
 		}
+		echoCtx = utils.SetTitle(echoCtx, "Customer detail for customer: "+item.Name)
+		invoiceList, err := repositories.GetAllInvoiceByCustomerID(id, nil)
+		if err != nil {
+			return err
+		}
 
-		return utils.Render(customer.CustomerView(*item), echoCtx)
+		return utils.Render(customer.CustomerView(*item, *invoiceList), echoCtx)
 	})
 
-	customerGroup.POST("", func(echoCtx echo.Context) error {
+	/*customerGroup.POST("", func(echoCtx echo.Context) error {
 		input := repositories.Customer{
 			Name:    echoCtx.FormValue("name"),
 			Surname: echoCtx.FormValue("surname"),
@@ -50,6 +55,6 @@ func CustomerController(application *echo.Echo) {
 		}
 
 		return utils.Render(customer.CustomerData(result), echoCtx)
-	})
+	})*/
 
 }

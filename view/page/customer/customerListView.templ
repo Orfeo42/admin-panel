@@ -55,13 +55,10 @@ templ CustomerRowShow(item repositories.CustomerWithTotals) {
 		<td>{ utils.FormatAmount(item.TotalAmount) }</td>
 		<td>{ utils.FormatAmount(item.TotalToPay) }</td>
 		<td style="text-align: center;">
-			<button class="btn btn-circle btn-primary"
-			    hx-target="body"
-			    hx-get={ "/customer/" + utils.UintToString(item.ID) + "/info" }
-			    hx-swap="outerHTML"
-			    hx-replace-url="true">
+			<a class="btn btn-circle btn-primary"
+			    href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") } >
 				<i class="fa-solid fa-info"></i>
-			</button>
+			</a>
 		</td>
 	</tr>
 }

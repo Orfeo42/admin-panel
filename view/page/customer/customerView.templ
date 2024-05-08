@@ -4,15 +4,16 @@ import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/view/component"
+	"github.com/Orfeo42/admin-panel/view/page/invoice"
 )
 
-templ CustomerView(item repositories.Customer) {
+templ CustomerView(item repositories.Customer, invoiceList []repositories.Invoice) {
 	@layout.BaseView() {
-		@CustomerData(item)
+		@CustomerData(item, invoiceList)
 	}
 }
 
-templ CustomerData(item repositories.Customer) {
+templ CustomerData(item repositories.Customer, invoiceList []repositories.Invoice) {
     <div class="row">
         <div class="col-lg-6 mb-4">
             @component.TitledCardComp("Anagraphics") {
@@ -30,4 +31,7 @@ templ CustomerData(item repositories.Customer) {
             }
         </div>
     </div>
+    @invoice.InvoiceTable(invoiceList)
 }
+
+

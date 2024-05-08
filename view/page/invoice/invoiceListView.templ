@@ -92,29 +92,35 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 				</button>
 			</div>
 		</div>
-		@component.CardComp() {
-			<div class="table-responsive">
-				<table class="table table-bordered" id="dataTable">
-					<thead>
-						<tr>
-							<th>Customer</th>
-							<th>Number</th>
-							<th>Date</th>
-							<th>Payment Date</th>
-							<th>Amount</th>
-							<th>Paid Amount</th>
-							<th>Is Paid</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
-						@AllInvoiceRowsShow(items)
-					</tbody>
-				</table>
-			</div>
-		}
+		@InvoiceTable(items)
 	}
 }
+
+
+templ InvoiceTable(items []repositories.Invoice) {
+    @component.CardComp() {
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Number</th>
+                        <th>Date</th>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Is Paid</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
+                    @AllInvoiceRowsShow(items)
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
 
 templ AllInvoiceRowsShow(items []repositories.Invoice) {
 	for _, item := range items {

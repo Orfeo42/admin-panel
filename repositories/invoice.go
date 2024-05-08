@@ -120,6 +120,28 @@ func GetAllInvoice(filter InvoiceFilter) ([]Invoice, error) {
 	return items, result.Error
 }
 
+func GetAllInvoiceByCustomerID(customerID string, isPaid *bool) (*[]Invoice, error) {
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return nil, err
+	}
+
+	var items []Invoice
+	queryDB := dbInstance.Order("date desc, number desc")
+	queryDB.Where("customer_id = ?", customerID)
+	if isPaid != nil {
+		if *isPaid {
+			queryDB.Where("amount = paid_amount")
+		}
+		if !*isPaid {
+			queryDB.Where("amount <> paid_amount")
+		}
+	}
+	result := queryDB.Find(&items)
+
+	return &items, result.Error
+}
+
 func GetInvoiceByID(id uint) (*Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
