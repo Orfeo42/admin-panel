@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"github.com/labstack/gommon/log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/labstack/gommon/log"
 )
 
 func ParseAmount(amount string) int {
@@ -18,6 +19,10 @@ func ParseAmount(amount string) int {
 		return 0
 	}
 	return int(parsedAmount * 100)
+}
+
+func FloatToString(amount float64) string {
+	return strconv.FormatFloat(amount, 'f', -1, 64)
 }
 
 func FormatAmount(amount int) string {

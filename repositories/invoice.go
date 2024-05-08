@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"github.com/labstack/gommon/log"
 	"time"
+
+	"github.com/labstack/gommon/log"
 
 	"github.com/Orfeo42/admin-panel/db"
 	"gorm.io/gorm"
@@ -205,8 +206,27 @@ func CreateInvoiceListNoTransaction(invoiceList *[]Invoice) (*[]Invoice, error) 
 		}
 		result = append(result, invoice)
 	}
+	return &result, nil
+}
+
+type EarningsByMonthResult struct {
+	Year   int
+	Month  int
+	Amount int64
+}
+
+func EarningsByMonth(dateFrom, dateTo time.Time) (*[]EarningsByMonthResult, error) {
+	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	var earningsByMonthResult []EarningsByMonthResult
+
+	dbInstance.Table("invoices").
+		Select("date_part('year', date) as Year, date_part('month', date) as Month, sum(amount) as Amount").
+		Where("date between ? and ?", dateFrom, dateTo).
+		Group("date_part('year', date), date_part('month', date)").
+		Order("date_part('year', date), date_part('month', date)").
+		Scan(&earningsByMonthResult)
+	return &earningsByMonthResult, nil
 }

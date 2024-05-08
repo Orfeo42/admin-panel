@@ -3,9 +3,10 @@ package customer
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/repositories"
+	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ CustomerListView(items []repositories.Customer) {
+templ CustomerListView(items []repositories.CustomerWithTotals) {
 	@layout.TableView() {
 		<!-- Page Heading -->
 		<div class="row">
@@ -31,10 +32,10 @@ templ CustomerListView(items []repositories.Customer) {
 						<thead>
 							<tr>
 								<th>Name</th>
-								<th>Surname</th>
-								<th>Address</th>
 								<th>Phone</th>
 								<th>Email</th>
+								<th>Totale fatturato</th>
+								<th>Totale da pagare</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -47,17 +48,17 @@ templ CustomerListView(items []repositories.Customer) {
 	}
 }
 
-templ CustomerRowShow(item repositories.Customer) {
+templ CustomerRowShow(item repositories.CustomerWithTotals) {
 	<tr>
 		<td>{ item.Name }</td>
-		<td>{ item.Surname }</td>
-		<td>{ item.Address }</td>
 		<td>{ item.Phone }</td>
 		<td>{ item.Email }</td>
+		<td>{ utils.FormatAmount(item.TotalAmount) }</td>
+		<td>{ utils.FormatAmount(item.TotalToPay) }</td>
 	</tr>
 }
 
-templ AllCustomerRowsShow(items []repositories.Customer) {
+templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
 	for _, item := range items {
 		@CustomerRowShow(item)
 	}

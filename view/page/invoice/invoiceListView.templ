@@ -163,8 +163,9 @@ templ InvoiceRowShow(item repositories.Invoice) {
 
 templ InvoiceRowEdit(item repositories.Invoice) {
 	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
-		<td>@component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
-</td>
+		<td>
+		    @component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
+        </td>
 		<td style="text-align: right;">
 			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})
 		</td>

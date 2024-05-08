@@ -16,6 +16,12 @@ type Customer struct {
 	Email   string
 }
 
+type CustomerWithTotals struct {
+	Customer
+	TotalAmount int
+	TotalToPay  int
+}
+
 func GetAllCustomer() ([]Customer, error) {
 
 	dbInstance, err := db.GetInstance()
@@ -27,6 +33,33 @@ func GetAllCustomer() ([]Customer, error) {
 	result := dbInstance.Find(&items)
 
 	return items, result.Error
+}
+
+func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
+
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return nil, err
+	}
+
+	var results []CustomerWithTotals
+
+	response := dbInstance.Table("invoices").
+		Select("invoices.customer_id," +
+			" max(customers.name) as name," +
+			"max(customers.surname) as surname," +
+			"max(customers.address) as address," +
+			"max(customers.phone) as phone," +
+			"max(customers.email) as email," +
+			"sum(invoices.amount) as total_amount," +
+			"(sum(invoices.amount) - sum(invoices.paid_amount)) as total_to_pay").
+		Joins("left outer join customers on customers.id = invoices.customer_id").
+		Group("invoices.customer_id").
+		Scan(&results)
+	if response.Error != nil {
+		return nil, response.Error
+	}
+	return &results, response.Error
 }
 
 func CreateCustomer(customer Customer) (Customer, error) {

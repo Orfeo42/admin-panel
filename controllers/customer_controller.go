@@ -16,12 +16,12 @@ func CustomerController(application *echo.Echo) {
 
 		echoCtx = utils.SetPage(echoCtx, pages.CustomerList)
 		echoCtx = utils.SetTitle(echoCtx, "Invoices")
-		items, err := repositories.GetAllCustomer()
+		items, err := repositories.GetAllCustomerWithTotals()
 		if err != nil {
 			return err
 		}
 
-		return utils.Render(customer.CustomerListView(items), echoCtx)
+		return utils.Render(customer.CustomerListView(*items), echoCtx)
 	})
 
 	customerGroup.GET("/add", func(echoCtx echo.Context) error {
