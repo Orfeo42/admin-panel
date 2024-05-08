@@ -11,19 +11,20 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 	@layout.TableView() {
 		<div class="row">
 			<div class="col-12 mb-4">
-	        	<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
-		    </div>
-        </div>
+				<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
+			</div>
+		</div>
 		@component.CollapseCard("Filters", "filter") {
 			<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						@component.FormInput(component.FormInputParam{
-						    Id: "customer",
-						    Name: "customer",
-						    Description: "Customer",
-						    FormType: component.Text,
-						    Value: utils.FormatUintToFormString(filter.CustomerID),
+							Id: "customer",
+						
+							Name:        "customer",
+							Description: "Customer",
+							FormType:    component.Text,
+							Value:       utils.FormatUintToFormString(filter.CustomerID),
 						})
 						<!--<input
 								class="form-control"
@@ -85,12 +86,12 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 		}
 		<div class="row">
 			<div class="col-12 mb-4" style="text-align: right;">
-                <button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-replace-url="true">
-                    <i class="fas fa-fw fa-plus"></i>
-                    Add new
-                </button>
-            </div>
-        </div>
+				<button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-replace-url="true">
+					<i class="fas fa-fw fa-plus"></i>
+					Add new
+				</button>
+			</div>
+		</div>
 		@component.CardComp() {
 			<div class="table-responsive">
 				<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -132,11 +133,12 @@ templ InvoiceRowShow(item repositories.Invoice) {
 		<td style="text-align: center;">
 			@isPaid(item.Amount-item.PaidAmount == 0)
 		</td>
-        <td>
-            <button class="btn btn-danger"
-                hx-get={"/invoice/" + utils.UintToString(item.ID) + "/edit"}
-                hx-trigger="edit"
-                onClick="let editing = document.querySelector('.editing')
+		<td>
+			<button
+				class="btn btn-danger"
+				hx-get={ "/invoice/" + utils.UintToString(item.ID) + "/edit" }
+				hx-trigger="edit"
+				onClick="let editing = document.querySelector('.editing')
                     if(editing) {
                         Swal.fire({
                             title: 'Already Editing',
@@ -151,42 +153,44 @@ templ InvoiceRowShow(item repositories.Invoice) {
                         })
                     } else {
                         htmx.trigger(this, 'edit')
-                    }">
-                Edit
-            </button>
-        </td>
+                    }"
+			>
+				Edit
+			</button>
+		</td>
 	</tr>
 }
 
 templ InvoiceRowEdit(item repositories.Invoice) {
-	<tr hx-trigger="cancel" class="editing" hx-get={"/invoice/" + utils.UintToString(item.ID)}>
-		<td>@component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})</td>
+	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
+		<td>@component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
+</td>
 		<td style="text-align: right;">
-		    @component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number })
+			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})
 		</td>
 		<td style="text-align: right;">
-		    @component.Input(component.FormInputParam{Name: "date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date) })
-        </td>
-		<td style="text-align: right;">
-		    @component.Input(component.FormInputParam{Name: "paymentDate", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate) })
-        </td>
-		<td style="text-align: right;">
-		    @component.Input(component.FormInputParam{Name: "amount", FormType: component.Number, Value: utils.FormatAmount(item.Amount) })
+			@component.Input(component.FormInputParam{Name: "date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
 		</td>
 		<td style="text-align: right;">
-		    @component.Input(component.FormInputParam{Name: "paidAmount", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount) })
+			@component.Input(component.FormInputParam{Name: "paymentDate", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
+		</td>
+		<td style="text-align: right;">
+			@component.Input(component.FormInputParam{Name: "amount", FormType: component.Number, Value: utils.FormatAmount(item.Amount)})
+		</td>
+		<td style="text-align: right;">
+			@component.Input(component.FormInputParam{Name: "paidAmount", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount)})
 		</td>
 		<td style="text-align: center;"></td>
-        <td style="white-space: nowrap;">
-            <button class="btn btn-danger" hx-put={"/invoice/" + utils.UintToString(item.ID)} hx-include="closest tr">
-                <i class="fa-solid fa-floppy-disk"></i>
-                Save
-            </button>
-            <button class="btn btn-danger" hx-get={"/invoice/" + utils.UintToString(item.ID)}>
-                <i class="fa-solid fa-xmark"></i>
-                Cancel
-            </button>
-        </td>
+		<td style="white-space: nowrap;">
+			<button class="btn btn-danger" hx-put={ "/invoice/" + utils.UintToString(item.ID) } hx-include="closest tr">
+				<i class="fa-solid fa-floppy-disk"></i>
+				Save
+			</button>
+			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
+				<i class="fa-solid fa-xmark"></i>
+				Cancel
+			</button>
+		</td>
 	</tr>
 }
 
@@ -195,7 +199,6 @@ templ isPaid(isPaid bool) {
 		<div class="btn btn-success btn-circle">
 			<i class="fa-solid fa-check"></i>
 		</div>
-
 		<!--
 		    TODO SETTERE A PAGATO CON UN CLICK E APRIRE POPUP CHE CHIEDE LA DATA DI PAGAMENTO, NON OBBLIGATORIA
 		    const { value: date } = await Swal.fire({
@@ -210,7 +213,6 @@ templ isPaid(isPaid bool) {
               Swal.fire("Departure date", date);
             }
             -->
-
 	} else {
 		<div class="btn btn-danger btn-circle">
 			<i class="fa-solid fa-xmark"></i>

@@ -1,75 +1,18 @@
 package component
 
-type ChartData struct {
-	labels []string
-	data   []float32
+type AreaChartData struct {
+	Labels []string
+	Data   []float32
 }
 
-templ AreaChart(id string, labels []string, data []float32) {
+templ AreaChart(id string, areaChartData AreaChartData) {
 	<div class="chart-area">
 		<canvas id={ id }></canvas>
 	</div>
-	@areaChartScript(id, labels, data)
+	@areaChartScript(id, areaChartData)
 }
 
-templ PieChart(id string, labels []string, data []float32) {
-	<div class="chart-pie pt-4 pb-2">
-		<canvas id={ id }></canvas>
-	</div>
-	<div class="mt-4 text-center small">
-		<span class="mr-2">
-			<i class="fas fa-circle text-primary"></i> Direct
-		</span>
-		<span class="mr-2">
-			<i class="fas fa-circle text-success"></i> Social
-		</span>
-		<span class="mr-2">
-			<i class="fas fa-circle text-info"></i> Referral
-		</span>
-	</div>
-	@pieChartScript(id, labels, data)
-}
-
-script pieChartScript(id string, labels []string, data []float32) {
-    // Set new default font family and font color to mimic Bootstrap's default styling
-    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-    Chart.defaults.global.defaultFontColor = '#858796';
-
-    // Pie Chart Example
-    const ctx = document.getElementById(id);
-    const myPieChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: data,
-          backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-          hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-          hoverBorderColor: "rgba(234, 236, 244, 1)",
-        }],
-      },
-      options: {
-        maintainAspectRatio: false,
-        tooltips: {
-          backgroundColor: "rgb(255,255,255)",
-          bodyFontColor: "#858796",
-          borderColor: '#dddfeb',
-          borderWidth: 1,
-          xPadding: 15,
-          yPadding: 15,
-          displayColors: false,
-          caretPadding: 10,
-        },
-        legend: {
-          display: false
-        },
-        cutoutPercentage: 80,
-      },
-    });
-
-}
-
-script areaChartScript(id string, labels []string, data []float32) {
+script areaChartScript(id string, areaChartData AreaChartData) {
 
     Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
     Chart.defaults.global.defaultFontColor = '#858796';
@@ -102,7 +45,7 @@ script areaChartScript(id string, labels []string, data []float32) {
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: labels,
+        labels: areaChartData.Labels,
         datasets: [{
           label: "Earnings",
           lineTension: 0.3,
@@ -116,7 +59,7 @@ script areaChartScript(id string, labels []string, data []float32) {
           pointHoverBorderColor: "rgba(78, 115, 223, 1)",
           pointHitRadius: 10,
           pointBorderWidth: 2,
-          data: data,
+          data: areaChartData.Data,
         }],
       },
       options: {
@@ -186,4 +129,68 @@ script areaChartScript(id string, labels []string, data []float32) {
         }
       }
     });
+}
+
+type PieChartData struct {
+	Labels      []string
+	Data        []float32
+	Colors      []string
+	HoverColors []string
+}
+
+templ PieChart(id string, pieChartData PieChartData) {
+	<div class="chart-pie pt-4 pb-2">
+		<canvas id={ id }></canvas>
+	</div>
+	<div class="mt-4 text-center small">
+		<span class="mr-2">
+			<i class="fas fa-circle text-primary"></i> Direct
+		</span>
+		<span class="mr-2">
+			<i class="fas fa-circle text-success"></i> Social
+		</span>
+		<span class="mr-2">
+			<i class="fas fa-circle text-info"></i> Referral
+		</span>
+	</div>
+	@pieChartScript(id, pieChartData)
+}
+
+script pieChartScript(id string, pieChartData PieChartData) {
+    // Set new default font family and font color to mimic Bootstrap's default styling
+    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
+
+    // Pie Chart Example
+    const ctx = document.getElementById(id);
+    const myPieChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: pieChartData.Labels,
+        datasets: [{
+          data: pieChartData.Data,
+          backgroundColor: pieChartData.Colors,
+          hoverBackgroundColor: pieChartData.HoverColors,
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+
 }

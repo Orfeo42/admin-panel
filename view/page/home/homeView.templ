@@ -118,21 +118,23 @@ templ HomeView() {
 			<!-- Area Chart -->
 			<div class="col-xl-8 col-lg-7">
 				@component.TitledCardComp("Earnings Overview") {
-				    @component.AreaChart(
-				        "myAreaChart",
-				        []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
-				        []float32{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
-				    )
+					@component.AreaChart("myAreaChart", component.AreaChartData{
+						Labels: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+						Data:   []float32{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
+					})
 				}
 			</div>
 			<!-- Pie Chart -->
 			<div class="col-xl-4 col-lg-5">
 				@component.TitledCardComp("Revenue Sources") {
-				    @component.PieChart(
-				        "myPieChart",
-                        []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
-                        []float32{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
-                    )
+					@component.PieChart("myPieChart",
+						component.PieChartData{
+							Labels:      []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+							Data:        []float32{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
+							Colors:      []string{"#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc"},
+							HoverColors: []string{"#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf"},
+						},
+					)
 				}
 			</div>
 		</div>
