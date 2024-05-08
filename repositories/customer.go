@@ -46,7 +46,7 @@ func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
 
 	response := dbInstance.Table("invoices").
 		Select("invoices.customer_id as id," +
-			" max(customers.name) as name," +
+			"max(customers.name) as name," +
 			"max(customers.surname) as surname," +
 			"max(customers.address) as address," +
 			"max(customers.phone) as phone," +
