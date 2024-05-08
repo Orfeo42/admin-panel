@@ -3,7 +3,7 @@ module github.com/Orfeo42/admin-panel
 go 1.22.0
 
 require (
-	github.com/a-h/templ v0.2.663
+	github.com/a-h/templ v0.2.680
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/tealeg/xlsx v1.0.5
