@@ -10,10 +10,6 @@ templ styles() {
 }
 
 templ scripts() {
-	<!-- Script grafici -->
-	<script src="/vendor/chart.js/Chart.min.js"></script>
-	<script src="/js/demo/chart-area-demo.js"></script>
-	<script src="/js/demo/chart-pie-demo.js"></script>
 }
 
 templ HomeView() {
@@ -122,28 +118,21 @@ templ HomeView() {
 			<!-- Area Chart -->
 			<div class="col-xl-8 col-lg-7">
 				@component.TitledCardComp("Earnings Overview") {
-					<div class="chart-area">
-						<canvas id="myAreaChart"></canvas>
-					</div>
+				    @component.AreaChart(
+				        "myAreaChart",
+				        []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+				        []float32{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
+				    )
 				}
 			</div>
 			<!-- Pie Chart -->
 			<div class="col-xl-4 col-lg-5">
 				@component.TitledCardComp("Revenue Sources") {
-					<div class="chart-pie pt-4 pb-2">
-						<canvas id="myPieChart"></canvas>
-					</div>
-					<div class="mt-4 text-center small">
-						<span class="mr-2">
-							<i class="fas fa-circle text-primary"></i> Direct
-						</span>
-						<span class="mr-2">
-							<i class="fas fa-circle text-success"></i> Social
-						</span>
-						<span class="mr-2">
-							<i class="fas fa-circle text-info"></i> Referral
-						</span>
-					</div>
+				    @component.PieChart(
+				        "myPieChart",
+                        []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+                        []float32{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
+                    )
 				}
 			</div>
 		</div>
