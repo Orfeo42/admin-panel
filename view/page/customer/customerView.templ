@@ -8,66 +8,26 @@ import (
 
 templ CustomerView(item repositories.Customer) {
 	@layout.BaseView() {
-		@CustomerForm(item)
+		@CustomerData(item)
 	}
 }
-templ CustomerForm(item repositories.Customer) {
-	<form
-		hx-post="/customer"
-		hx-target="this"
-		hx-swap="outerHTML"
-	>
-		<div class="row">
-			<div class="col-lg-6 mb-4">
-				@component.TitledCardComp("Anagraphics") {
-					<div class="form-row">
-						<div class="form-group col-md-6">
-							@component.FormInput(component.FormInputParam{Id: "inputName", Name: "name", Description: "Name", FormType: component.Text, Value: item.Name})
-						</div>
-						<div class="form-group col-md-6">
-							@component.FormInput(component.FormInputParam{Id: "inputSurname", Name: "surname", Description: "Surname", FormType: component.Text, Value: item.Surname})
-						</div>
-					</div>
-					<div class="form-group">
-						@component.FormInput(component.FormInputParam{Id: "inputAddress", Name: "address", Description: "Address", FormType: component.Text, Value: item.Address})
-					</div>
-				}
-			</div>
-			<div class="col-lg-6 mb-4">
-				@component.TitledCardComp("Contacts") {
-					<div class="form-group">
-						@component.FormInput(component.FormInputParam{Id: "inputEmail", Name: "email", Description: "E-mail", FormType: component.Email, Value: item.Email})
-					</div>
-					<div class="form-group">
-						@component.FormInput(component.FormInputParam{Id: "inputPhone", Name: "phone", Description: "Phone", FormType: component.Text, Value: item.Phone})
-					</div>
-				}
-			</div>
-			<div class="col-lg-12 mb-4">
-				<button type="submit" class="btn btn-primary">Save</button>
-			</div>
-		</div>
-	</form>
-}
 
-templ CustomerModal(){
-    <div class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Modal body text goes here.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
+templ CustomerData(item repositories.Customer) {
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            @component.TitledCardComp("Anagraphics") {
+                <div class="form-row">
+                    <div class="form-group col-md-6">Name: { item.Name }</div>
+                    <div class="form-group col-md-6">Cognome: { item.Surname }</div>
+                </div>
+                <div class="form-group">Indirizzo: { item.Address }</div>
+            }
         </div>
-      </div>
+        <div class="col-lg-6 mb-4">
+            @component.TitledCardComp("Contacts") {
+                <div class="form-group">Email: { item.Email }</div>
+                <div class="form-group">Phone: { item.Phone }</div>
+            }
+        </div>
     </div>
 }

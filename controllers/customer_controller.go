@@ -15,7 +15,7 @@ func CustomerController(application *echo.Echo) {
 	customerGroup.GET("/list", func(echoCtx echo.Context) error {
 
 		echoCtx = utils.SetPage(echoCtx, pages.CustomerList)
-		echoCtx = utils.SetTitle(echoCtx, "Invoices")
+		echoCtx = utils.SetTitle(echoCtx, "Customer")
 		items, err := repositories.GetAllCustomerWithTotals()
 		if err != nil {
 			return err
@@ -24,10 +24,16 @@ func CustomerController(application *echo.Echo) {
 		return utils.Render(customer.CustomerListView(*items), echoCtx)
 	})
 
-	customerGroup.GET("/add", func(echoCtx echo.Context) error {
-		echoCtx = utils.SetPage(echoCtx, pages.CustomerAdd)
-		echoCtx = utils.SetTitle(echoCtx, "Invoice")
-		return utils.Render(customer.CustomerView(repositories.Customer{}), echoCtx)
+	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
+		id := echoCtx.Param("id")
+		echoCtx = utils.SetTitle(echoCtx, "Customer detail")
+
+		item, err := repositories.GetCustomerByIDString(id)
+		if err != nil {
+			return err
+		}
+
+		return utils.Render(customer.CustomerView(*item), echoCtx)
 	})
 
 	customerGroup.POST("", func(echoCtx echo.Context) error {
@@ -43,7 +49,7 @@ func CustomerController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(customer.CustomerForm(result), echoCtx)
+		return utils.Render(customer.CustomerData(result), echoCtx)
 	})
 
 }

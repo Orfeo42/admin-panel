@@ -10,5 +10,4 @@ const (
 	CustomerAdd  Page = "CustomerAdd"
 	OrderList    Page = "OrderList"
 	OrderAdd     Page = "OrderAdd"
-	FilmList     Page = "FilmList"
 )

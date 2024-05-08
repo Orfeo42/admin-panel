@@ -8,7 +8,6 @@ import (
 
 templ CustomerListView(items []repositories.CustomerWithTotals) {
 	@layout.TableView() {
-		<!-- Page Heading -->
 		<div class="row">
 			<div class="col-xl-6 col-md-6 mb-4">
 		        <h1 class="h3 mb-2 text-gray-800">Customer List</h1>
@@ -21,7 +20,6 @@ templ CustomerListView(items []repositories.CustomerWithTotals) {
             </div>
         </div>
 
-		<!-- DataTales Example -->
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
 				<h6 class="m-0 font-weight-bold text-primary">List</h6>
@@ -36,6 +34,7 @@ templ CustomerListView(items []repositories.CustomerWithTotals) {
 								<th>Email</th>
 								<th>Totale fatturato</th>
 								<th>Totale da pagare</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -55,6 +54,15 @@ templ CustomerRowShow(item repositories.CustomerWithTotals) {
 		<td>{ item.Email }</td>
 		<td>{ utils.FormatAmount(item.TotalAmount) }</td>
 		<td>{ utils.FormatAmount(item.TotalToPay) }</td>
+		<td style="text-align: center;">
+			<button class="btn btn-circle btn-primary"
+			    hx-target="body"
+			    hx-get={ "/customer/" + utils.UintToString(item.ID) + "/info" }
+			    hx-swap="outerHTML"
+			    hx-replace-url="true">
+				<i class="fa-solid fa-info"></i>
+			</button>
+		</td>
 	</tr>
 }
 

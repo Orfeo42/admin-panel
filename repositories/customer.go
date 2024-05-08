@@ -45,7 +45,7 @@ func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
 	var results []CustomerWithTotals
 
 	response := dbInstance.Table("invoices").
-		Select("invoices.customer_id," +
+		Select("invoices.customer_id as id," +
 			" max(customers.name) as name," +
 			"max(customers.surname) as surname," +
 			"max(customers.address) as address," +
@@ -55,6 +55,7 @@ func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
 			"(sum(invoices.amount) - sum(invoices.paid_amount)) as total_to_pay").
 		Joins("left outer join customers on customers.id = invoices.customer_id").
 		Group("invoices.customer_id").
+		Order("max(customers.name) asc").
 		Scan(&results)
 	if response.Error != nil {
 		return nil, response.Error
@@ -95,4 +96,17 @@ func CreateCustomerList(customerList *[]Customer) (*[]Customer, error) {
 	}
 
 	return &result, nil
+}
+
+func GetCustomerByIDString(id string) (*Customer, error) {
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return nil, err
+	}
+	var customer Customer
+	tx := dbInstance.First(&customer, id)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &customer, nil
 }
