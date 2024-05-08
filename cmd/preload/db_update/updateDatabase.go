@@ -63,6 +63,6 @@ func initializeCustomersData(customerList *[]repositories.Customer) (*[]reposito
 }
 
 func initializeInvoiceData(invoiceList *[]repositories.Invoice) (*[]repositories.Invoice, error) {
-	return repositories.CreateInvoiceListNoTransaction(invoiceList)
+	return repositories.CreateInvoiceList(invoiceList)
 
 }

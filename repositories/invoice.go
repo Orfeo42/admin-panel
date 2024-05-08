@@ -170,7 +170,7 @@ func UpdateInvoice(invoice Invoice) (Invoice, error) {
 	return invoice, result.Error
 }
 
-func CreateInvoiceList(invoiceList *[]Invoice) (*[]Invoice, error) {
+func CreateInvoiceListInTransaction(invoiceList *[]Invoice) (*[]Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return nil, err
@@ -193,7 +193,7 @@ func CreateInvoiceList(invoiceList *[]Invoice) (*[]Invoice, error) {
 	return &result, nil
 }
 
-func CreateInvoiceListNoTransaction(invoiceList *[]Invoice) (*[]Invoice, error) {
+func CreateInvoiceList(invoiceList *[]Invoice) (*[]Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return nil, err
