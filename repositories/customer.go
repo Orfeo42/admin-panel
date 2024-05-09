@@ -97,7 +97,7 @@ func CreateCustomerList(customerList *[]Customer) (*[]Customer, error) {
 	return &result, nil
 }
 
-func GetCustomerByIDString(id string) (*Customer, error) {
+func GetCustomerByID(id uint) (*Customer, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return nil, err

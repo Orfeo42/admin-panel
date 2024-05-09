@@ -66,20 +66,89 @@ templ BaseView() {
 	<html lang="it">
 		<head>
 			@mainHead()
+            <style>
+              /* Stili CSS per la barra di ricerca e l'anteprima */
+              #search-container {
+                position: relative;
+                margin: 20px auto;
+                width: 400px;
+              }
+              #preview {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1;
+                background-color: #f9f9f9;
+                border: 1px solid #ccc;
+                width: 100%;
+                max-height: 200px;
+                overflow-y: auto;
+              }
+              #preview a {
+                display: block;
+                padding: 10px;
+                color: #333;
+                text-decoration: none;
+              }
+              #preview a:hover {
+                background-color: #ddd;
+              }
+            </style>
 		</head>
 		<body id="page-top">
-			<!-- Page Wrapper -->
 			<div id="wrapper">
 				@sidebar()
 				<div id="content-wrapper" class="d-flex flex-column">
 					<div id="content">
 						@header()
 						<div class="container-fluid">
+
+
+                            <div id="search-container">
+                              <input type="text" id="search-input" class="form-control"  placeholder="Cerca..." />
+                              <div id="preview"></div>
+                            </div>
+
+
 							{ children... }
 						</div>
 					</div>
 				</div>
 			</div>
+
+            <script>
+                // Codice JavaScript per gestire la ricerca e l'anteprima
+                const searchInput = document.getElementById('search-input');
+                const preview = document.getElementById('preview');
+
+                // Array di esempio di dati di anteprima
+                const previewData = [
+                    { title: 'Anteprima 1', url: 'https://www.example.com/page1' },
+                    { title: 'Anteprima 2', url: 'https://www.example.com/page2' },
+                    { title: 'Anteprima 3', url: 'https://www.example.com/page3' }
+                    // Aggiungi altri dati di anteprima se necessario
+                ];
+
+                // Funzione per filtrare e visualizzare l'anteprima
+                function showPreview(query) {
+                    const matchedResults = previewData.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+                    const html = matchedResults.map(item => `<a href="${item.url}">${item.title}</a>`).join('');
+                    preview.innerHTML = html;
+                    preview.style.display = matchedResults.length ? 'block' : 'none';
+                }
+
+                // Evento di input per gestire la ricerca e visualizzare l'anteprima
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    if (query) {
+                        showPreview(query);
+                    } else {
+                        preview.innerHTML = '';
+                        preview.style.display = 'none';
+                    }
+                });
+            </script>
 			@mainScripts()
 		</body>
 	</html>

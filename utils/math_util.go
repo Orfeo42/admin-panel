@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -30,16 +31,16 @@ func FormatAmount(amount int) string {
 	return strconv.FormatFloat(result, 'f', 2, 64)
 }
 
-func StringToUint(valueFrom string) *uint {
+func StringToUint(valueFrom string) (*uint, error) {
 	if valueFrom == "" {
-		return nil
+		return nil, errors.New("empty can't be converted to uint")
 	}
 	value, err := strconv.ParseUint(valueFrom, 10, 32)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	result := uint(value)
-	return &result
+	return &result, nil
 }
 
 func StringToTime(valueFrom string) *time.Time {

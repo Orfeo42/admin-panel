@@ -25,37 +25,24 @@ func CustomerController(application *echo.Echo) {
 	})
 
 	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
-		id := echoCtx.Param("id")
+		stringId := echoCtx.Param("id")
 		echoCtx = utils.SetPage(echoCtx, pages.CustomerList)
-
-		item, err := repositories.GetCustomerByIDString(id)
+		id, err := utils.StringToUint(stringId)
+		if err != nil {
+			return err
+		}
+		item, err := repositories.GetCustomerByID(*id)
 		if err != nil {
 			return err
 		}
 		echoCtx = utils.SetTitle(echoCtx, "Customer detail for customer: "+item.Name)
-		invoiceList, err := repositories.GetAllInvoiceByCustomerID(id, nil)
+		invoiceList, err := repositories.GetAllInvoiceByCustomerID(*id, nil)
 		if err != nil {
 			return err
 		}
 
 		return utils.Render(customer.CustomerView(*item, *invoiceList), echoCtx)
 	})
-
-	/*customerGroup.POST("", func(echoCtx echo.Context) error {
-		input := repositories.Customer{
-			Name:    echoCtx.FormValue("name"),
-			Surname: echoCtx.FormValue("surname"),
-			Address: echoCtx.FormValue("address"),
-			Email:   echoCtx.FormValue("email"),
-			Phone:   echoCtx.FormValue("phone"),
-		}
-		result, err := repositories.CreateCustomer(input)
-		if err != nil {
-			return err
-		}
-
-		return utils.Render(customer.CustomerData(result), echoCtx)
-	})*/
 
 	customerGroup.GET("/search", func(echoCtx echo.Context) error {
 		name := echoCtx.QueryParam("name")

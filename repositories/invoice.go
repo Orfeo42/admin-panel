@@ -120,7 +120,7 @@ func GetAllInvoice(filter InvoiceFilter) ([]Invoice, error) {
 	return items, result.Error
 }
 
-func GetAllInvoiceByCustomerID(customerID string, isPaid *bool) (*[]Invoice, error) {
+func GetAllInvoiceByCustomerID(customerID uint, isPaid *bool) (*[]Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return nil, err

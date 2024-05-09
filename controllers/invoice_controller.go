@@ -26,8 +26,12 @@ func InvoiceController(application *echo.Echo) {
 	})
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
+		customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
+		if err != nil {
+			customerID = nil
+		}
 		filter := repositories.InvoiceFilter{
-			CustomerID:      utils.StringToUint(echoCtx.FormValue("customer")),
+			CustomerID:      customerID,
 			Number:          utils.StringToString(echoCtx.FormValue("number")),
 			DateFrom:        utils.StringToTime(echoCtx.FormValue("dateFrom")),
 			DateTo:          utils.StringToTime(echoCtx.FormValue("dateTo")),

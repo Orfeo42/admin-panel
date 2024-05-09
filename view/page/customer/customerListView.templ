@@ -70,7 +70,8 @@ templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
 }
 
 templ CustomerSearchView(items []repositories.Customer) {
+    <option value="">--Seleziona un cliente--</option>
 	for _, customer := range items {
-        <div>{ utils.UintToString(customer.ID) } - { customer.Name }</div>
+        <option value={ utils.UintToString(customer.ID) }>{ customer.Name }</option>
 	}
 }

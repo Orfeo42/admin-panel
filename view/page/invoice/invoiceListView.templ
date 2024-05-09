@@ -26,15 +26,15 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 							FormType:    component.Text,
 							Value:       utils.FormatUintToFormString(filter.CustomerID),
 						})
-						<input class="form-control" type="search"
+						<input class="form-control" type="search" list="search-results"
                                name="name"
                                placeholder="Begin Typing To Search Users..."
                                hx-get="/customer/search"
                                hx-trigger="input changed delay:500ms, search"
-                               hx-target="#search-results"
-                               hx-swap="innerHTML"
-                                />
-                        <div id="search-results"></div>
+                               hx-target="#search-results" />
+                        <datalist id="search-results">
+                            <option value="">--Seleziona un cliente--</option>
+                        </datalist>
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
