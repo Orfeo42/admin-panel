@@ -90,7 +90,7 @@ templ dropDownItem(params dropDownItemParams) {
 	if (params.isHeader) {
 		<h6 class="collapse-header">{ params.text }:</h6>
 	} else {
-		<a class={ "collapse-item", templ.KV("active", isActive(ctx,params.page)) } href={ templ.SafeURL(params.url) }>{ params.text }</a>
+		<a class={ "collapse-item", templ.KV("active", isActive(ctx, params.page)) } href={ templ.SafeURL(params.url) }>{ params.text }</a>
 	}
 }
 

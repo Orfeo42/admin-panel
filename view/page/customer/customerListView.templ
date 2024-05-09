@@ -68,3 +68,9 @@ templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
 		@CustomerRowShow(item)
 	}
 }
+
+templ CustomerSearchView(items []repositories.Customer) {
+	for _, customer := range items {
+        <div>{ utils.UintToString(customer.ID) } - { customer.Name }</div>
+	}
+}

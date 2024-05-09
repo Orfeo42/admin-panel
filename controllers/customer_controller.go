@@ -57,4 +57,14 @@ func CustomerController(application *echo.Echo) {
 		return utils.Render(customer.CustomerData(result), echoCtx)
 	})*/
 
+	customerGroup.GET("/search", func(echoCtx echo.Context) error {
+		name := echoCtx.QueryParam("name")
+
+		customerList, err := repositories.SearchCustomerByName(name)
+		if err != nil {
+			return err
+		}
+
+		return utils.Render(customer.CustomerSearchView(*customerList), echoCtx)
+	})
 }

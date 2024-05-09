@@ -9,6 +9,12 @@ import (
 
 type contextKey string
 
+const (
+	CustomerVisible contextKey = "CustomerVisible"
+	PageContextKey  contextKey = "page"
+	TitleContextKey contextKey = "title"
+)
+
 func getStringFromContext(ctx context.Context, key contextKey) string {
 	if page, ok := ctx.Value(key).(string); ok {
 		return page
@@ -22,25 +28,32 @@ func setInContext(echoCtx echo.Context, key contextKey, value any) echo.Context 
 	return echoCtx
 }
 
-var pageContextKey contextKey = "page"
-
 func GetPage(ctx context.Context) string {
-	if page, ok := ctx.Value(pageContextKey).(pages.Page); ok {
+	if page, ok := ctx.Value(PageContextKey).(pages.Page); ok {
 		return string(page)
 	}
 	return ""
 }
 
 func SetPage(echoCtx echo.Context, value pages.Page) echo.Context {
-	return setInContext(echoCtx, pageContextKey, value)
+	return setInContext(echoCtx, PageContextKey, value)
 }
 
-var titleContextKey contextKey = "title"
-
 func GetTitle(ctx context.Context) string {
-	return getStringFromContext(ctx, titleContextKey)
+	return getStringFromContext(ctx, TitleContextKey)
 }
 
 func SetTitle(echoCtx echo.Context, value string) echo.Context {
-	return setInContext(echoCtx, titleContextKey, value)
+	return setInContext(echoCtx, TitleContextKey, value)
+}
+
+func GetCustomerVisible(ctx context.Context) bool {
+	if page, ok := ctx.Value(CustomerVisible).(bool); ok {
+		return page
+	}
+	return false
+}
+
+func SetCustomerVisible(ctx echo.Context, value bool) echo.Context {
+	return setInContext(ctx, CustomerVisible, value)
 }

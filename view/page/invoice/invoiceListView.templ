@@ -26,16 +26,15 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 							FormType:    component.Text,
 							Value:       utils.FormatUintToFormString(filter.CustomerID),
 						})
-						<!--<input
-								class="form-control"
-								type="search"
-								name="search"
-								placeholder="Begin Typing To Search By customer..."
-								hx-post="/search"
-								hx-trigger="input changed delay:500ms, search"
-								hx-target="#search-results"
-								hx-indicator=".htmx-indicator"
-							/>	-->
+						<input class="form-control" type="search"
+                               name="name"
+                               placeholder="Begin Typing To Search Users..."
+                               hx-get="/customer/search"
+                               hx-trigger="input changed delay:500ms, search"
+                               hx-target="#search-results"
+                               hx-swap="innerHTML"
+                                />
+                        <div id="search-results"></div>
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
@@ -103,7 +102,9 @@ templ InvoiceTable(items []repositories.Invoice) {
             <table class="table table-bordered" id="dataTable">
                 <thead>
                     <tr>
-                        <th>Customer</th>
+                        if utils.GetCustomerVisible(ctx){
+                            <th>Customer</th>
+                        }
                         <th>Number</th>
                         <th>Date</th>
                         <th>Payment Date</th>
@@ -130,7 +131,9 @@ templ AllInvoiceRowsShow(items []repositories.Invoice) {
 
 templ InvoiceRowShow(item repositories.Invoice) {
 	<tr>
-		<td>{ item.Customer.Name }</td>
+        if utils.GetCustomerVisible(ctx){
+		    <td>{ item.Customer.Name }</td>
+        }
 		<td style="text-align: right;">{ item.Number }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.PaymentDate) }</td>
@@ -169,9 +172,11 @@ templ InvoiceRowShow(item repositories.Invoice) {
 
 templ InvoiceRowEdit(item repositories.Invoice) {
 	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
-		<td>
-		    @component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
-        </td>
+        if utils.GetCustomerVisible(ctx){
+            <td>
+                @component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
+            </td>
+        }
 		<td style="text-align: right;">
 			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})
 		</td>
@@ -189,6 +194,9 @@ templ InvoiceRowEdit(item repositories.Invoice) {
 		</td>
 		<td style="text-align: center;"></td>
 		<td style="white-space: nowrap; text-align: center">
+            if !utils.GetCustomerVisible(ctx) {
+                <input type="hidden" name="customerID" value={ utils.UintToString(item.CustomerID) } />
+            }
 			<button class="btn btn-primary" hx-put={ "/invoice/" + utils.UintToString(item.ID) } hx-include="closest tr">
 				<i class="fa-solid fa-floppy-disk"></i>
 				Save

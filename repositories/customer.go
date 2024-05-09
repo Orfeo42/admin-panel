@@ -23,7 +23,6 @@ type CustomerWithTotals struct {
 }
 
 func GetAllCustomer() ([]Customer, error) {
-
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return []Customer{}, err
@@ -109,4 +108,26 @@ func GetCustomerByIDString(id string) (*Customer, error) {
 		return nil, tx.Error
 	}
 	return &customer, nil
+}
+
+func SearchCustomerByName(name string) (*[]Customer, error) {
+	if name == "" {
+		return &[]Customer{}, nil
+	}
+
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return nil, err
+	}
+	var customerList []Customer
+	tx := dbInstance.
+		Where("lower(customers.name) LIKE '%' || lower(?) || '%'", name).
+		Limit(10).
+		Find(&customerList)
+
+	if tx.Error != nil {
+		log.Errorf("Error in searching customer by name: %+v", tx.Error)
+		return nil, tx.Error
+	}
+	return &customerList, nil
 }

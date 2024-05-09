@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/labstack/echo/v4/middleware"
 	"strconv"
 	"time"
 
@@ -17,6 +18,8 @@ import (
 func main() {
 
 	app := echo.New()
+
+	app.Use(middleware.Logger())
 
 	app.Static("/", "web")
 

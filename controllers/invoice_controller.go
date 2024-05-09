@@ -14,6 +14,7 @@ func InvoiceController(application *echo.Echo) {
 	invoiceGroup.GET("/list", func(echoCtx echo.Context) error {
 		echoCtx = utils.SetPage(echoCtx, pages.InvoiceList)
 		echoCtx = utils.SetTitle(echoCtx, "Invoices")
+		echoCtx = utils.SetCustomerVisible(echoCtx, true)
 
 		filter := repositories.NewBaseFilter()
 
