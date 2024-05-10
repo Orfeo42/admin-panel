@@ -4,6 +4,7 @@ import (
 	"github.com/Orfeo42/admin-panel/view/layout"
 	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
+	"github.com/Orfeo42/admin-panel/view/component"
 )
 
 templ OrderListView(items []repositories.Order) {
@@ -53,5 +54,11 @@ templ OrderRowShow(item repositories.Order) {
 templ AllOrderRowsShow(items []repositories.Order) {
 	for _, item := range items {
 		@OrderRowShow(item)
+	}
+}
+
+templ OrderView(item repositories.Order) {
+	@layout.BaseView() {
+		@component.TitledCardComp("Prova Nuova")
 	}
 }
