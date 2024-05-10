@@ -1,4 +1,4 @@
-package invoice
+package pages
 
 import (
 	"github.com/Orfeo42/admin-panel/view/layout"
@@ -11,132 +11,14 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 	@layout.TableView() {
 		<div class="row">
 			<div class="col-12 mb-4">
-				<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
+			    <h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
 			</div>
 		</div>
 		@component.CollapseCard("Filters", "filter") {
 			<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 				<div class="form-row">
 					<div class="form-group col-md-6">
-
-                        <div id="search-container">
-                            <label for="search-input">Customer</label>
-                            <input class="form-control"
-                                   type="search"
-                                   name="name"
-                                   id="search-input"
-                                   placeholder="Cerca..."
-                                   hx-get="/customer/search"
-                                   hx-trigger="input changed delay:500ms, search"
-                                   hx-target="#preview"
-                            />
-                            <div id="preview"></div>
-                            <input type="hidden" id="selected-id" name="customerID" />
-                        </div>
-
-                        <script>
-                            // Codice JavaScript per gestire la ricerca, l'anteprima e la selezione con la tastiera
-                            const searchInput = document.getElementById('search-input');
-                            const preview = document.getElementById('preview');
-                            const selectedIdInput = document.getElementById('selected-id');
-                            let selectedIndex = -1;
-
-
-                            // Funzione per filtrare e visualizzare l'anteprima
-                            function showPreview() {
-                                //const matchedResults = previewData.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
-                                //const html = matchedResults.map((item, index) => `<div class="preview-item" data-index="${index}" data-id="${item.id}" ${index === selectedIndex ? 'class="selected"' : ''}>${item.title}</div>`).join('');
-                                //preview.innerHTML = html;
-                                //const matchedResults = preview.querySelectorAll('.preview-item')
-                                //preview.style.display = matchedResults.length ? 'block' : 'none';
-                                preview.style.display = 'block';
-                                //if (matchedResults.length && selectedIndex === -1) {
-                                //    selectedIndex = 0;
-                                //    preview.querySelector('.preview-item').classList.add('selected');
-                                //}
-                            }
-
-                            searchInput.addEventListener('input', showPreview);
-
-                            // Funzione per gestire la selezione dell'anteprima con la tastiera
-                            function handleKeyboardNavigation(event) {
-                                if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                                    event.preventDefault();
-                                    const items = Array.from(document.querySelectorAll('#preview .preview-item'));
-                                    if (event.key === 'ArrowDown') {
-                                        selectedIndex = (selectedIndex + 1) % items.length;
-                                    } else {
-                                        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-                                    }
-                                    items.forEach((item, index) => {
-                                        if (index === selectedIndex) {
-                                            item.classList.add('selected');
-                                        } else {
-                                            item.classList.remove('selected');
-                                        }
-                                    });
-                                } else if (event.key === 'Enter' && selectedIndex !== -1) {
-                                    event.preventDefault();
-                                    const selectedItem = document.querySelector(`#preview .preview-item[data-index="${selectedIndex}"]`);
-                                    if (selectedItem) {
-                                        searchInput.value = selectedItem.textContent;
-                                        selectedIdInput.value = selectedItem.dataset.id;
-                                        selectedIndex = -1;
-                                        preview.style.display = 'none';
-                                    }
-                                }
-                            }
-
-                            // Evento di input per gestire la ricerca e visualizzare l'anteprima
-
-
-                            function handlePreviewItemClick(event) {
-                                const selectedItem = event.target;
-                                const index = selectedItem.getAttribute('data-index');
-                                if (index !== null) {
-                                    selectedIndex = parseInt(index);
-                                    searchInput.value = selectedItem.textContent;
-                                    selectedIdInput.value = selectedItem.dataset.id;
-                                    preview.style.display = 'none';
-                                }
-                            }
-
-                            // Eventi di tastiera per la navigazione e la selezione dei risultati
-                            searchInput.addEventListener('keydown', handleKeyboardNavigation);
-
-                            preview.addEventListener('click', handlePreviewItemClick);
-                        </script>
-
-                        <!--
-
-						<input type="hidden" name="customerID" value="" />
-                        <div id="search-container">
-                            <label for="search-input">Customer</label>
-                            <input class="form-control"
-                                   type="search"
-                                   name="name"
-                                   id="search-input"
-                                   placeholder="Customer"
-                                   hx-get="/customer/search"
-                                   hx-trigger="input changed delay:500ms, search"
-                                   hx-target="#preview" />
-                            <div id="preview"></div>
-                        </div>
-
-
-                        <script>
-                            // Codice JavaScript per gestire la ricerca e l'anteprima
-                            const searchInput = document.getElementById('search-input');
-
-                            // Funzione per filtrare e visualizzare l'anteprima
-                            function showPreview() {
-                                //preview.style.display = matchedResults.length ? 'block' : 'none';
-                                preview.style.display = 'block';
-                            }
-
-                            searchInput.addEventListener('input', showPreview);
-                        </script>
-                        -->
+                        @CustomerSearchInput()
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})

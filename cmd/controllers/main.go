@@ -1,16 +1,16 @@
 package main
 
 import (
+	"github.com/Orfeo42/admin-panel/enum"
+	"github.com/Orfeo42/admin-panel/view/pages"
 	"github.com/labstack/echo/v4/middleware"
 	"strconv"
 	"time"
 
 	"github.com/Orfeo42/admin-panel/controllers"
-	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/component"
-	"github.com/Orfeo42/admin-panel/view/page/home"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -30,7 +30,7 @@ func main() {
 	controllers.OrderController(app)
 
 	app.GET("/", func(echoCtx echo.Context) error {
-		echoCtx = utils.SetPage(echoCtx, pages.Home)
+		echoCtx = utils.SetPage(echoCtx, enum.Home)
 		echoCtx = utils.SetTitle(echoCtx, "Home Page")
 
 		startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
@@ -46,7 +46,7 @@ func main() {
 		for _, v := range data.Data {
 			yearEarning += v
 		}
-		return utils.Render(home.HomeView(data, lastMonthEarning, yearEarning), echoCtx)
+		return utils.Render(pages.HomeView(data, lastMonthEarning, yearEarning), echoCtx)
 	})
 
 	err := app.Start(":8080")

@@ -1,12 +1,12 @@
 package controllers
 
 import (
+	"github.com/Orfeo42/admin-panel/enum"
+	"github.com/Orfeo42/admin-panel/view/pages"
 	"math/rand"
 
-	"github.com/Orfeo42/admin-panel/enum/pages"
 	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
-	"github.com/Orfeo42/admin-panel/view/page/order"
 	"github.com/labstack/echo/v4"
 )
 
@@ -14,7 +14,7 @@ func OrderController(application *echo.Echo) {
 	orderGroup := application.Group("/order")
 
 	orderGroup.GET("/list", func(echoCtx echo.Context) error {
-		echoCtx = utils.SetPage(echoCtx, pages.OrderList)
+		echoCtx = utils.SetPage(echoCtx, enum.OrderList)
 		echoCtx = utils.SetTitle(echoCtx, "Orders")
 
 		var items []repositories.Order
@@ -23,14 +23,14 @@ func OrderController(application *echo.Echo) {
 			items = append(items, genRandomOrder())
 		}
 
-		return utils.Render(order.OrderListView(items), echoCtx)
+		return utils.Render(pages.OrderListView(items), echoCtx)
 	})
 
 	orderGroup.GET("/add", func(echoCtx echo.Context) error {
-		echoCtx = utils.SetPage(echoCtx, pages.OrderAdd)
+		echoCtx = utils.SetPage(echoCtx, enum.OrderAdd)
 		echoCtx = utils.SetTitle(echoCtx, "Invoice")
 
-		return utils.Render(order.OrderView(repositories.Order{}), echoCtx)
+		return utils.Render(pages.OrderView(repositories.Order{}), echoCtx)
 	})
 }
 

@@ -1,0 +1,155 @@
+package pages
+
+import (
+	"github.com/Orfeo42/admin-panel/view/layout"
+	"github.com/Orfeo42/admin-panel/repositories"
+	"github.com/Orfeo42/admin-panel/utils"
+	"strconv"
+)
+
+templ CustomerListView(items []repositories.CustomerWithTotals) {
+	@layout.TableView() {
+		<div class="row">
+			<div class="col-xl-6 col-md-6 mb-4">
+		        <h1 class="h3 mb-2 text-gray-800">Customer List</h1>
+		    </div>
+			<div class="col-xl-6 col-md-6 mb-4" style="text-align: right;">
+                <button type="submit" class="btn btn-primary" hx-get="/customer/add" hx-target="body" hx-replace-url="true">
+                    <i class="fas fa-fw fa-plus"></i>
+                    Add new
+                </button>
+            </div>
+        </div>
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">List</h6>
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="table table-bordered" id="dataTable">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Phone</th>
+								<th>Email</th>
+								<th>Totale fatturato</th>
+								<th>Totale da pagare</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@AllCustomerRowsShow(items)
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ CustomerRowShow(item repositories.CustomerWithTotals) {
+	<tr>
+		<td>{ item.Name }</td>
+		<td>{ item.Phone }</td>
+		<td>{ item.Email }</td>
+		<td>{ utils.FormatAmount(item.TotalAmount) }</td>
+		<td>{ utils.FormatAmount(item.TotalToPay) }</td>
+		<td style="text-align: center;">
+			<a class="btn btn-circle btn-primary"
+			    href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") } >
+				<i class="fa-solid fa-info"></i>
+			</a>
+		</td>
+	</tr>
+}
+
+templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
+	for _, item := range items {
+		@CustomerRowShow(item)
+	}
+}
+
+
+templ CustomerSearchInput(){
+
+    <div id="search-container">
+        <label for="search-input">Customer</label>
+        <input class="form-control"
+               type="search"
+               name="name"
+               id="search-input"
+               placeholder="Cerca..."
+               hx-get="/customer/search"
+               hx-trigger="input changed delay:500ms, search"
+               hx-target="#preview"
+        />
+        <div id="preview"></div>
+        <input type="hidden" id="selected-id" name="customerID" />
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const preview = document.getElementById('preview');
+        const selectedIdInput = document.getElementById('selected-id');
+        let selectedIndex = -1;
+        function showPreview() {
+            preview.style.display = 'block';
+        }
+
+        searchInput.addEventListener('input', showPreview);
+
+        function handleKeyboardNavigation(event) {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                const items = Array.from(document.querySelectorAll('#preview .preview-item'));
+                if (event.key === 'ArrowDown') {
+                    selectedIndex = (selectedIndex + 1) % items.length;
+                } else {
+                    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                }
+                items.forEach((item, index) => {
+                    if (index === selectedIndex) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                });
+            } else if (event.key === 'Enter' && selectedIndex !== -1) {
+                event.preventDefault();
+                const selectedItem = document.querySelector(`#preview .preview-item[data-index="${selectedIndex}"]`);
+                if (selectedItem) {
+                    searchInput.value = selectedItem.textContent;
+                    selectedIdInput.value = selectedItem.dataset.id;
+                    selectedIndex = -1;
+                    preview.style.display = 'none';
+                }
+            }
+        }
+
+        function handlePreviewItemClick(event) {
+            const selectedItem = event.target;
+            const index = selectedItem.getAttribute('data-index');
+            if (index !== null) {
+                selectedIndex = parseInt(index);
+                searchInput.value = selectedItem.textContent;
+                selectedIdInput.value = selectedItem.dataset.id;
+                preview.style.display = 'none';
+            }
+        }
+        searchInput.addEventListener('keydown', handleKeyboardNavigation);
+        preview.addEventListener('click', handlePreviewItemClick);
+    </script>
+}
+
+
+
+templ CustomerSearchView(items []repositories.Customer) {
+	for index, customer := range items {
+	    <div
+	        class="preview-item"
+	        data-index={ strconv.Itoa(index) }
+	        data-id={ utils.UintToString(customer.ID) }
+	    >{ customer.Name }</div>
+	}
+}

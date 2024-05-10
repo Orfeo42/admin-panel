@@ -1,4 +1,4 @@
-package pages
+package enum
 
 type Page string
 
