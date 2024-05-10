@@ -92,6 +92,11 @@ func FormatIntToFormNumber(valueFrom *int) string {
 	return FormatAmount(*valueFrom)
 }
 
+func IntToString(amount int) string {
+	result := float64(amount) / 100
+	return strconv.FormatFloat(result, 'f', 2, 64)
+}
+
 func FormatUintToFormString(valueFrom *uint) string {
 	if valueFrom == nil {
 		return ""

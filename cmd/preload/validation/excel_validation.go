@@ -22,7 +22,10 @@ func ValidateExcel() (*[]repositories.Customer, *[]repositories.Invoice, error) 
 	var customerList []repositories.Customer
 	for _, sheet := range xlFile.Sheets {
 		if sheet.Name == customerSheetName {
-			for _, row := range sheet.Rows {
+			for index, row := range sheet.Rows {
+				if index == 0 {
+					continue
+				}
 				text := row.Cells[0].String()
 				if text == "" {
 					continue
@@ -38,7 +41,10 @@ func ValidateExcel() (*[]repositories.Customer, *[]repositories.Invoice, error) 
 	for _, sheet := range xlFile.Sheets {
 		if _, err := strconv.Atoi(sheet.Name); err == nil {
 			log.Infof("Reading sheet %s", sheet.Name)
-			for _, row := range sheet.Rows {
+			for index, row := range sheet.Rows {
+				if index == 0 {
+					continue
+				}
 				customerName := row.Cells[0].String()
 				if customerName == "" {
 					continue
