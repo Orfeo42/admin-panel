@@ -51,7 +51,7 @@ func GetCustomerVisible(ctx context.Context) bool {
 	if page, ok := ctx.Value(CustomerVisible).(bool); ok {
 		return page
 	}
-	return false
+	return true
 }
 
 func SetCustomerVisible(ctx echo.Context, value bool) echo.Context {

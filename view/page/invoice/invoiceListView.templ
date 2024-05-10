@@ -18,23 +18,115 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 			<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 				<div class="form-row">
 					<div class="form-group col-md-6">
-						@component.FormInput(component.FormInputParam{
-							Id: "customer",
-						
-							Name:        "customer",
-							Description: "Customer",
-							FormType:    component.Text,
-							Value:       utils.FormatUintToFormString(filter.CustomerID),
-						})
-						<input class="form-control" type="search" list="search-results"
-                               name="name"
-                               placeholder="Begin Typing To Search Users..."
-                               hx-get="/customer/search"
-                               hx-trigger="input changed delay:500ms, search"
-                               hx-target="#search-results" />
-                        <datalist id="search-results">
-                            <option value="">--Seleziona un cliente--</option>
-                        </datalist>
+
+                        <div id="search-container">
+                            <label for="search-input">Customer</label>
+                            <input class="form-control" type="search" id="search-input" placeholder="Cerca..." />
+                            <div id="preview"></div>
+                            <input type="hidden" id="selected-id" />
+                        </div>
+
+                        <script>
+                            // Codice JavaScript per gestire la ricerca, l'anteprima e la selezione con la tastiera
+                            const searchInput = document.getElementById('search-input');
+                            const preview = document.getElementById('preview');
+                            const selectedIdInput = document.getElementById('selected-id');
+                            let selectedIndex = -1;
+
+                            // Array di esempio di dati di anteprima
+                            const previewData = [
+                                { id: 'id1', title: 'Anteprima 1', url: 'https://www.example.com/page1' },
+                                { id: 'id2', title: 'Anteprima 2', url: 'https://www.example.com/page2' },
+                                { id: 'id3', title: 'Anteprima 3', url: 'https://www.example.com/page3' }
+                                // Aggiungi altri dati di anteprima se necessario
+                            ];
+
+                            // Funzione per filtrare e visualizzare l'anteprima
+                            function showPreview(query) {
+                                const matchedResults = previewData.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+                                const html = matchedResults.map((item, index) => `<div class="preview-item" data-index="${index}" data-id="${item.id}" ${index === selectedIndex ? 'class="selected"' : ''}>${item.title}</div>`).join('');
+                                preview.innerHTML = html;
+                                preview.style.display = matchedResults.length ? 'block' : 'none';
+                                if (matchedResults.length && selectedIndex === -1) {
+                                    selectedIndex = 0;
+                                    preview.querySelector('.preview-item').classList.add('selected');
+                                }
+                            }
+
+                            // Funzione per gestire la selezione dell'anteprima con la tastiera
+                            function handleKeyboardNavigation(event) {
+                                if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                                    event.preventDefault();
+                                    const items = Array.from(document.querySelectorAll('#preview .preview-item'));
+                                    if (event.key === 'ArrowDown') {
+                                        selectedIndex = (selectedIndex + 1) % items.length;
+                                    } else {
+                                        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                                    }
+                                    items.forEach((item, index) => {
+                                        if (index === selectedIndex) {
+                                            item.classList.add('selected');
+                                        } else {
+                                            item.classList.remove('selected');
+                                        }
+                                    });
+                                } else if (event.key === 'Enter' && selectedIndex !== -1) {
+                                    event.preventDefault();
+                                    const selectedItem = document.querySelector(`#preview .preview-item[data-index="${selectedIndex}"]`);
+                                    if (selectedItem) {
+                                        searchInput.value = selectedItem.textContent;
+                                        selectedIdInput.value = selectedItem.dataset.id;
+                                        selectedIndex = -1;
+                                        preview.style.display = 'none';
+                                    }
+                                }
+                            }
+
+                            // Evento di input per gestire la ricerca e visualizzare l'anteprima
+                            searchInput.addEventListener('input', function() {
+                                const query = this.value.trim();
+                                if (query) {
+                                    showPreview(query);
+                                } else {
+                                    preview.innerHTML = '';
+                                    preview.style.display = 'none';
+                                }
+                            });
+
+                            // Eventi di tastiera per la navigazione e la selezione dei risultati
+                            searchInput.addEventListener('keydown', handleKeyboardNavigation);
+                        </script>
+
+                        <!--
+
+						<input type="hidden" name="customerID" value="" />
+                        <div id="search-container">
+                            <label for="search-input">Customer</label>
+                            <input class="form-control"
+                                   type="search"
+                                   name="name"
+                                   id="search-input"
+                                   placeholder="Customer"
+                                   hx-get="/customer/search"
+                                   hx-trigger="input changed delay:500ms, search"
+                                   hx-target="#preview" />
+                            <div id="preview"></div>
+                        </div>
+
+
+                        <script>
+                            // Codice JavaScript per gestire la ricerca e l'anteprima
+                            const searchInput = document.getElementById('search-input');
+
+                            // Funzione per filtrare e visualizzare l'anteprima
+                            function showPreview() {
+                                //preview.style.display = matchedResults.length ? 'block' : 'none';
+                                preview.style.display = 'block';
+                            }
+
+                            searchInput.addEventListener('input', showPreview);
+                        </script>
+                        -->
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
