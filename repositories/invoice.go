@@ -231,24 +231,40 @@ func CreateInvoiceList(invoiceList *[]Invoice) (*[]Invoice, error) {
 	return &result, nil
 }
 
-type EarningsByMonthResult struct {
+type MoneyByMonthResult struct {
 	Year   int
 	Month  int
 	Amount int64
 }
 
-func EarningsByMonth(dateFrom, dateTo time.Time) (*[]EarningsByMonthResult, error) {
+func SalesByMonth(dateFrom, dateTo time.Time) (*[]MoneyByMonthResult, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
 		return nil, err
 	}
-	var earningsByMonthResult []EarningsByMonthResult
+	var earningsByMonthResult []MoneyByMonthResult
 
 	dbInstance.Table("invoices").
 		Select("date_part('year', date) as Year, date_part('month', date) as Month, sum(amount) as Amount").
 		Where("date between ? and ?", dateFrom, dateTo).
 		Group("date_part('year', date), date_part('month', date)").
 		Order("date_part('year', date), date_part('month', date)").
+		Scan(&earningsByMonthResult)
+	return &earningsByMonthResult, nil
+}
+
+func CollectedByMonth(dateFrom, dateTo time.Time) (*[]MoneyByMonthResult, error) {
+	dbInstance, err := db.GetInstance()
+	if err != nil {
+		return nil, err
+	}
+	var earningsByMonthResult []MoneyByMonthResult
+
+	dbInstance.Table("invoices").
+		Select("date_part('year', payment_date) as Year, date_part('month', payment_date) as Month, sum(amount) as Amount").
+		Where("payment_date between ? and ?", dateFrom, dateTo).
+		Group("date_part('year', payment_date), date_part('month', payment_date)").
+		Order("date_part('year', payment_date), date_part('month', payment_date)").
 		Scan(&earningsByMonthResult)
 	return &earningsByMonthResult, nil
 }

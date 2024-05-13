@@ -2,33 +2,24 @@ package utils
 
 import (
 	"errors"
+	"math"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/labstack/gommon/log"
 )
 
-func ParseAmount(amount string) int {
-	if amount == "" {
-		return 0
+func formatIntegerWithCustomSeparator(integerPart, separator string) string {
+	parts := []rune(integerPart)
+	result := make([]rune, 0, len(parts)+(len(parts)-1)/3)
+	for i, part := range parts {
+		if i > 0 && (len(parts)-i)%3 == 0 {
+			result = append(result, []rune(separator)...)
+		}
+		result = append(result, part)
 	}
-	amount = strings.Replace(amount, ",", ".", -1)
-	parsedAmount, err := strconv.ParseFloat(strings.TrimSpace(amount), 64)
-	if err != nil {
-		log.Info("Amount not parsable:", amount)
-		return 0
-	}
-	return int(parsedAmount * 100)
-}
 
-func FloatToString(amount float64) string {
-	return strconv.FormatFloat(amount, 'f', -1, 64)
-}
-
-func FormatAmount(amount int) string {
-	result := float64(amount) / 100
-	return strconv.FormatFloat(result, 'f', 2, 64)
+	// Ritorna la stringa formattata
+	return string(result)
 }
 
 func StringToUint(valueFrom string) (*uint, error) {
@@ -92,8 +83,8 @@ func FormatIntToFormNumber(valueFrom *int) string {
 	return FormatAmount(*valueFrom)
 }
 
-func IntToString(amount int) string {
-	result := float64(amount) / 100
+func IntToString(number int) string {
+	result := float64(number) / 100
 	return strconv.FormatFloat(result, 'f', 2, 64)
 }
 
@@ -107,4 +98,13 @@ func FormatUintToFormString(valueFrom *uint) string {
 func UintToString(valueFrom uint) string {
 	u64 := uint64(valueFrom)
 	return strconv.FormatUint(u64, 10)
+}
+
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func ToFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
 }

@@ -6,15 +6,8 @@ import (
 	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ HomeView(areaChartData component.AreaChartData, earningMonth float64, yearEarning float64) {
+templ HomeView(salesChartData component.AreaChartData, collectedChartData component.AreaChartData, salesMonth float64, salesYear float64, collectedMonth float64, collectedYear float64) {
 	@layout.BaseView() {
-		<div class="d-sm-flex align-items-center justify-content-between mb-4">
-			<h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-			<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-				<i class="fas fa-download fa-sm text-white-50"></i>
-				Generate Report
-			</a>
-		</div>
 		<div class="row">
 			<div class="col-xl-3 col-md-6 mb-4">
 				<div class="card border-left-primary shadow h-100 py-2">
@@ -22,9 +15,9 @@ templ HomeView(areaChartData component.AreaChartData, earningMonth float64, year
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-									Earnings (Monthly)
+									Fatturato ultimo mese
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">€ { utils.FloatToString(earningMonth) }</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800">€ { utils.AmountToString(salesMonth) }</div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -39,9 +32,9 @@ templ HomeView(areaChartData component.AreaChartData, earningMonth float64, year
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-									Earnings (Annual)
+									Fatturato ultimo anno
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">€ { utils.FloatToString(yearEarning) }</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800">€ { utils.AmountToString(salesYear) }</div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -56,25 +49,9 @@ templ HomeView(areaChartData component.AreaChartData, earningMonth float64, year
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-									Tasks
+									Riscosso ultimo mese
 								</div>
-								<div class="row no-gutters align-items-center">
-									<div class="col-auto">
-										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-									</div>
-									<div class="col">
-										<div class="progress progress-sm mr-2">
-											<div
-												class="progress-bar bg-info"
-												role="progressbar"
-												style="width: 50%"
-												aria-valuenow="50"
-												aria-valuemin="0"
-												aria-valuemax="100"
-											></div>
-										</div>
-									</div>
-								</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800">€ { utils.AmountToString(collectedMonth) }</div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
@@ -89,9 +66,9 @@ templ HomeView(areaChartData component.AreaChartData, earningMonth float64, year
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-									Pending Requests
+									Riscosso ultimo Anno
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800">€ { utils.AmountToString(collectedYear) }</div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -103,24 +80,30 @@ templ HomeView(areaChartData component.AreaChartData, earningMonth float64, year
 		</div>
 		<div class="row">
 			<!-- Area Chart -->
-			<div class="col-xl-8 col-lg-7">
-				@component.TitledCardComp("Earnings Overview") {
-					@component.AreaChart("earningChart", areaChartData)
+			<div class="col-xl-6 col-lg-6">
+				@component.TitledCardComp("Fatturato anno in corso") {
+					@component.AreaChart("salesChart", salesChartData)
 				}
 			</div>
-			<!-- Pie Chart -->
-			<div class="col-xl-4 col-lg-5">
-				@component.TitledCardComp("Revenue Sources") {
-					@component.PieChart("myPieChart",
-						component.PieChartData{
-							Labels:      []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
-							Data:        []float64{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
-							Colors:      []string{"#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc"},
-							HoverColors: []string{"#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf"},
-						},
-					)
+			<div class="col-xl-6 col-lg-6">
+				@component.TitledCardComp("Soldi incassati anno in corso") {
+					@component.AreaChart("collectedChart", collectedChartData)
 				}
 			</div>
 		</div>
 	}
+	<!--
+	<div class="col-xl-4 col-lg-5">
+		@component.TitledCardComp("Revenue Sources") {
+			@component.PieChart("myPieChart",
+				component.PieChartData{
+					Labels:      []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+					Data:        []float64{0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000},
+					Colors:      []string{"#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc", "#4e73df", "#1cc88a", "#36b9cc"},
+					HoverColors: []string{"#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf", "#2e59d9", "#17a673", "#2c9faf"},
+				},
+			)
+		}
+	</div>
+	-->
 }

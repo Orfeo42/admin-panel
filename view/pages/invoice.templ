@@ -91,8 +91,8 @@ templ InvoiceTable(items []repositories.Invoice) {
 						<th>Number</th>
 						<th>Date</th>
 						<th>Payment Date</th>
-						<th>Amount</th>
-						<th>Paid Amount</th>
+						<th style="text-align: right;">Amount</th>
+						<th style="text-align: right;">Paid Amount</th>
 						<th>Is Paid</th>
 						<th></th>
 					</tr>
@@ -119,8 +119,8 @@ templ InvoiceRowShow(item repositories.Invoice) {
 		<td style="text-align: right;">{ item.Number }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.PaymentDate) }</td>
-		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>
-		<td style="text-align: right;">{ utils.FormatAmount(item.PaidAmount) } €</td>
+		<td style="text-align: right;">{ utils.AmountIntegerToString(item.Amount) } €</td>
+		<td style="text-align: right;">{ utils.AmountIntegerToString(item.PaidAmount) } €</td>
 		<td style="text-align: center;">
 			@isPaid(item.Amount-item.PaidAmount == 0)
 		</td>

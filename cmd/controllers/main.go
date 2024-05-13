@@ -36,18 +36,35 @@ func main() {
 
 		startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
 
-		earningList, err := repositories.EarningsByMonth(startOfYear, time.Now())
+		salesList, err := repositories.SalesByMonth(startOfYear, time.Now())
 		if err != nil {
-			log.Errorf("Error in earnings retrive: %+v", err)
+			log.Errorf("Error in Sales retrive: %+v", err)
 			return err
 		}
-		data := earningsToAreaChartData(earningList)
-		lastMonthEarning := data.Data[len(data.Data)-1]
-		yearEarning := float64(0)
-		for _, v := range data.Data {
-			yearEarning += v
+		collectedList, err := repositories.CollectedByMonth(startOfYear, time.Now())
+		if err != nil {
+			log.Errorf("Error in collected retrive: %+v", err)
+			return err
 		}
-		return utils.Render(pages.HomeView(data, lastMonthEarning, yearEarning), echoCtx)
+		salesData := earningsToAreaChartData(salesList)
+		salesMonth := salesData.Data[len(salesData.Data)-1]
+		salesYear := float64(0)
+		for _, v := range salesData.Data {
+			salesYear += v
+		}
+		collectedData := earningsToAreaChartData(collectedList)
+		collectedMonth := salesData.Data[len(collectedData.Data)-1]
+		collectedYear := float64(0)
+		for _, v := range collectedData.Data {
+			collectedYear += v
+		}
+
+		salesMonth = utils.ToFixed(salesMonth, 2)
+		salesYear = utils.ToFixed(salesYear, 2)
+		collectedMonth = utils.ToFixed(collectedMonth, 2)
+		collectedYear = utils.ToFixed(collectedYear, 2)
+
+		return utils.Render(pages.HomeView(salesData, collectedData, salesMonth, salesYear, collectedMonth, collectedYear), echoCtx)
 	})
 
 	err := app.Start(":8080")
@@ -56,7 +73,7 @@ func main() {
 	}
 }
 
-func earningsToAreaChartData(earningList *[]repositories.EarningsByMonthResult) component.AreaChartData {
+func earningsToAreaChartData(earningList *[]repositories.MoneyByMonthResult) component.AreaChartData {
 	var labels []string
 	var data []float64
 	addYear := false
@@ -70,7 +87,10 @@ func earningsToAreaChartData(earningList *[]repositories.EarningsByMonthResult) 
 		}
 		labels = append(labels, label)
 
-		data = append(data, float64(earning.Amount)/100)
+		amount := float64(earning.Amount) / 100
+
+		amount = utils.ToFixed(amount, 2)
+		data = append(data, amount)
 
 	}
 	return component.AreaChartData{

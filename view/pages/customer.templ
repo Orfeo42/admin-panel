@@ -33,8 +33,8 @@ templ CustomerListView(items []repositories.CustomerWithTotals) {
 								<th>Name</th>
 								<th>Phone</th>
 								<th>Email</th>
-								<th>Totale fatturato</th>
-								<th>Totale da pagare</th>
+								<th style="text-align: right;">Totale fatturato</th>
+								<th style="text-align: right;">Totale da pagare</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -53,8 +53,8 @@ templ CustomerRowShow(item repositories.CustomerWithTotals) {
 		<td>{ item.Name }</td>
 		<td>{ item.Phone }</td>
 		<td>{ item.Email }</td>
-		<td>{ utils.FormatAmount(item.TotalAmount) }</td>
-		<td>{ utils.FormatAmount(item.TotalToPay) }</td>
+		<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
+		<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
 		<td style="text-align: center;">
 			<a
 				class="btn btn-circle btn-primary"

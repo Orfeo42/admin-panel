@@ -45,7 +45,7 @@ templ OrderRowShow(item repositories.Order) {
 	<tr>
 		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Date.Format("02-01-2006") }</td>
-		<td style="text-align: right;">{ utils.FormatAmount(item.Amount) } €</td>
+		<td style="text-align: right;">{ utils.AmountIntegerToString(item.Amount) } €</td>
 	</tr>
 }
 
