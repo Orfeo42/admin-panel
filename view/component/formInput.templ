@@ -11,8 +11,8 @@ const (
 )
 
 type ComboItem struct {
-    Value string
-    Text  string
+	Value string
+	Text  string
 }
 
 type FormInputParam struct {
@@ -26,7 +26,7 @@ type FormInputParam struct {
 
 templ FormInput(params FormInputParam) {
 	<label for={ params.Id }>{ params.Description }</label>
-    @Input(params)
+	@Input(params)
 }
 
 templ Input(params FormInputParam) {

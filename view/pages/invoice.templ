@@ -11,14 +11,14 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 	@layout.TableView() {
 		<div class="row">
 			<div class="col-12 mb-4">
-			    <h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
+				<h1 class="h3 mb-2 text-gray-800">Invoice List</h1>
 			</div>
 		</div>
 		@component.CollapseCard("Filters", "filter") {
 			<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 				<div class="form-row">
 					<div class="form-group col-md-6">
-                        @CustomerSearchInput()
+						@CustomerSearchInput()
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
@@ -79,33 +79,31 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 	}
 }
 
-
 templ InvoiceTable(items []repositories.Invoice) {
-    @component.CardComp() {
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable">
-                <thead>
-                    <tr>
-                        if utils.GetCustomerVisible(ctx){
-                            <th>Customer</th>
-                        }
-                        <th>Number</th>
-                        <th>Date</th>
-                        <th>Payment Date</th>
-                        <th>Amount</th>
-                        <th>Paid Amount</th>
-                        <th>Is Paid</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
-                    @AllInvoiceRowsShow(items)
-                </tbody>
-            </table>
-        </div>
-    }
+	@component.CardComp() {
+		<div class="table-responsive">
+			<table class="table table-bordered" id="dataTable">
+				<thead>
+					<tr>
+						if utils.GetCustomerVisible(ctx) {
+							<th>Customer</th>
+						}
+						<th>Number</th>
+						<th>Date</th>
+						<th>Payment Date</th>
+						<th>Amount</th>
+						<th>Paid Amount</th>
+						<th>Is Paid</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
+					@AllInvoiceRowsShow(items)
+				</tbody>
+			</table>
+		</div>
+	}
 }
-
 
 templ AllInvoiceRowsShow(items []repositories.Invoice) {
 	for _, item := range items {
@@ -115,9 +113,9 @@ templ AllInvoiceRowsShow(items []repositories.Invoice) {
 
 templ InvoiceRowShow(item repositories.Invoice) {
 	<tr>
-        if utils.GetCustomerVisible(ctx){
-		    <td>{ item.Customer.Name }</td>
-        }
+		if utils.GetCustomerVisible(ctx) {
+			<td>{ item.Customer.Name }</td>
+		}
 		<td style="text-align: right;">{ item.Number }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.PaymentDate) }</td>
@@ -156,11 +154,11 @@ templ InvoiceRowShow(item repositories.Invoice) {
 
 templ InvoiceRowEdit(item repositories.Invoice) {
 	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
-        if utils.GetCustomerVisible(ctx){
-            <td>
-                @component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
-            </td>
-        }
+		if utils.GetCustomerVisible(ctx) {
+			<td>
+				@component.Input(component.FormInputParam{Name: "customerID", Description: "Customer", FormType: component.Text, Value: item.Customer.Name})
+			</td>
+		}
 		<td style="text-align: right;">
 			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})
 		</td>
@@ -178,9 +176,9 @@ templ InvoiceRowEdit(item repositories.Invoice) {
 		</td>
 		<td style="text-align: center;"></td>
 		<td style="white-space: nowrap; text-align: center">
-            if !utils.GetCustomerVisible(ctx) {
-                <input type="hidden" name="customerID" value={ utils.UintToString(item.CustomerID) } />
-            }
+			if !utils.GetCustomerVisible(ctx) {
+				<input type="hidden" name="customerID" value={ utils.UintToString(item.CustomerID) }/>
+			}
 			<button class="btn btn-primary" hx-put={ "/invoice/" + utils.UintToString(item.ID) } hx-include="closest tr">
 				<i class="fa-solid fa-floppy-disk"></i>
 				Save
@@ -219,8 +217,6 @@ templ isPaid(isPaid bool) {
 	}
 }
 
-
-
 templ InvoiceView(item repositories.Invoice) {
 	@layout.BaseView() {
 		@InvoiceForm(item)
@@ -228,37 +224,37 @@ templ InvoiceView(item repositories.Invoice) {
 }
 
 templ InvoiceForm(item repositories.Invoice) {
-    @component.TitledCardComp("New Invoice") {
-        <form hx-post="/invoice" hx-target="this" hx-swap="outerHTML">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "customer", Name: "customer", Description: "Customer", FormType: component.Text, Value: utils.UintToString(item.CustomerID)})
-                </div>
-                <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: item.Number})
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "date", Name: "date", Description: "Date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
-                </div>
-                <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "paymentDate", Name: "paymentDate", Description: "Payment Date", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "amount", Name: "amount", Description: "Amount", FormType: component.Number, Value: utils.FormatAmount(item.Amount)})
-                </div>
-                <div class="form-group col-md-6">
-                    @component.FormInput(component.FormInputParam{Id: "paidAmount", Name: "paidAmount", Description: "Paid Amount", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount)})
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-12">
-                    <button type="submit" class="btn btn-primary">Salva</button>
-                </div>
-            </div>
-        </form>
-    }
+	@component.TitledCardComp("New Invoice") {
+		<form hx-post="/invoice" hx-target="this" hx-swap="outerHTML">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@component.FormInput(component.FormInputParam{Id: "customer", Name: "customer", Description: "Customer", FormType: component.Text, Value: utils.UintToString(item.CustomerID)})
+				</div>
+				<div class="form-group col-md-6">
+					@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: item.Number})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@component.FormInput(component.FormInputParam{Id: "date", Name: "date", Description: "Date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
+				</div>
+				<div class="form-group col-md-6">
+					@component.FormInput(component.FormInputParam{Id: "paymentDate", Name: "paymentDate", Description: "Payment Date", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@component.FormInput(component.FormInputParam{Id: "amount", Name: "amount", Description: "Amount", FormType: component.Number, Value: utils.FormatAmount(item.Amount)})
+				</div>
+				<div class="form-group col-md-6">
+					@component.FormInput(component.FormInputParam{Id: "paidAmount", Name: "paidAmount", Description: "Paid Amount", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount)})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col-lg-12">
+					<button type="submit" class="btn btn-primary">Salva</button>
+				</div>
+			</div>
+		</form>
+	}
 }

@@ -2,10 +2,11 @@ package db
 
 import (
 	"fmt"
-	"github.com/labstack/gommon/log"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/labstack/gommon/log"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -52,10 +53,13 @@ func createDatabase() error {
 		},
 	)
 	connString, err := getConnectionString()
+	if err != nil {
+		log.Errorf("Error creating connetion string: %+v", err)
+		return err
+	}
 	db, err := gorm.Open(postgres.Open(connString), &gorm.Config{Logger: newLogger})
 	if err != nil {
-		fmt.Println("Error in db connection")
-		fmt.Println(err.Error())
+		log.Errorf("Error in db connection: %+v", err)
 		return err
 	}
 	databaseInstance = db

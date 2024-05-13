@@ -7,7 +7,6 @@ func formatPerc(percent float64) string {
 	return strconv.FormatFloat(percent, 'f', 0, 64)
 }
 
-//TODO GESTIRE LA width della progress
 templ ProgressComp(percent float64, color enum.Color) {
 	<div class="progress mb-4">
 		<div
