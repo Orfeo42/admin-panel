@@ -1,11 +1,12 @@
 package main
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/Orfeo42/admin-panel/enum"
 	"github.com/Orfeo42/admin-panel/view/pages"
 	"github.com/labstack/echo/v4/middleware"
-	"strconv"
-	"time"
 
 	"github.com/Orfeo42/admin-panel/controllers"
 	"github.com/Orfeo42/admin-panel/repositories"
