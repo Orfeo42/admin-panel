@@ -28,47 +28,49 @@ func main() {
 
 	controllers.InvoiceController(app)
 
-	app.GET("/", func(echoCtx echo.Context) error {
-		echoCtx = utils.SetPage(echoCtx, enum.Home)
-		echoCtx = utils.SetTitle(echoCtx, "Home Page")
-
-		startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
-
-		salesList, err := repositories.SalesByMonth(startOfYear, time.Now())
-		if err != nil {
-			log.Errorf("Error in Sales retrive: %+v", err)
-			return err
-		}
-		collectedList, err := repositories.CollectedByMonth(startOfYear, time.Now())
-		if err != nil {
-			log.Errorf("Error in collected retrive: %+v", err)
-			return err
-		}
-		salesData := earningsToAreaChartData(salesList)
-		salesMonth := salesData.Data[len(salesData.Data)-1]
-		salesYear := float64(0)
-		for _, v := range salesData.Data {
-			salesYear += v
-		}
-		collectedData := earningsToAreaChartData(collectedList)
-		collectedMonth := salesData.Data[len(collectedData.Data)-1]
-		collectedYear := float64(0)
-		for _, v := range collectedData.Data {
-			collectedYear += v
-		}
-
-		salesMonth = utils.ToFixed(salesMonth, 2)
-		salesYear = utils.ToFixed(salesYear, 2)
-		collectedMonth = utils.ToFixed(collectedMonth, 2)
-		collectedYear = utils.ToFixed(collectedYear, 2)
-
-		return utils.Render(pages.HomeView(salesData, collectedData, salesMonth, salesYear, collectedMonth, collectedYear), echoCtx)
-	})
+	app.GET("/", homeController)
 
 	err := app.Start(":8080")
 	if err != nil {
 		log.Fatalf("Error Stating application: %+v", err)
 	}
+}
+
+func homeController(echoCtx echo.Context) error {
+	echoCtx = utils.SetPage(echoCtx, enum.Home)
+	echoCtx = utils.SetTitle(echoCtx, "Home Page")
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	salesList, err := repositories.SalesByMonth(startOfYear, time.Now())
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
+	}
+	collectedList, err := repositories.CollectedByMonth(startOfYear, time.Now())
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+	salesData := earningsToAreaChartData(salesList)
+	salesMonth := salesData.Data[len(salesData.Data)-1]
+	salesYear := float64(0)
+	for _, v := range salesData.Data {
+		salesYear += v
+	}
+	collectedData := earningsToAreaChartData(collectedList)
+	collectedMonth := salesData.Data[len(collectedData.Data)-1]
+	collectedYear := float64(0)
+	for _, v := range collectedData.Data {
+		collectedYear += v
+	}
+
+	salesMonth = utils.ToFixed(salesMonth, 2)
+	salesYear = utils.ToFixed(salesYear, 2)
+	collectedMonth = utils.ToFixed(collectedMonth, 2)
+	collectedYear = utils.ToFixed(collectedYear, 2)
+
+	return utils.Render(pages.HomeView(salesData, collectedData, salesMonth, salesYear, collectedMonth, collectedYear), echoCtx)
 }
 
 func earningsToAreaChartData(earningList *[]repositories.MoneyByMonthResult) component.AreaChartData {
