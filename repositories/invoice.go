@@ -115,6 +115,13 @@ func GetAllInvoice(filter InvoiceFilter) ([]Invoice, error) {
 			queryDB.Where("amount <> paid_amount")
 		}
 	}
+	queryDB.Limit(filter.PageSize)
+	offset := 0
+	if filter.Page > 1 {
+		offset = filter.PageSize * filter.Page
+	}
+	queryDB.Offset(offset)
+
 	result := queryDB.Find(&items)
 
 	return items, result.Error
