@@ -6,20 +6,20 @@ $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 db-up:
 	@mkdir -p /home/${USER}/${PROJECT_NAME}
 	@docker-compose -f docker/docker-compose.yaml up -d postgres
-	@echo "🚀 Database is up and running!"
+	@echo "🚀 Database is up and running!"
 
 db-down:
 	@docker-compose -f docker/docker-compose.yaml down --volumes
-	@echo " Database is down!"
+	@echo "❄️ Database is down!"
 
 db-init: db-up
 	@sleep 5
 	@go run ./cmd/preload/main.go
-	@echo " Database is initialized!"
+	@echo "🤓 Database is initialized!"
 
 db-drop: db-down
 	@sudo rm -r /home/${USER}/${PROJECT_NAME}
-	@echo " Database deleted!"
+	@echo "💀 Database deleted!"
 
 db-reset: db-drop db-init
 
