@@ -28,8 +28,6 @@ func main() {
 
 	controllers.InvoiceController(app)
 
-	controllers.OrderController(app)
-
 	app.GET("/", func(echoCtx echo.Context) error {
 		echoCtx = utils.SetPage(echoCtx, enum.Home)
 		echoCtx = utils.SetTitle(echoCtx, "Home Page")
