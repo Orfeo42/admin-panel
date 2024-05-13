@@ -86,7 +86,7 @@ templ CustomerSearchInput() {
 			hx-target="#preview"
 		/>
 		<div id="preview"></div>
-		<input type="hidden" id="selected-id" name="customerID"/>
+		<input type="hidden" id="selected-id" name="customer"/>
 	</div>
 	<script>
         const searchInput = document.getElementById('search-input');
@@ -94,6 +94,12 @@ templ CustomerSearchInput() {
         const selectedIdInput = document.getElementById('selected-id');
         let selectedIndex = -1;
         function showPreview() {
+			const query = this.value.trim();
+			if (query === ""){
+                selectedIdInput.value = '';
+            	preview.style.display = 'none';
+				return
+			}
             preview.style.display = 'block';
         }
 
