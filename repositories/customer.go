@@ -122,7 +122,7 @@ func SearchCustomerByName(name string) (*[]Customer, error) {
 	var customerList []Customer
 	tx := dbInstance.
 		Where("lower(customers.name) LIKE '%' || lower(?) || '%'", name).
-		Limit(10).
+		Limit(4).
 		Find(&customerList)
 
 	if tx.Error != nil {

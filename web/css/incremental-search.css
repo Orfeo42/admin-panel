@@ -3,7 +3,7 @@
     position: relative;
 }
 
-#preview {
+.preview {
     display: none;
     position: absolute;
     top: calc(100% + 5px);
@@ -16,13 +16,13 @@
     overflow-y: auto;
 }
 
-#preview .preview-item {
+.preview .preview-item {
     padding: 10px;
     color: #333;
     cursor: pointer;
 }
 
-#preview .preview-item:hover {
+.preview .preview-item:hover {
     background-color: #ddd;
 }
 

@@ -56,10 +56,7 @@ templ CustomerRowShow(item repositories.CustomerWithTotals) {
 		<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
 		<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
 		<td style="text-align: center;">
-			<a
-				class="btn btn-circle btn-primary"
-				href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") }
-			>
+			<a class="btn btn-circle btn-primary" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") }>
 				<i class="fa-solid fa-info"></i>
 			</a>
 		</td>
@@ -72,89 +69,9 @@ templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
 	}
 }
 
-templ CustomerSearchInput() {
-	<div id="search-container">
-		<label for="search-input">Customer</label>
-		<input
-			class="form-control"
-			type="search"
-			name="name"
-			id="search-input"
-			placeholder="Cerca..."
-			hx-get="/customer/search"
-			hx-trigger="input changed delay:500ms, search"
-			hx-target="#preview"
-		/>
-		<div id="preview"></div>
-		<input type="hidden" id="selected-id" name="customer"/>
-	</div>
-	<script>
-        const searchInput = document.getElementById('search-input');
-        const preview = document.getElementById('preview');
-        const selectedIdInput = document.getElementById('selected-id');
-        let selectedIndex = -1;
-        function showPreview() {
-			const query = this.value.trim();
-			if (query === ""){
-                selectedIdInput.value = '';
-            	preview.style.display = 'none';
-				return
-			}
-            preview.style.display = 'block';
-        }
-
-        searchInput.addEventListener('input', showPreview);
-
-        function handleKeyboardNavigation(event) {
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                event.preventDefault();
-                const items = Array.from(document.querySelectorAll('#preview .preview-item'));
-                if (event.key === 'ArrowDown') {
-                    selectedIndex = (selectedIndex + 1) % items.length;
-                } else {
-                    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-                }
-                items.forEach((item, index) => {
-                    if (index === selectedIndex) {
-                        item.classList.add('selected');
-                    } else {
-                        item.classList.remove('selected');
-                    }
-                });
-            } else if (event.key === 'Enter' && selectedIndex !== -1) {
-                event.preventDefault();
-                const selectedItem = document.querySelector(`#preview .preview-item[data-index="${selectedIndex}"]`);
-                if (selectedItem) {
-                    searchInput.value = selectedItem.textContent;
-                    selectedIdInput.value = selectedItem.dataset.id;
-                    selectedIndex = -1;
-                    preview.style.display = 'none';
-                }
-            }
-        }
-
-        function handlePreviewItemClick(event) {
-            const selectedItem = event.target;
-            const index = selectedItem.getAttribute('data-index');
-            if (index !== null) {
-                selectedIndex = parseInt(index);
-                searchInput.value = selectedItem.textContent;
-                selectedIdInput.value = selectedItem.dataset.id;
-                preview.style.display = 'none';
-            }
-        }
-        searchInput.addEventListener('keydown', handleKeyboardNavigation);
-        preview.addEventListener('click', handlePreviewItemClick);
-    </script>
-}
-
 templ CustomerSearchView(items []repositories.Customer) {
 	for index, customer := range items {
-		<div
-			class="preview-item"
-			data-index={ strconv.Itoa(index) }
-			data-id={ utils.UintToString(customer.ID) }
-		>{ customer.Name }</div>
+		<div class="preview-item" data-index={ strconv.Itoa(index) } data-id={ utils.UintToString(customer.ID) }>{ customer.Name }</div>
 	}
 }
 

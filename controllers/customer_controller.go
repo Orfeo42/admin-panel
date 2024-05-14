@@ -26,16 +26,21 @@ func CustomerController(application *echo.Echo) {
 
 	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
 		stringId := echoCtx.Param("id")
+
 		echoCtx = utils.SetPage(echoCtx, enum.CustomerList)
+
 		id, err := utils.StringToUint(stringId)
 		if err != nil {
 			return err
 		}
+
 		item, err := repositories.GetCustomerByID(*id)
 		if err != nil {
 			return err
 		}
+
 		echoCtx = utils.SetTitle(echoCtx, "Customer detail for customer: "+item.Name)
+
 		invoiceList, err := repositories.GetAllInvoiceByCustomerID(*id, nil)
 		if err != nil {
 			return err
