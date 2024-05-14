@@ -22,7 +22,7 @@ script invoiceEditButtonScript(id string) {
                 title: 'Stai già modificando!',
                 showCancelButton: true,
                 confirmButtonText: 'Sì, Modifica questa riga!',
-                text:'Stai già modificando un altra riga, vuoi annullare per modificare questa?'
+                text:'Stai già modificando un altra riga. Vuoi annullare per modificare questa?'
             }).then((result) => {
                 if(result.isConfirmed) {
                     htmx.trigger(editing, 'cancel')

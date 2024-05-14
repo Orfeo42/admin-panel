@@ -93,8 +93,8 @@ templ InvoiceTable(items []repositories.Invoice, hideFirstColumn bool) {
 						<th>Customer</th>
 						<th>Number</th>
 						<th>Date</th>
-						<th>Payment Date</th>
 						<th style="text-align: right;">Amount</th>
+						<th>Payment Date</th>
 						<th style="text-align: right;">Paid Amount</th>
 						<th>Is Paid</th>
 						<th></th>
@@ -115,12 +115,12 @@ templ AllInvoiceRowsShow(items []repositories.Invoice) {
 }
 
 templ InvoiceRowShow(item repositories.Invoice) {
-	<tr>
+	<tr id={ "invoiceRow" + utils.UintToString(item.ID) }>
 		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Number }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>
-		<td style="text-align: right;">{ utils.FormatTimePToTable(item.PaymentDate) }</td>
 		<td style="text-align: right;">{ utils.AmountIntegerToString(item.Amount) } €</td>
+		<td style="text-align: right;">{ utils.FormatTimePToTable(item.PaymentDate) }</td>
 		<td style="text-align: right;">{ utils.AmountIntegerToString(item.PaidAmount) } €</td>
 		<td style="text-align: center;">
 			if item.Amount-item.PaidAmount == 0 {
@@ -128,7 +128,12 @@ templ InvoiceRowShow(item repositories.Invoice) {
 					<i class="fa-solid fa-check"></i>
 				</div>
 			} else {
-				<button class="btn btn-danger btn-circle" hx-put={ "/invoice/" + utils.UintToString(item.ID) + "/pay" }>
+				<button
+					class="btn btn-danger btn-circle"
+					hx-target={ "#invoiceRow" + utils.UintToString(item.ID) }
+					hx-swap="outerHTML"
+					hx-put={ "/invoice/" + utils.UintToString(item.ID) + "/pay" }
+				>
 					<i class="fa-solid fa-xmark"></i>
 				</button>
 			}
@@ -149,19 +154,19 @@ templ InvoiceRowEdit(item repositories.Invoice) {
 				ShowLabel:     false,
 			})
 		</td>
-		<td style="text-align: right;">
+		<td>
 			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})
 		</td>
-		<td style="text-align: right;">
+		<td>
 			@component.Input(component.FormInputParam{Name: "date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
 		</td>
-		<td style="text-align: right;">
-			@component.Input(component.FormInputParam{Name: "paymentDate", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
-		</td>
-		<td style="text-align: right;">
+		<td>
 			@component.Input(component.FormInputParam{Name: "amount", FormType: component.Number, Value: utils.FormatAmount(item.Amount)})
 		</td>
-		<td style="text-align: right;">
+		<td>
+			@component.Input(component.FormInputParam{Name: "paymentDate", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
+		</td>
+		<td>
 			@component.Input(component.FormInputParam{Name: "paidAmount", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount)})
 		</td>
 		<td style="text-align: center;"></td>
