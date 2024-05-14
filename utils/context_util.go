@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+
 	"github.com/Orfeo42/admin-panel/enum"
 
 	"github.com/labstack/echo/v4"
@@ -45,15 +46,4 @@ func GetTitle(ctx context.Context) string {
 
 func SetTitle(echoCtx echo.Context, value string) echo.Context {
 	return setInContext(echoCtx, TitleContextKey, value)
-}
-
-func GetCustomerVisible(ctx context.Context) bool {
-	if page, ok := ctx.Value(CustomerVisible).(bool); ok {
-		return page
-	}
-	return true
-}
-
-func SetCustomerVisible(ctx echo.Context, value bool) echo.Context {
-	return setInContext(ctx, CustomerVisible, value)
 }

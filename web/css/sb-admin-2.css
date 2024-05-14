@@ -12611,3 +12611,8 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+table.hideFirstColumn td:first-child,
+table.hideFirstColumn th:first-child {
+  display: none;
+}
