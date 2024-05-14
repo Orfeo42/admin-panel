@@ -115,7 +115,7 @@ templ AllInvoiceRowsShow(items []repositories.Invoice) {
 }
 
 templ InvoiceRowShow(item repositories.Invoice) {
-	<tr id={ "invoiceRow" + utils.UintToString(item.ID) }>
+	<tr>
 		<td>{ item.Customer.Name }</td>
 		<td style="text-align: right;">{ item.Number }</td>
 		<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>
@@ -130,7 +130,7 @@ templ InvoiceRowShow(item repositories.Invoice) {
 			} else {
 				<button
 					class="btn btn-danger btn-circle"
-					hx-target={ "#invoiceRow" + utils.UintToString(item.ID) }
+					hx-target="closest tr"
 					hx-swap="outerHTML"
 					hx-put={ "/invoice/" + utils.UintToString(item.ID) + "/pay" }
 				>

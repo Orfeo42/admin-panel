@@ -32,20 +32,19 @@ func InvoiceController(application *echo.Echo) {
 		if err != nil {
 			customerID = nil
 		}
-		filter := repositories.InvoiceFilter{
-			CustomerID:      customerID,
-			Number:          utils.StringToString(echoCtx.FormValue("number")),
-			DateFrom:        utils.StringToTime(echoCtx.FormValue("dateFrom")),
-			DateTo:          utils.StringToTime(echoCtx.FormValue("dateTo")),
-			PaymentDateFrom: utils.StringToTime(echoCtx.FormValue("paymentDateFrom")),
-			PaymentDateTo:   utils.StringToTime(echoCtx.FormValue("paymentDateTo")),
-			AmountFrom:      utils.StringToInt(echoCtx.FormValue("amountFrom")),
-			AmountTo:        utils.StringToInt(echoCtx.FormValue("amountTo")),
-			PaidAmountFrom:  utils.StringToInt(echoCtx.FormValue("paidAmountFrom")),
-			PaidAmountTo:    utils.StringToInt(echoCtx.FormValue("paidAmountTo")),
-			IsPaid:          isPaidToBool(echoCtx.FormValue("isPaid")),
-			PageSize:        10,
-		}
+		filter := repositories.NewBaseFilter()
+
+		filter.CustomerID = customerID
+		filter.Number = utils.StringToString(echoCtx.FormValue("number"))
+		filter.DateFrom = utils.StringToTime(echoCtx.FormValue("dateFrom"))
+		filter.DateTo = utils.StringToTime(echoCtx.FormValue("dateTo"))
+		filter.PaymentDateFrom = utils.StringToTime(echoCtx.FormValue("paymentDateFrom"))
+		filter.PaymentDateTo = utils.StringToTime(echoCtx.FormValue("paymentDateTo"))
+		filter.AmountFrom = utils.StringToInt(echoCtx.FormValue("amountFrom"))
+		filter.AmountTo = utils.StringToInt(echoCtx.FormValue("amountTo"))
+		filter.PaidAmountFrom = utils.StringToInt(echoCtx.FormValue("paidAmountFrom"))
+		filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+
 		log.Infof("filter: %+v", filter)
 		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {

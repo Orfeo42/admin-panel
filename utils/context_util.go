@@ -11,14 +11,15 @@ import (
 type contextKey string
 
 const (
-	CustomerVisible contextKey = "CustomerVisible"
-	PageContextKey  contextKey = "pages"
-	TitleContextKey contextKey = "title"
+	CustomerVisible      contextKey = "CustomerVisible"
+	PageContextKey       contextKey = "pages"
+	TitleContextKey      contextKey = "title"
+	PageNumberContextKey contextKey = "pageNumber"
 )
 
 func getStringFromContext(ctx context.Context, key contextKey) string {
-	if page, ok := ctx.Value(key).(string); ok {
-		return page
+	if ctxVar, ok := ctx.Value(key).(string); ok {
+		return ctxVar
 	}
 	return ""
 }
@@ -46,4 +47,16 @@ func GetTitle(ctx context.Context) string {
 
 func SetTitle(echoCtx echo.Context, value string) echo.Context {
 	return setInContext(echoCtx, TitleContextKey, value)
+}
+
+func GetPageNumber(ctx context.Context) string {
+	return getStringFromContext(ctx, PageNumberContextKey)
+}
+
+func SetPageNumber(echoCtx echo.Context, value enum.Page) echo.Context {
+	return setInContext(echoCtx, PageNumberContextKey, value)
+}
+
+func IsPageSet(ctx context.Context) bool {
+	return GetPageNumber(ctx) != ""
 }
