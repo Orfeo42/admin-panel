@@ -1,24 +1,34 @@
 package component
 
-templ CustomerSearchInput(id string, customerValue string, customerName string) {
+type CustomerSearchInputParams struct {
+	Id            string
+	CustomerValue string
+	CustomerName  string
+	ShowLabel     bool
+}
+
+templ CustomerSearchInput(params CustomerSearchInputParams) {
 	<div id="search-container">
-		<label for={ "search-input_" + id }>Customer</label>
+		if (params.ShowLabel) {
+			<label for={ "search-input_" + params.Id }>Customer</label>
+		}
 		<input
 			class="form-control"
 			autocomplete="off"
 			type="search"
 			name="name"
-			id={ "search-input_" + id }
+			id={ "search-input_" + params.Id }
 			placeholder="Cerca..."
 			hx-get="/customer/search"
 			hx-trigger="input changed delay:500ms, search"
-			hx-target={ "#preview_" + id }
-			value={ customerName }
+			hx-target={ "#preview_" + params.Id }
+			value={ params.CustomerName }
+			hx-swap="innerHTML"
 		/>
-		<div class="preview" id={ "preview_" + id }></div>
-		<input type="hidden" id={ "selected-id_" + id } name="customer" value={ customerValue }/>
+		<div class="preview" id={ "preview_" + params.Id }></div>
+		<input type="hidden" id={ "selected-id_" + params.Id } name="customer" value={ params.CustomerValue }/>
 	</div>
-	@customerSearchInputScript(id)
+	@customerSearchInputScript(params.Id)
 }
 
 script customerSearchInputScript(id string) {

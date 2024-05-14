@@ -18,7 +18,12 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 			<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 				<div class="form-row">
 					<div class="form-group col-md-6">
-						@component.CustomerSearchInput("filter", "", "")
+						@component.CustomerSearchInput(component.CustomerSearchInputParams{
+							Id:            "filter",
+							CustomerValue: "",
+							CustomerName:  "",
+							ShowLabel:     true,
+						})
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Invoice number", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
@@ -151,7 +156,12 @@ templ InvoiceRowShow(item repositories.Invoice) {
 templ InvoiceRowEdit(item repositories.Invoice) {
 	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
 		<td>
-			@component.CustomerSearchInput(utils.UintToString(item.ID), utils.UintToString(item.CustomerID), item.Customer.Name)
+			@component.CustomerSearchInput(component.CustomerSearchInputParams{
+				Id:            utils.UintToString(item.ID),
+				CustomerValue: utils.UintToString(item.CustomerID),
+				CustomerName:  item.Customer.Name,
+				ShowLabel:     false,
+			})
 		</td>
 		<td style="text-align: right;">
 			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})

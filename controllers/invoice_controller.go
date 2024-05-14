@@ -6,6 +6,7 @@ import (
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/pages"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 func InvoiceController(application *echo.Echo) {
@@ -86,6 +87,22 @@ func InvoiceController(application *echo.Echo) {
 		if err != nil {
 			return err
 		}
+
+		customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
+		if err != nil {
+			customerID = nil
+			log.Info("customer convertion error")
+		}
+		if customerID != nil {
+			customer, err := repositories.GetCustomerByID(*customerID)
+			if err != nil {
+				log.Errorf("CustomerID not valid: %+v", err)
+				return err
+			}
+			inv.CustomerID = *customerID
+			inv.Customer = *customer
+		}
+
 		number := echoCtx.FormValue("number")
 		date := utils.StringToTime(echoCtx.FormValue("date"))
 		paymentDate := utils.StringToTime(echoCtx.FormValue("paymentDate"))
@@ -96,6 +113,9 @@ func InvoiceController(application *echo.Echo) {
 		inv.Date = date
 		inv.PaymentDate = paymentDate
 		zero := 0
+
+		inv.CustomerID = *customerID
+
 		if amount == nil {
 			amount = &zero
 		}
