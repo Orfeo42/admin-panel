@@ -68,30 +68,77 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "dateFrom", Name: "dateFrom", Description: "Da Data Fattura", FormType: component.Date, Value: utils.FormatTimePToForm(filter.DateFrom)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "dateFrom",
+						Name:        "dateFrom",
+						Description: "Da Data Fattura",
+						FormType:    component.Date,
+						Value:       utils.FormatTimePToForm(filter.DateFrom),
+					})
 				</div>
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "dateTo", Name: "dateTo", Description: "A Data Fattura", FormType: component.Date, Value: utils.FormatTimePToForm(filter.DateTo)})
+					@component.FormInput(component.FormInputParam{Id: "dateTo",
+						Name:        "dateTo",
+						Description: "A Data Fattura",
+						FormType:    component.Date,
+						Value:       utils.FormatTimePToForm(filter.DateTo),
+					})
 				</div>
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "amountFrom", Name: "amountFrom", Description: "Da Importo Fattura", FormType: component.Number, Value: utils.FormatIntToAmount(filter.AmountFrom)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "amountFrom",
+						Name:        "amountFrom",
+						Description: "Da Importo Fattura",
+						FormType:    component.Number,
+						Value:       utils.FormatIntToAmount(filter.AmountFrom),
+					})
 				</div>
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "amountTo", Name: "amountTo", Description: "A Importo Fattura", FormType: component.Number, Value: utils.FormatIntToAmount(filter.AmountTo)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "amountTo",
+						Name:        "amountTo",
+						Description: "A Importo Fattura",
+						FormType:    component.Number,
+						Value:       utils.FormatIntToAmount(filter.AmountTo),
+					})
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "paymentDateFrom", Name: "paymentDateFrom", Description: "Da Data Pagamento", FormType: component.Date, Value: utils.FormatTimePToForm(filter.PaymentDateFrom)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "paymentDateFrom",
+						Name:        "paymentDateFrom",
+						Description: "Da Data Pagamento",
+						FormType:    component.Date,
+						Value:       utils.FormatTimePToForm(filter.PaymentDateFrom),
+					})
 				</div>
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "paymentDateTo", Name: "paymentDateTo", Description: "A Data Pagamento", FormType: component.Date, Value: utils.FormatTimePToForm(filter.PaymentDateTo)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "paymentDateTo",
+						Name:        "paymentDateTo",
+						Description: "A Data Pagamento",
+						FormType:    component.Date,
+						Value:       utils.FormatTimePToForm(filter.PaymentDateTo),
+					})
 				</div>
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "paidAmountFrom", Name: "paidAmountFrom", Description: "Da Importo Pagato", FormType: component.Number, Value: utils.FormatIntToAmount(filter.PaidAmountFrom)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "paidAmountFrom",
+						Name:        "paidAmountFrom",
+						Description: "Da Importo Pagato",
+						FormType:    component.Number,
+						Value:       utils.FormatIntToAmount(filter.PaidAmountFrom),
+					})
 				</div>
 				<div class="form-group col-md-3">
-					@component.FormInput(component.FormInputParam{Id: "paidAmountTo", Name: "paidAmountTo", Description: "A Importo Pagato", FormType: component.Number, Value: utils.FormatIntToAmount(filter.PaidAmountTo)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "paidAmountTo",
+						Name:        "paidAmountTo",
+						Description: "A Importo Pagato",
+						FormType:    component.Number,
+						Value:       utils.FormatIntToAmount(filter.PaidAmountTo),
+					})
 				</div>
 			</div>
 			<div class="form-row">
@@ -193,19 +240,39 @@ templ InvoiceRowEdit(item repositories.Invoice) {
 			})
 		</td>
 		<td>
-			@component.Input(component.FormInputParam{Name: "number", FormType: component.Text, Value: item.Number})
+			@component.Input(component.FormInputParam{
+				Name:     "number",
+				FormType: component.Text,
+				Value:    item.Number,
+			})
 		</td>
 		<td>
-			@component.Input(component.FormInputParam{Name: "date", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
+			@component.Input(component.FormInputParam{
+				Name:     "date",
+				FormType: component.Date,
+				Value:    utils.FormatTimePToForm(item.Date),
+			})
 		</td>
 		<td>
-			@component.Input(component.FormInputParam{Name: "amount", FormType: component.Number, Value: utils.FormatAmount(item.Amount)})
+			@component.Input(component.FormInputParam{
+				Name:     "amount",
+				FormType: component.Number,
+				Value:    utils.FormatAmount(item.Amount),
+			})
 		</td>
 		<td>
-			@component.Input(component.FormInputParam{Name: "paymentDate", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
+			@component.Input(component.FormInputParam{
+				Name:     "paymentDate",
+				FormType: component.Date,
+				Value:    utils.FormatTimePToForm(item.PaymentDate),
+			})
 		</td>
 		<td>
-			@component.Input(component.FormInputParam{Name: "paidAmount", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount)})
+			@component.Input(component.FormInputParam{
+				Name:     "paidAmount",
+				FormType: component.Number,
+				Value:    utils.FormatAmount(item.PaidAmount),
+			})
 		</td>
 		<td style="text-align: center;"></td>
 		<td style="white-space: nowrap; text-align: center">
@@ -240,23 +307,53 @@ templ InvoiceForm(item repositories.Invoice) {
 					})
 				</div>
 				<div class="form-group col-md-6">
-					@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Numero Fattura", FormType: component.Text, Value: item.Number})
+					@component.FormInput(component.FormInputParam{
+						Id:          "number",
+						Name:        "number",
+						Description: "Numero Fattura",
+						FormType:    component.Text,
+						Value:       item.Number,
+					})
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
-					@component.FormInput(component.FormInputParam{Id: "date", Name: "date", Description: "Data Fattura", FormType: component.Date, Value: utils.FormatTimePToForm(item.Date)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "date",
+						Name:        "date",
+						Description: "Data Fattura",
+						FormType:    component.Date,
+						Value:       utils.FormatTimePToForm(item.Date),
+					})
 				</div>
 				<div class="form-group col-md-6">
-					@component.FormInput(component.FormInputParam{Id: "amount", Name: "amount", Description: "Importo Fattura", FormType: component.Number, Value: utils.FormatAmount(item.Amount)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "amount",
+						Name:        "amount",
+						Description: "Importo Fattura",
+						FormType:    component.Number,
+						Value:       utils.FormatAmount(item.Amount),
+					})
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
-					@component.FormInput(component.FormInputParam{Id: "paymentDate", Name: "paymentDate", Description: "Data Pagamento", FormType: component.Date, Value: utils.FormatTimePToForm(item.PaymentDate)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "paymentDate",
+						Name:        "paymentDate",
+						Description: "Data Pagamento",
+						FormType:    component.Date,
+						Value:       utils.FormatTimePToForm(item.PaymentDate),
+					})
 				</div>
 				<div class="form-group col-md-6">
-					@component.FormInput(component.FormInputParam{Id: "paidAmount", Name: "paidAmount", Description: "Importi Pagati", FormType: component.Number, Value: utils.FormatAmount(item.PaidAmount)})
+					@component.FormInput(component.FormInputParam{
+						Id:          "paidAmount",
+						Name:        "paidAmount",
+						Description: "Importi Pagati",
+						FormType:    component.Number,
+						Value:       utils.FormatAmount(item.PaidAmount),
+					})
 				</div>
 			</div>
 			<div class="form-row">
