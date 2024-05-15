@@ -87,7 +87,7 @@ func FormatStringToForm(valueFrom *string) string {
 	return strings.TrimSpace(*valueFrom)
 }
 
-func FormatIntToFormNumber(valueFrom *int) string {
+func FormatIntToAmount(valueFrom *int) string {
 	if valueFrom == nil {
 		return ""
 	}

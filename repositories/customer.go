@@ -22,6 +22,16 @@ type CustomerWithTotals struct {
 	TotalToPay  int
 }
 
+type CustomerFilter struct {
+	Name            *string
+	TotalAmountFrom *int
+	TotalAmountTo   *int
+	TotalToPayFrom  *int
+	TotalToPayTo    *int
+	PageSize        int
+	Page            int
+}
+
 func GetAllCustomer() ([]Customer, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
