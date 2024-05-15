@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/Orfeo42/admin-panel/enum"
-	"github.com/Orfeo42/admin-panel/mvc/repositories"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/pages"
 	"github.com/labstack/echo/v4"

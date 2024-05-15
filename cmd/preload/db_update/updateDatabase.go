@@ -3,7 +3,7 @@ package db_update
 import (
 	"github.com/Orfeo42/admin-panel/cmd/preload/validation"
 	"github.com/Orfeo42/admin-panel/db"
-	"github.com/Orfeo42/admin-panel/mvc/repositories"
+	"github.com/Orfeo42/admin-panel/repositories"
 	"github.com/labstack/gommon/log"
 )
 

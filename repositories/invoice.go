@@ -62,12 +62,6 @@ func NewBaseFilter() InvoiceFilter {
 	}
 }
 
-type InvoiceResult struct {
-	Invoices []Invoice
-	Page     int
-	PageSize int
-}
-
 func GetAllInvoice(filter InvoiceFilter) ([]Invoice, error) {
 	dbInstance, err := db.GetInstance()
 	if err != nil {
