@@ -20,6 +20,7 @@ func InvoiceController(application *echo.Echo) {
 
 		filter := repositories.NewBaseFilter()
 
+		utils.SetPageNumber(echoCtx, 1)
 		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
@@ -34,18 +35,24 @@ func InvoiceController(application *echo.Echo) {
 		}
 		filter := repositories.NewBaseFilter()
 
+		page := utils.StringToInt(echoCtx.QueryParam("page"))
+		if page != nil {
+			log.Infof("page %d", *page)
+			filter.Page = *page
+			utils.SetPageNumber(echoCtx, *page)
+		}
+
 		filter.CustomerID = customerID
 		filter.Number = utils.StringToString(echoCtx.FormValue("number"))
 		filter.DateFrom = utils.StringToTime(echoCtx.FormValue("dateFrom"))
 		filter.DateTo = utils.StringToTime(echoCtx.FormValue("dateTo"))
 		filter.PaymentDateFrom = utils.StringToTime(echoCtx.FormValue("paymentDateFrom"))
 		filter.PaymentDateTo = utils.StringToTime(echoCtx.FormValue("paymentDateTo"))
-		filter.AmountFrom = utils.StringToInt(echoCtx.FormValue("amountFrom"))
-		filter.AmountTo = utils.StringToInt(echoCtx.FormValue("amountTo"))
-		filter.PaidAmountFrom = utils.StringToInt(echoCtx.FormValue("paidAmountFrom"))
+		filter.AmountFrom = utils.StringToAmount(echoCtx.FormValue("amountFrom"))
+		filter.AmountTo = utils.StringToAmount(echoCtx.FormValue("amountTo"))
+		filter.PaidAmountFrom = utils.StringToAmount(echoCtx.FormValue("paidAmountFrom"))
 		filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
 
-		log.Infof("filter: %+v", filter)
 		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
@@ -155,8 +162,8 @@ func editInvoice(echoCtx echo.Context) error {
 	number := echoCtx.FormValue("number")
 	date := utils.StringToTime(echoCtx.FormValue("date"))
 	paymentDate := utils.StringToTime(echoCtx.FormValue("paymentDate"))
-	amount := utils.StringToInt(echoCtx.FormValue("amount"))
-	paidAmount := utils.StringToInt(echoCtx.FormValue("paidAmount"))
+	amount := utils.StringToAmount(echoCtx.FormValue("amount"))
+	paidAmount := utils.StringToAmount(echoCtx.FormValue("paidAmount"))
 
 	inv.Number = number
 	inv.Date = date

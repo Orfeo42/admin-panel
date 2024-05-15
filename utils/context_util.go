@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/Orfeo42/admin-panel/enum"
 
@@ -49,14 +50,14 @@ func SetTitle(echoCtx echo.Context, value string) echo.Context {
 	return setInContext(echoCtx, TitleContextKey, value)
 }
 
-func GetPageNumber(ctx context.Context) string {
-	return getStringFromContext(ctx, PageNumberContextKey)
+func GetNextPageNumber(ctx context.Context) string {
+	if page, ok := ctx.Value(PageNumberContextKey).(int); ok {
+		page++
+		return strconv.Itoa(page)
+	}
+	return strconv.Itoa(2)
 }
 
-func SetPageNumber(echoCtx echo.Context, value enum.Page) echo.Context {
+func SetPageNumber(echoCtx echo.Context, value int) echo.Context {
 	return setInContext(echoCtx, PageNumberContextKey, value)
-}
-
-func IsPageSet(ctx context.Context) bool {
-	return GetPageNumber(ctx) != ""
 }

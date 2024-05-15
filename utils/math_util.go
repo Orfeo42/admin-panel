@@ -52,6 +52,17 @@ func StringToInt(valueFrom string) *int {
 	if valueFrom == "" {
 		return nil
 	}
+	value, err := strconv.Atoi(strings.TrimSpace(valueFrom))
+	if err != nil {
+		return nil
+	}
+	return &value
+}
+
+func StringToAmount(valueFrom string) *int {
+	if valueFrom == "" {
+		return nil
+	}
 	valueFloat, err := strconv.ParseFloat(strings.TrimSpace(valueFrom), 64)
 	if err != nil {
 		return nil
@@ -81,11 +92,6 @@ func FormatIntToFormNumber(valueFrom *int) string {
 		return ""
 	}
 	return FormatAmount(*valueFrom)
-}
-
-func IntToString(number int) string {
-	result := float64(number) / 100
-	return strconv.FormatFloat(result, 'f', 2, 64)
 }
 
 func FormatUintToFormString(valueFrom *uint) string {
