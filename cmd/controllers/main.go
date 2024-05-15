@@ -20,7 +20,10 @@ func main() {
 
 	app := echo.New()
 
-	app.Use(middleware.Logger())
+	app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "[${time_rfc3339}] ${status} ${method} ${uri} (${remote_ip}) ${latency_human}\n",
+		Output: app.Logger.Output(),
+	}))
 
 	app.Static("/", "web")
 

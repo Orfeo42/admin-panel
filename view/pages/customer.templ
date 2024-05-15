@@ -99,5 +99,8 @@ templ CustomerData(item repositories.Customer, invoiceList []repositories.Invoic
 			}
 		</div>
 	</div>
+	<form style="display: none;">
+		<input type="hidden" name="customer" value={ utils.UintToString(item.ID) }/>
+	</form>
 	@InvoiceTable(invoiceList, true)
 }

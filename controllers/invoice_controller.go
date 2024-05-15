@@ -37,7 +37,6 @@ func InvoiceController(application *echo.Echo) {
 
 		page := utils.StringToInt(echoCtx.QueryParam("page"))
 		if page != nil {
-			log.Infof("page %d", *page)
 			filter.Page = *page
 			utils.SetPageNumber(echoCtx, *page)
 		}
@@ -89,7 +88,59 @@ func InvoiceController(application *echo.Echo) {
 		return utils.Render(pages.InvoiceRowShow(*inv), echoCtx)
 	})
 
-	invoiceGroup.PUT("/:id", editInvoice)
+	invoiceGroup.PUT("/:id", func(echoCtx echo.Context) error {
+		id := echoCtx.Param("id")
+
+		inv, err := repositories.GetInvoiceByIDString(id)
+		if err != nil {
+			return err
+		}
+
+		customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
+		if err != nil {
+			customerID = nil
+			log.Info("customer convertion error")
+		}
+		if customerID != nil {
+			customer, err := repositories.GetCustomerByID(*customerID)
+			if err != nil {
+				log.Errorf("CustomerID not valid: %+v", err)
+				return err
+			}
+			inv.CustomerID = *customerID
+			inv.Customer = *customer
+		}
+
+		number := echoCtx.FormValue("number")
+		date := utils.StringToTime(echoCtx.FormValue("date"))
+		paymentDate := utils.StringToTime(echoCtx.FormValue("paymentDate"))
+		amount := utils.StringToAmount(echoCtx.FormValue("amount"))
+		paidAmount := utils.StringToAmount(echoCtx.FormValue("paidAmount"))
+
+		inv.Number = number
+		inv.Date = date
+		inv.PaymentDate = paymentDate
+		zero := 0
+
+		inv.CustomerID = *customerID
+
+		if amount == nil {
+			amount = &zero
+		}
+		inv.Amount = *amount
+
+		if paidAmount == nil {
+			paidAmount = &zero
+		}
+		inv.PaidAmount = *paidAmount
+
+		updateInvoice, err := repositories.UpdateInvoice(*inv)
+		if err != nil {
+			return err
+		}
+
+		return utils.Render(pages.InvoiceRowShow(updateInvoice), echoCtx)
+	})
 
 	invoiceGroup.PUT("/:id/pay", func(echoCtx echo.Context) error {
 		id := echoCtx.Param("id")
@@ -134,60 +185,6 @@ func InvoiceController(application *echo.Echo) {
 
 		return utils.Render(pages.InvoiceForm(result), echoCtx)
 	})
-}
-
-func editInvoice(echoCtx echo.Context) error {
-	id := echoCtx.Param("id")
-
-	inv, err := repositories.GetInvoiceByIDString(id)
-	if err != nil {
-		return err
-	}
-
-	customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
-	if err != nil {
-		customerID = nil
-		log.Info("customer convertion error")
-	}
-	if customerID != nil {
-		customer, err := repositories.GetCustomerByID(*customerID)
-		if err != nil {
-			log.Errorf("CustomerID not valid: %+v", err)
-			return err
-		}
-		inv.CustomerID = *customerID
-		inv.Customer = *customer
-	}
-
-	number := echoCtx.FormValue("number")
-	date := utils.StringToTime(echoCtx.FormValue("date"))
-	paymentDate := utils.StringToTime(echoCtx.FormValue("paymentDate"))
-	amount := utils.StringToAmount(echoCtx.FormValue("amount"))
-	paidAmount := utils.StringToAmount(echoCtx.FormValue("paidAmount"))
-
-	inv.Number = number
-	inv.Date = date
-	inv.PaymentDate = paymentDate
-	zero := 0
-
-	inv.CustomerID = *customerID
-
-	if amount == nil {
-		amount = &zero
-	}
-	inv.Amount = *amount
-
-	if paidAmount == nil {
-		paidAmount = &zero
-	}
-	inv.PaidAmount = *paidAmount
-
-	updateInvoice, err := repositories.UpdateInvoice(*inv)
-	if err != nil {
-		return err
-	}
-
-	return utils.Render(pages.InvoiceRowShow(updateInvoice), echoCtx)
 }
 
 func isPaidToBool(valueFrom string) *bool {
