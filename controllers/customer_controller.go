@@ -29,6 +29,8 @@ func CustomerController(application *echo.Echo) {
 
 		echoCtx = utils.SetPage(echoCtx, enum.CustomerList)
 
+		utils.SetPageNumber(echoCtx, 1)
+
 		id, err := utils.StringToUint(stringId)
 		if err != nil {
 			return err
@@ -41,12 +43,18 @@ func CustomerController(application *echo.Echo) {
 
 		echoCtx = utils.SetTitle(echoCtx, "Customer detail for customer: "+item.Name)
 
-		invoiceList, err := repositories.GetAllInvoiceByCustomerID(*id, nil)
+		filter := repositories.NewBaseFilter()
+
+		filter.CustomerID = id
+
+		utils.SetPageNumber(echoCtx, filter.Page)
+
+		invoiceList, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
 		}
 
-		return utils.Render(pages.CustomerView(*item, *invoiceList), echoCtx)
+		return utils.Render(pages.CustomerView(*item, invoiceList, filter), echoCtx)
 	})
 
 	customerGroup.GET("/search", func(echoCtx echo.Context) error {

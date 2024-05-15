@@ -20,7 +20,8 @@ func InvoiceController(application *echo.Echo) {
 
 		filter := repositories.NewBaseFilter()
 
-		utils.SetPageNumber(echoCtx, 1)
+		utils.SetPageNumber(echoCtx, filter.Page)
+
 		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
 			return err
@@ -29,28 +30,10 @@ func InvoiceController(application *echo.Echo) {
 	})
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
-		customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
-		if err != nil {
-			customerID = nil
-		}
-		filter := repositories.NewBaseFilter()
 
-		page := utils.StringToInt(echoCtx.QueryParam("page"))
-		if page != nil {
-			filter.Page = *page
-			utils.SetPageNumber(echoCtx, *page)
-		}
+		filter := GetInvoiceFilterFromContext(echoCtx)
 
-		filter.CustomerID = customerID
-		filter.Number = utils.StringToString(echoCtx.FormValue("number"))
-		filter.DateFrom = utils.StringToTime(echoCtx.FormValue("dateFrom"))
-		filter.DateTo = utils.StringToTime(echoCtx.FormValue("dateTo"))
-		filter.PaymentDateFrom = utils.StringToTime(echoCtx.FormValue("paymentDateFrom"))
-		filter.PaymentDateTo = utils.StringToTime(echoCtx.FormValue("paymentDateTo"))
-		filter.AmountFrom = utils.StringToAmount(echoCtx.FormValue("amountFrom"))
-		filter.AmountTo = utils.StringToAmount(echoCtx.FormValue("amountTo"))
-		filter.PaidAmountFrom = utils.StringToAmount(echoCtx.FormValue("paidAmountFrom"))
-		filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+		utils.SetPageNumber(echoCtx, filter.Page)
 
 		items, err := repositories.GetAllInvoice(filter)
 		if err != nil {
@@ -196,4 +179,32 @@ func isPaidToBool(valueFrom string) *bool {
 		value = true
 	}
 	return &value
+}
+
+func GetInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilter {
+
+	filter := repositories.NewBaseFilter()
+
+	customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
+	if err != nil {
+		customerID = nil
+	}
+
+	page := utils.StringToInt(echoCtx.QueryParam("page"))
+	if page != nil {
+		filter.Page = *page
+	}
+
+	filter.CustomerID = customerID
+	filter.Number = utils.StringToString(echoCtx.FormValue("number"))
+	filter.DateFrom = utils.StringToTime(echoCtx.FormValue("dateFrom"))
+	filter.DateTo = utils.StringToTime(echoCtx.FormValue("dateTo"))
+	filter.PaymentDateFrom = utils.StringToTime(echoCtx.FormValue("paymentDateFrom"))
+	filter.PaymentDateTo = utils.StringToTime(echoCtx.FormValue("paymentDateTo"))
+	filter.AmountFrom = utils.StringToAmount(echoCtx.FormValue("amountFrom"))
+	filter.AmountTo = utils.StringToAmount(echoCtx.FormValue("amountTo"))
+	filter.PaidAmountFrom = utils.StringToAmount(echoCtx.FormValue("paidAmountFrom"))
+	filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+	return filter
+
 }

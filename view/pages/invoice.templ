@@ -45,18 +45,18 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 						@component.FormInput(component.FormInputParam{Id: "dateTo", Name: "dateTo", Description: "Date To", FormType: component.Date, Value: utils.FormatTimePToForm(filter.DateTo)})
 					</div>
 					<div class="form-group col-md-3">
-						@component.FormInput(component.FormInputParam{Id: "paymentDateFrom", Name: "paymentDateFrom", Description: "Payment Date From", FormType: component.Date, Value: utils.FormatTimePToForm(filter.PaymentDateFrom)})
-					</div>
-					<div class="form-group col-md-3">
-						@component.FormInput(component.FormInputParam{Id: "paymentDateTo", Name: "paymentDateTo", Description: "Payment Date To", FormType: component.Date, Value: utils.FormatTimePToForm(filter.PaymentDateTo)})
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "amountFrom", Name: "amountFrom", Description: "Amount From", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountFrom)})
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "amountTo", Name: "amountTo", Description: "Amount To", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.AmountTo)})
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "paymentDateFrom", Name: "paymentDateFrom", Description: "Payment Date From", FormType: component.Date, Value: utils.FormatTimePToForm(filter.PaymentDateFrom)})
+					</div>
+					<div class="form-group col-md-3">
+						@component.FormInput(component.FormInputParam{Id: "paymentDateTo", Name: "paymentDateTo", Description: "Payment Date To", FormType: component.Date, Value: utils.FormatTimePToForm(filter.PaymentDateTo)})
 					</div>
 					<div class="form-group col-md-3">
 						@component.FormInput(component.FormInputParam{Id: "paidAmountFrom", Name: "paidAmountFrom", Description: "Paid Amount From", FormType: component.Number, Value: utils.FormatIntToFormNumber(filter.PaidAmountFrom)})
