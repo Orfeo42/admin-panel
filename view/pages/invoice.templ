@@ -109,13 +109,13 @@ templ InvoiceTable(items []repositories.Invoice, hideFirstColumn bool) {
 			<table class={ "table", "table-bordered",templ.KV("hideFirstColumn", hideFirstColumn) } id="dataTable">
 				<thead>
 					<tr>
-						<th>Customer</th>
-						<th>Number</th>
-						<th>Date</th>
-						<th style="text-align: right;">Amount</th>
-						<th>Payment Date</th>
-						<th style="text-align: right;">Paid Amount</th>
-						<th>Is Paid</th>
+						<th>Cliente</th>
+						<th>Numero</th>
+						<th>Data Fattura</th>
+						<th style="text-align: right;">Importo Fattura</th>
+						<th>Data Pagamento</th>
+						<th style="text-align: right;">Importo Pagato</th>
+						<th>Pagato</th>
 						<th></th>
 					</tr>
 				</thead>
