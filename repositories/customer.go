@@ -28,8 +28,16 @@ type CustomerFilter struct {
 	TotalAmountTo   *int
 	TotalToPayFrom  *int
 	TotalToPayTo    *int
+	IsPaid          *bool
 	PageSize        int
 	Page            int
+}
+
+func NewCustomerFilter() CustomerFilter {
+	return CustomerFilter{
+		Page:     1,
+		PageSize: 10,
+	}
 }
 
 func GetAllCustomer() ([]Customer, error) {
@@ -44,7 +52,7 @@ func GetAllCustomer() ([]Customer, error) {
 	return items, result.Error
 }
 
-func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
+func GetAllCustomerWithTotals(filter CustomerFilter) (*[]CustomerWithTotals, error) {
 
 	dbInstance, err := db.GetInstance()
 	if err != nil {
@@ -53,7 +61,7 @@ func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
 
 	var results []CustomerWithTotals
 
-	response := dbInstance.Table("invoices").
+	queryDB := dbInstance.Table("invoices").
 		Select("invoices.customer_id as id," +
 			"max(customers.name) as name," +
 			"max(customers.surname) as surname," +
@@ -64,8 +72,38 @@ func GetAllCustomerWithTotals() (*[]CustomerWithTotals, error) {
 			"(sum(invoices.amount) - sum(invoices.paid_amount)) as total_to_pay").
 		Joins("left outer join customers on customers.id = invoices.customer_id").
 		Group("invoices.customer_id").
-		Order("max(customers.name) asc").
-		Scan(&results)
+		Order("max(customers.name) asc")
+
+	if filter.Name != nil {
+		queryDB.Having("lower(max(customers.name)) LIKE '%' || lower(?) || '%'", *filter.Name)
+	}
+	if filter.TotalAmountFrom != nil {
+		queryDB.Having("sum(invoices.amount) >= ?", *filter.TotalAmountFrom)
+	}
+	if filter.TotalAmountTo != nil {
+		queryDB.Having("sum(invoices.amount) <= ?", *filter.TotalAmountTo)
+	}
+	if filter.TotalToPayFrom != nil {
+		queryDB.Having("(sum(invoices.amount) - sum(invoices.paid_amount)) >= ?", *filter.TotalToPayFrom)
+	}
+	if filter.TotalToPayTo != nil {
+		queryDB.Having("(sum(invoices.amount) - sum(invoices.paid_amount)) <= ?", *filter.TotalToPayTo)
+	}
+	if filter.IsPaid != nil {
+		if *filter.IsPaid {
+			queryDB.Having("sum(invoices.amount) = sum(invoices.paid_amount)")
+		} else {
+			queryDB.Having("sum(invoices.amount) <> sum(invoices.paid_amount)")
+		}
+	}
+	queryDB.Limit(filter.PageSize)
+	offset := 0
+	if filter.Page > 1 {
+		offset = filter.PageSize * filter.Page
+	}
+	queryDB.Offset(offset)
+
+	response := queryDB.Scan(&results)
 	if response.Error != nil {
 		return nil, response.Error
 	}

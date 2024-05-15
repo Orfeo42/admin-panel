@@ -49,7 +49,7 @@ type InvoiceFilter struct {
 	Page            int
 }
 
-func NewBaseFilter() InvoiceFilter {
+func NewInvoiceFilter() InvoiceFilter {
 
 	dateTo := time.Now()
 	dateFrom := dateTo.AddDate(0, -1, 0)

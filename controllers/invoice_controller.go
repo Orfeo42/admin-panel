@@ -18,7 +18,7 @@ func InvoiceController(application *echo.Echo) {
 		echoCtx = utils.SetPage(echoCtx, enum.InvoiceList)
 		echoCtx = utils.SetTitle(echoCtx, "Invoices")
 
-		filter := repositories.NewBaseFilter()
+		filter := repositories.NewInvoiceFilter()
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
@@ -183,7 +183,7 @@ func isPaidToBool(valueFrom string) *bool {
 
 func GetInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilter {
 
-	filter := repositories.NewBaseFilter()
+	filter := repositories.NewInvoiceFilter()
 
 	customerID, err := utils.StringToUint(echoCtx.FormValue("customer"))
 	if err != nil {

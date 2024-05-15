@@ -16,12 +16,30 @@ func CustomerController(application *echo.Echo) {
 
 		echoCtx = utils.SetPage(echoCtx, enum.CustomerList)
 		echoCtx = utils.SetTitle(echoCtx, "Customer")
-		items, err := repositories.GetAllCustomerWithTotals()
+
+		filter := repositories.NewCustomerFilter()
+
+		utils.SetPageNumber(echoCtx, filter.Page)
+
+		items, err := repositories.GetAllCustomerWithTotals(filter)
 		if err != nil {
 			return err
 		}
 
-		return utils.Render(pages.CustomerListView(*items), echoCtx)
+		return utils.Render(pages.CustomerListView(*items, filter), echoCtx)
+	})
+
+	customerGroup.GET("/filter", func(echoCtx echo.Context) error {
+
+		filter := GetCustomerFilterFromContext(echoCtx)
+
+		utils.SetPageNumber(echoCtx, filter.Page)
+
+		items, err := repositories.GetAllCustomerWithTotals(filter)
+		if err != nil {
+			return err
+		}
+		return utils.Render(pages.AllCustomerRowsShow(*items), echoCtx)
 	})
 
 	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
@@ -43,7 +61,7 @@ func CustomerController(application *echo.Echo) {
 
 		echoCtx = utils.SetTitle(echoCtx, "Customer detail for customer: "+item.Name)
 
-		filter := repositories.NewBaseFilter()
+		filter := repositories.NewInvoiceFilter()
 
 		filter.CustomerID = id
 
@@ -67,4 +85,23 @@ func CustomerController(application *echo.Echo) {
 
 		return utils.Render(pages.CustomerSearchView(*customerList), echoCtx)
 	})
+}
+
+func GetCustomerFilterFromContext(echoCtx echo.Context) repositories.CustomerFilter {
+
+	filter := repositories.NewCustomerFilter()
+
+	page := utils.StringToInt(echoCtx.QueryParam("page"))
+	if page != nil {
+		filter.Page = *page
+	}
+
+	filter.Name = utils.StringToString(echoCtx.FormValue("name"))
+	filter.TotalAmountFrom = utils.StringToAmount(echoCtx.FormValue("totalAmountFrom"))
+	filter.TotalAmountTo = utils.StringToAmount(echoCtx.FormValue("totalAmountTo"))
+	filter.TotalToPayFrom = utils.StringToAmount(echoCtx.FormValue("totalToPayFrom"))
+	filter.TotalToPayTo = utils.StringToAmount(echoCtx.FormValue("totalToPayTo"))
+	filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+	return filter
+
 }

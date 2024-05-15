@@ -186,7 +186,7 @@ templ AllInvoiceRowsShow(items []repositories.Invoice) {
 
 templ InvoiceRowShow(item repositories.Invoice) {
 	<tr>
-		@invoiceRowShowColumns(item)
+		@invoiceColumns(item)
 	</tr>
 }
 
@@ -197,11 +197,11 @@ templ invoiceRowShowLast(item repositories.Invoice) {
 		hx-swap="afterend"
 		hx-include="previous form"
 	>
-		@invoiceRowShowColumns(item)
+		@invoiceColumns(item)
 	</tr>
 }
 
-templ invoiceRowShowColumns(item repositories.Invoice) {
+templ invoiceColumns(item repositories.Invoice) {
 	<td>{ item.Customer.Name }</td>
 	<td style="text-align: right;">{ item.Number }</td>
 	<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>

@@ -8,20 +8,21 @@ import (
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ CustomerListView(items []repositories.CustomerWithTotals) {
+templ CustomerListView(items []repositories.CustomerWithTotals, filter repositories.CustomerFilter) {
 	@layout.TableView() {
 		<div class="row">
 			<div class="col-12 mb-4">
 				<h1 class="h3 mb-2 text-gray-800">Lista Cliente</h1>
 			</div>
 		</div>
+		@customerFilter(filter)
 		@customerTable(items)
 	}
 }
 
 templ customerFilter(filter repositories.CustomerFilter) {
 	@component.CollapseCard("Filters", "filter") {
-		<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
+		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML">
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					@component.FormInput(component.FormInputParam{
@@ -46,7 +47,7 @@ templ customerFilter(filter repositories.CustomerFilter) {
 					@component.FormInput(component.FormInputParam{
 						Id:          "totalAmountFrom",
 						Name:        "totalAmountFrom",
-						Description: "Da Importo Fatturato",
+						Description: "Da Totale Fatturato",
 						FormType:    component.Number,
 						Value:       utils.FormatIntToAmount(filter.TotalAmountFrom),
 					})
@@ -55,7 +56,7 @@ templ customerFilter(filter repositories.CustomerFilter) {
 					@component.FormInput(component.FormInputParam{
 						Id:          "totalAmountTo",
 						Name:        "totalAmountTo",
-						Description: "A Importo Fatturato",
+						Description: "A Totale Fatturato",
 						FormType:    component.Number,
 						Value:       utils.FormatIntToAmount(filter.TotalAmountTo),
 					})
@@ -64,7 +65,7 @@ templ customerFilter(filter repositories.CustomerFilter) {
 					@component.FormInput(component.FormInputParam{
 						Id:          "totalToPayFrom",
 						Name:        "totalToPayFrom",
-						Description: "Da Importo Da Fatturare",
+						Description: "Da Totale Da Pagare",
 						FormType:    component.Number,
 						Value:       utils.FormatIntToAmount(filter.TotalToPayFrom),
 					})
@@ -73,7 +74,7 @@ templ customerFilter(filter repositories.CustomerFilter) {
 					@component.FormInput(component.FormInputParam{
 						Id:          "totalToPayTo",
 						Name:        "totalToPayTo",
-						Description: "A Importo Da Fatturare",
+						Description: "A Totale Da Pagare",
 						FormType:    component.Number,
 						Value:       utils.FormatIntToAmount(filter.TotalToPayTo),
 					})
@@ -102,7 +103,7 @@ templ customerTable(items []repositories.CustomerWithTotals) {
 						<th></th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="data">
 					@AllCustomerRowsShow(items)
 				</tbody>
 			</table>
@@ -110,25 +111,44 @@ templ customerTable(items []repositories.CustomerWithTotals) {
 	}
 }
 
+templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
+	for index, item := range items {
+		if (index == len(items)-1) {
+			@CustomerRowShowLast(item)
+		} else {
+			@CustomerRowShow(item)
+		}
+	}
+}
+
 templ CustomerRowShow(item repositories.CustomerWithTotals) {
 	<tr>
-		<td>{ item.Name }</td>
-		<td>{ item.Phone }</td>
-		<td>{ item.Email }</td>
-		<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
-		<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
-		<td style="text-align: center;">
-			<a class="btn btn-circle btn-primary" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") }>
-				<i class="fa-solid fa-info"></i>
-			</a>
-		</td>
+		@customerColumns(item)
 	</tr>
 }
 
-templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
-	for _, item := range items {
-		@CustomerRowShow(item)
-	}
+templ CustomerRowShowLast(item repositories.CustomerWithTotals) {
+	<tr
+		hx-get={ "/customer/filter?page=" + utils.GetNextPageNumber(ctx) }
+		hx-trigger="revealed"
+		hx-swap="afterend"
+		hx-include="previous form"
+	>
+		@customerColumns(item)
+	</tr>
+}
+
+templ customerColumns(item repositories.CustomerWithTotals) {
+	<td>{ item.Name }</td>
+	<td>{ item.Phone }</td>
+	<td>{ item.Email }</td>
+	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
+	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
+	<td style="text-align: center;">
+		<a class="btn btn-circle btn-primary" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") }>
+			<i class="fa-solid fa-info"></i>
+		</a>
+	</td>
 }
 
 templ CustomerSearchView(items []repositories.Customer) {
