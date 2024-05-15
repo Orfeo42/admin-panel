@@ -2,7 +2,8 @@ package validation
 
 import (
 	"errors"
-	"github.com/Orfeo42/admin-panel/repositories"
+
+	"github.com/Orfeo42/admin-panel/mvc/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/labstack/gommon/log"
 )
