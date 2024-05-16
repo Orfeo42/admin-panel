@@ -5,22 +5,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
-	"time"
 )
-
-func formatIntegerWithCustomSeparator(integerPart, separator string) string {
-	parts := []rune(integerPart)
-	result := make([]rune, 0, len(parts)+(len(parts)-1)/3)
-	for i, part := range parts {
-		if i > 0 && (len(parts)-i)%3 == 0 {
-			result = append(result, []rune(separator)...)
-		}
-		result = append(result, part)
-	}
-
-	// Ritorna la stringa formattata
-	return string(result)
-}
 
 func StringToUint(valueFrom string) (*uint, error) {
 	if valueFrom == "" {
@@ -34,20 +19,6 @@ func StringToUint(valueFrom string) (*uint, error) {
 	return &result, nil
 }
 
-func StringToTime(valueFrom string) *time.Time {
-	if valueFrom == "" {
-		return nil
-	}
-
-	value, err := time.Parse("2006-01-02", valueFrom)
-
-	if err != nil {
-		return nil
-	}
-
-	return &value
-}
-
 func StringToInt(valueFrom string) *int {
 	if valueFrom == "" {
 		return nil
@@ -56,20 +27,6 @@ func StringToInt(valueFrom string) *int {
 	if err != nil {
 		return nil
 	}
-	return &value
-}
-
-func StringToAmount(valueFrom string) *int {
-	if valueFrom == "" {
-		return nil
-	}
-	valueFloat, err := strconv.ParseFloat(strings.TrimSpace(valueFrom), 64)
-	if err != nil {
-		return nil
-	}
-	valueFloat = valueFloat * 100
-
-	value := int(valueFloat)
 	return &value
 }
 
@@ -85,13 +42,6 @@ func FormatStringToForm(valueFrom *string) string {
 		return ""
 	}
 	return strings.TrimSpace(*valueFrom)
-}
-
-func FormatIntToAmount(valueFrom *int) string {
-	if valueFrom == nil {
-		return ""
-	}
-	return FormatAmount(*valueFrom)
 }
 
 func FormatUintToFormString(valueFrom *uint) string {

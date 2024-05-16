@@ -29,10 +29,17 @@ build:
 	@go build -o ./bin/${PROJECT_NAME} ./cmd/controllers/main.go
 
 run-fresh: build db-init
+	@clear
 	@./bin/${PROJECT_NAME}
 
 run: build db-up
+	@clear
 	@./bin/${PROJECT_NAME}
 
 run-prove:
+	@clear
 	@go run ./cmd/prove/main.go
+
+test:
+	@clear
+	@go test ./... -v

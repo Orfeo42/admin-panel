@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/labstack/gommon/log"
 	"time"
+
+	"github.com/labstack/gommon/log"
 )
 
 const formDateFormat = "2006-01-02"
@@ -41,4 +42,18 @@ func FormatTimePToTable(valueFrom *time.Time) string {
 
 func FormatTimeToTable(valueFrom time.Time) string {
 	return valueFrom.Format(dateFormat)
+}
+
+func StringToTime(valueFrom string) *time.Time {
+	if valueFrom == "" {
+		return nil
+	}
+
+	value, err := time.Parse("2006-01-02", valueFrom)
+
+	if err != nil {
+		return nil
+	}
+
+	return &value
 }

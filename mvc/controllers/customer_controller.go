@@ -15,7 +15,7 @@ func CustomerController(application *echo.Echo) {
 	customerGroup.GET("/list", func(echoCtx echo.Context) error {
 
 		echoCtx = utils.SetPage(echoCtx, enum.CustomerList)
-		echoCtx = utils.SetTitle(echoCtx, "Customer")
+		echoCtx = utils.SetTitle(echoCtx, "Cliente")
 
 		filter := repositories.NewCustomerFilter()
 

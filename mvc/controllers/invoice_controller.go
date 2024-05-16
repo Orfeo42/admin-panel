@@ -16,7 +16,7 @@ func InvoiceController(application *echo.Echo) {
 
 	invoiceGroup.GET("/list", func(echoCtx echo.Context) error {
 		echoCtx = utils.SetPage(echoCtx, enum.InvoiceList)
-		echoCtx = utils.SetTitle(echoCtx, "Invoices")
+		echoCtx = utils.SetTitle(echoCtx, "Fatture")
 
 		filter := repositories.NewInvoiceFilter()
 
@@ -44,7 +44,7 @@ func InvoiceController(application *echo.Echo) {
 
 	invoiceGroup.GET("/add", func(echoCtx echo.Context) error {
 		echoCtx = utils.SetPage(echoCtx, enum.InvoiceAdd)
-		echoCtx = utils.SetTitle(echoCtx, "Invoice")
+		echoCtx = utils.SetTitle(echoCtx, "Fatture")
 
 		return utils.Render(pages.InvoiceView(repositories.Invoice{}), echoCtx)
 	})
