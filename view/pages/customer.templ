@@ -16,12 +16,20 @@ templ CustomerListView(items []repositories.CustomerWithTotals, filter repositor
 			</div>
 		</div>
 		@customerFilter(filter)
+		<div class="row">
+			<div class="col-12 mb-4" style="text-align: right;">
+				<button type="submit" class="btn btn-primary" hx-get="/customer/add" hx-target="body" hx-replace-url="true">
+					<i class="fas fa-fw fa-plus"></i>
+					Nuovo cliente
+				</button>
+			</div>
+		</div>
 		@customerTable(items)
 	}
 }
 
 templ customerFilter(filter repositories.CustomerFilter) {
-	@component.CollapseCard("Filters", "filter") {
+	@component.CollapseCard("Filtri", "filter", false) {
 		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML">
 			<div class="form-row">
 				<div class="form-group col-md-6">

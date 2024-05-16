@@ -28,7 +28,7 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 }
 
 templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
-	@component.CollapseCard("Filters", "filter") {
+	@component.CollapseCard("Filtri", "filter", false) {
 		<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 			<div class="form-row">
 				if (showCustomer) {

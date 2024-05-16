@@ -46,7 +46,7 @@ func createDatabase() error {
 		log.New("Gorm: "),
 		logger.Config{
 			SlowThreshold:             time.Second,
-			LogLevel:                  logger.Info,
+			LogLevel:                  logger.Silent,
 			IgnoreRecordNotFoundError: true,
 			ParameterizedQueries:      false,
 			Colorful:                  true,

@@ -1,6 +1,9 @@
 package component
 
-import "github.com/Orfeo42/admin-panel/enum"
+import (
+	"github.com/Orfeo42/admin-panel/enum"
+	"strconv"
+)
 
 templ CardComp() {
 	<div class="card shadow mb-4">
@@ -27,19 +30,22 @@ templ CardBgComp(color enum.Color) {
 	</div>
 }
 
-templ CollapseCard(title string, id string) {
+templ CollapseCard(title string, id string, expanded bool) {
 	<div class="card shadow mb-4">
 		<a
 			href={ templ.URL("#" + id) }
-			class="d-block card-header py-3"
+			class={ "d-block", "card-header", "py-3", templ.KV("collapsed", !expanded) }
 			data-toggle="collapse"
 			role="button"
-			aria-expanded="true"
+			aria-expanded={ strconv.FormatBool(expanded) }
 			aria-controls={ id }
 		>
 			<h6 class="m-0 font-weight-bold text-primary">{ title }</h6>
 		</a>
-		<div class="collapse show" id={ id }>
+		<div
+			class={ "collapse", templ.KV("show", expanded) }
+			id={ id }
+		>
 			<div class="card-body">
 				{ children... }
 			</div>
