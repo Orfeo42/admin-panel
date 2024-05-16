@@ -9,7 +9,7 @@ import (
 func main() {
 	err := db_update.SchemaUpdate()
 	if err != nil {
-		log.Error("Error Updating Schema: %v", err)
+		log.Error("error Updating Schema: ", err)
 		return
 	}
 	customerList, invoiceList, err := validation.ValidateExcel()

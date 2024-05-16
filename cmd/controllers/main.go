@@ -8,8 +8,8 @@ import (
 	"github.com/Orfeo42/admin-panel/view/pages"
 	"github.com/labstack/echo/v4/middleware"
 
-	"github.com/Orfeo42/admin-panel/controllers"
-	"github.com/Orfeo42/admin-panel/repositories"
+	"github.com/Orfeo42/admin-panel/mvc/controllers"
+	"github.com/Orfeo42/admin-panel/mvc/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/component"
 	"github.com/labstack/echo/v4"
