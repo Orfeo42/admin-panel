@@ -2,13 +2,13 @@ package utils
 
 import (
 	"time"
-
-	"github.com/labstack/gommon/log"
 )
 
-const formDateFormat = "2006-01-02"
-const dateFormat = "02-01-2006"
-const parseDateFormat = "02/01/2006"
+const (
+	formDateFormat  = "2006-01-02"
+	dateFormat      = "02-01-2006"
+	parseDateFormat = "02/01/2006"
+)
 
 func ParseDate(date string) *time.Time {
 	if date == "" {
@@ -16,7 +16,6 @@ func ParseDate(date string) *time.Time {
 	}
 	parsedDate, err := time.Parse(parseDateFormat, date)
 	if err != nil {
-		log.Info("Date not parsable:", date)
 		return nil
 	}
 	return &parsedDate
@@ -49,7 +48,7 @@ func StringToTime(valueFrom string) *time.Time {
 		return nil
 	}
 
-	value, err := time.Parse("2006-01-02", valueFrom)
+	value, err := time.Parse(formDateFormat, valueFrom)
 
 	if err != nil {
 		return nil

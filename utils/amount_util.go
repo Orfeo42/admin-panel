@@ -76,6 +76,7 @@ func StringToAmount(valueFrom string) *int {
 	if valueFrom == "" {
 		return nil
 	}
+	valueFrom = strings.Replace(valueFrom, ",", ".", -1)
 	valueFloat, err := strconv.ParseFloat(strings.TrimSpace(valueFrom), 64)
 	if err != nil {
 		return nil

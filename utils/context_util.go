@@ -25,7 +25,7 @@ func getStringFromContext(ctx context.Context, key contextKey) string {
 	return ""
 }
 
-func setInContext(echoCtx echo.Context, key contextKey, value any) echo.Context {
+func setInEchoContext(echoCtx echo.Context, key contextKey, value any) echo.Context {
 	ctx := context.WithValue(echoCtx.Request().Context(), key, value)
 	echoCtx.SetRequest(echoCtx.Request().WithContext(ctx))
 	return echoCtx
@@ -39,7 +39,7 @@ func GetPage(ctx context.Context) string {
 }
 
 func SetPage(echoCtx echo.Context, value enum.Page) echo.Context {
-	return setInContext(echoCtx, PageContextKey, value)
+	return setInEchoContext(echoCtx, PageContextKey, value)
 }
 
 func GetTitle(ctx context.Context) string {
@@ -47,7 +47,7 @@ func GetTitle(ctx context.Context) string {
 }
 
 func SetTitle(echoCtx echo.Context, value string) echo.Context {
-	return setInContext(echoCtx, TitleContextKey, value)
+	return setInEchoContext(echoCtx, TitleContextKey, value)
 }
 
 func GetNextPageNumber(ctx context.Context) string {
@@ -59,5 +59,5 @@ func GetNextPageNumber(ctx context.Context) string {
 }
 
 func SetPageNumber(echoCtx echo.Context, value int) echo.Context {
-	return setInContext(echoCtx, PageNumberContextKey, value)
+	return setInEchoContext(echoCtx, PageNumberContextKey, value)
 }
