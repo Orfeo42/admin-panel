@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_ParseAmount(t *testing.T) {
+func TestParseAmount(t *testing.T) {
 	tests := []struct {
 		name string
 		arg  string
@@ -49,7 +49,7 @@ func Test_formatFloat(t *testing.T) {
 	}
 }
 
-func Test_FormatAmount(t *testing.T) {
+func TestFormatAmount(t *testing.T) {
 	tests := []struct {
 		name string
 		arg  int
@@ -128,7 +128,7 @@ func Test_stringAmountToString(t *testing.T) {
 	}
 }
 
-func Test_AmountToString(t *testing.T) {
+func TestAmountToString(t *testing.T) {
 
 	tests := []struct {
 		name string
@@ -153,7 +153,7 @@ func Test_AmountToString(t *testing.T) {
 	}
 }
 
-func Test_AmountIntegerToString(t *testing.T) {
+func TestAmountIntegerToString(t *testing.T) {
 
 	tests := []struct {
 		name string
@@ -176,7 +176,7 @@ func Test_AmountIntegerToString(t *testing.T) {
 	}
 }
 
-func Test_FormatIntToAmount(t *testing.T) {
+func TestFormatIntToAmount(t *testing.T) {
 
 	tests := []struct {
 		name string
@@ -198,7 +198,7 @@ func Test_FormatIntToAmount(t *testing.T) {
 	}
 }
 
-func Test_StringToAmount(t *testing.T) {
+func TestStringToAmount(t *testing.T) {
 	tests := []struct {
 		name string
 		arg  string
