@@ -6,120 +6,89 @@ import (
 	"time"
 )
 
-func TestParseDate(t *testing.T) {
-	type args struct {
-		date string
-	}
+func TestFormatTimePtrToForm(t *testing.T) {
 	tests := []struct {
-		name string
-		args args
-		want *time.Time
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := ParseDate(tt.args.date); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ParseDate() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestFormatTimePToForm(t *testing.T) {
-	type args struct {
+		name      string
 		valueFrom *time.Time
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
+		want      string
 	}{
-		// TODO: Add test cases.
+		{name: "nil input", valueFrom: nil, want: ""},
+		{name: "valid Date as input", valueFrom: TimePtr(time.Date(1987, 05, 24, 0, 0, 0, 0, time.UTC)), want: "1987-05-24"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FormatTimePToForm(tt.args.valueFrom); got != tt.want {
-				t.Errorf("FormatTimePToForm() = %v, want %v", got, tt.want)
+			if got := FormatTimePtrToForm(tt.valueFrom); got != tt.want {
+				t.Errorf("FormatTimePToForm() = %s, want %s", got, tt.want)
 			}
 		})
 	}
 }
 
 func TestFormatTimeToForm(t *testing.T) {
-	type args struct {
-		valueFrom time.Time
-	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name      string
+		valueFrom time.Time
+		want      string
 	}{
-		// TODO: Add test cases.
+		{name: "valid Date as input", valueFrom: time.Date(1987, 05, 24, 0, 0, 0, 0, time.UTC), want: "1987-05-24"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FormatTimeToForm(tt.args.valueFrom); got != tt.want {
-				t.Errorf("FormatTimeToForm() = %v, want %v", got, tt.want)
+			if got := FormatTimeToForm(tt.valueFrom); got != tt.want {
+				t.Errorf("FormatTimeToForm() = %s, want %s", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestFormatTimePToTable(t *testing.T) {
-	type args struct {
-		valueFrom *time.Time
-	}
+func TestFormatTimePtrToTable(t *testing.T) {
 	tests := []struct {
-		name string
-		args args
-		want string
+		name      string
+		valueFrom *time.Time
+		want      string
 	}{
-		// TODO: Add test cases.
+		{name: "nil input", valueFrom: nil, want: ""},
+		{name: "valid Date as input", valueFrom: TimePtr(time.Date(1987, 05, 24, 0, 0, 0, 0, time.UTC)), want: "24-05-1987"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FormatTimePToTable(tt.args.valueFrom); got != tt.want {
-				t.Errorf("FormatTimePToTable() = %v, want %v", got, tt.want)
+			if got := FormatTimePtrToTable(tt.valueFrom); got != tt.want {
+				t.Errorf("FormatTimePToTable() = %s, want %s", got, tt.want)
 			}
 		})
 	}
 }
 
 func TestFormatTimeToTable(t *testing.T) {
-	type args struct {
-		valueFrom time.Time
-	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name      string
+		valueFrom time.Time
+		want      string
 	}{
-		// TODO: Add test cases.
+		{name: "valid Date as input", valueFrom: time.Date(1987, 05, 24, 0, 0, 0, 0, time.UTC), want: "24-05-1987"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FormatTimeToTable(tt.args.valueFrom); got != tt.want {
+			if got := FormatTimeToTable(tt.valueFrom); got != tt.want {
 				t.Errorf("FormatTimeToTable() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestStringToTime(t *testing.T) {
-	type args struct {
-		valueFrom string
-	}
+func TestStringToTimePtr(t *testing.T) {
 	tests := []struct {
-		name string
-		args args
-		want *time.Time
+		name      string
+		valueFrom string
+		want      *time.Time
 	}{
-		// TODO: Add test cases.
+		{name: "enmpty string as input", valueFrom: "", want: nil},
+		{name: "wrong date as input", valueFrom: "1987-15-24", want: nil},
+		{name: "valid Date as input", valueFrom: "1987-05-24", want: TimePtr(time.Date(1987, 05, 24, 0, 0, 0, 0, time.UTC))},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StringToTime(tt.args.valueFrom); !reflect.DeepEqual(got, tt.want) {
+			if got := StringToTimePtr(tt.valueFrom); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("StringToTime() = %v, want %v", got, tt.want)
 			}
 		})

@@ -95,8 +95,8 @@ func InvoiceController(application *echo.Echo) {
 		}
 
 		number := echoCtx.FormValue("number")
-		date := utils.StringToTime(echoCtx.FormValue("date"))
-		paymentDate := utils.StringToTime(echoCtx.FormValue("paymentDate"))
+		date := utils.StringToTimePtr(echoCtx.FormValue("date"))
+		paymentDate := utils.StringToTimePtr(echoCtx.FormValue("paymentDate"))
 		amount := utils.StringToAmount(echoCtx.FormValue("amount"))
 		paidAmount := utils.StringToAmount(echoCtx.FormValue("paidAmount"))
 
@@ -197,10 +197,10 @@ func GetInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilte
 
 	filter.CustomerID = customerID
 	filter.Number = utils.StringToString(echoCtx.FormValue("number"))
-	filter.DateFrom = utils.StringToTime(echoCtx.FormValue("dateFrom"))
-	filter.DateTo = utils.StringToTime(echoCtx.FormValue("dateTo"))
-	filter.PaymentDateFrom = utils.StringToTime(echoCtx.FormValue("paymentDateFrom"))
-	filter.PaymentDateTo = utils.StringToTime(echoCtx.FormValue("paymentDateTo"))
+	filter.DateFrom = utils.StringToTimePtr(echoCtx.FormValue("dateFrom"))
+	filter.DateTo = utils.StringToTimePtr(echoCtx.FormValue("dateTo"))
+	filter.PaymentDateFrom = utils.StringToTimePtr(echoCtx.FormValue("paymentDateFrom"))
+	filter.PaymentDateTo = utils.StringToTimePtr(echoCtx.FormValue("paymentDateTo"))
 	filter.AmountFrom = utils.StringToAmount(echoCtx.FormValue("amountFrom"))
 	filter.AmountTo = utils.StringToAmount(echoCtx.FormValue("amountTo"))
 	filter.PaidAmountFrom = utils.StringToAmount(echoCtx.FormValue("paidAmountFrom"))

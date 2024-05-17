@@ -73,7 +73,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "dateFrom",
 						Description: "Da Data Fattura",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePToForm(filter.DateFrom),
+						Value:       utils.FormatTimePtrToForm(filter.DateFrom),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -81,7 +81,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "dateTo",
 						Description: "A Data Fattura",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePToForm(filter.DateTo),
+						Value:       utils.FormatTimePtrToForm(filter.DateTo),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -110,7 +110,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "paymentDateFrom",
 						Description: "Da Data Pagamento",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePToForm(filter.PaymentDateFrom),
+						Value:       utils.FormatTimePtrToForm(filter.PaymentDateFrom),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -119,7 +119,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "paymentDateTo",
 						Description: "A Data Pagamento",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePToForm(filter.PaymentDateTo),
+						Value:       utils.FormatTimePtrToForm(filter.PaymentDateTo),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -204,9 +204,9 @@ templ invoiceRowShowLast(item repositories.Invoice) {
 templ invoiceColumns(item repositories.Invoice) {
 	<td>{ item.Customer.Name }</td>
 	<td style="text-align: right;">{ item.Number }</td>
-	<td style="text-align: right;">{ utils.FormatTimePToTable(item.Date) }</td>
+	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.Date) }</td>
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.Amount) } €</td>
-	<td style="text-align: right;">{ utils.FormatTimePToTable(item.PaymentDate) }</td>
+	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.PaymentDate) }</td>
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.PaidAmount) } €</td>
 	<td style="text-align: center;">
 		if item.Amount-item.PaidAmount == 0 {
@@ -250,7 +250,7 @@ templ InvoiceRowEdit(item repositories.Invoice) {
 			@component.Input(component.FormInputParam{
 				Name:     "date",
 				FormType: component.Date,
-				Value:    utils.FormatTimePToForm(item.Date),
+				Value:    utils.FormatTimePtrToForm(item.Date),
 			})
 		</td>
 		<td>
@@ -264,7 +264,7 @@ templ InvoiceRowEdit(item repositories.Invoice) {
 			@component.Input(component.FormInputParam{
 				Name:     "paymentDate",
 				FormType: component.Date,
-				Value:    utils.FormatTimePToForm(item.PaymentDate),
+				Value:    utils.FormatTimePtrToForm(item.PaymentDate),
 			})
 		</td>
 		<td>
@@ -323,7 +323,7 @@ templ InvoiceForm(item repositories.Invoice) {
 						Name:        "date",
 						Description: "Data Fattura",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePToForm(item.Date),
+						Value:       utils.FormatTimePtrToForm(item.Date),
 					})
 				</div>
 				<div class="form-group col-md-6">
@@ -343,7 +343,7 @@ templ InvoiceForm(item repositories.Invoice) {
 						Name:        "paymentDate",
 						Description: "Data Pagamento",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePToForm(item.PaymentDate),
+						Value:       utils.FormatTimePtrToForm(item.PaymentDate),
 					})
 				</div>
 				<div class="form-group col-md-6">
