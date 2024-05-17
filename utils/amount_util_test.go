@@ -89,8 +89,8 @@ func Test_formatIntWithSeparator(t *testing.T) {
 		{name: "hundred as input", args: args{integerPart: "100", separator: "˙"}, want: "100"},
 		{name: "thousand as input", args: args{integerPart: "1000", separator: "˙"}, want: "1˙000"},
 		{name: "ten thousand as input", args: args{integerPart: "10000", separator: "˙"}, want: "10˙000"},
-		{name: "string input", args: args{integerPart: "pippo", separator: "˙"}, want: "pi˙ppo"},
 		{name: "ten thousand with all number valued as input", args: args{integerPart: "29875", separator: "˙"}, want: "29˙875"},
+		{name: "string input", args: args{integerPart: "pippo", separator: "˙"}, want: "pi˙ppo"},
 	}
 
 	for _, tc := range tests {
@@ -102,27 +102,27 @@ func Test_formatIntWithSeparator(t *testing.T) {
 	}
 }
 
-func Test_stringAmountToString(t *testing.T) {
+func Test_addThousandsSeparator(t *testing.T) {
 
 	tests := []struct {
 		name string
 		arg  string
 		want string
 	}{
-		{name: "", arg: "0", want: "0"},
-		{name: "", arg: "0.00", want: "0.00"},
-		{name: "", arg: "10", want: "10"},
-		{name: "", arg: "100", want: "100"},
-		{name: "", arg: "1000", want: "1˙000"},
-		{name: "", arg: "10000", want: "10˙000"},
-		{name: "", arg: "29875", want: "29˙875"},
-		{name: "", arg: "99999999", want: "99˙999˙999"},
+		{name: "0 as input", arg: "0", want: "0"},
+		{name: "0 as input whith zero decimal", arg: "0.00", want: "0.00"},
+		{name: "ten as input", arg: "10", want: "10"},
+		{name: "hundred as input", arg: "100", want: "100"},
+		{name: "thousand as input", arg: "1000", want: "1˙000"},
+		{name: "ten thousand as input", arg: "10000", want: "10˙000"},
+		{name: "ten thousand with all number valued as input", arg: "29875", want: "29˙875"},
+		{name: "milion as input", arg: "9999999", want: "9˙999˙999"},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			if got := stringAmountToString(tc.arg); got != tc.want {
-				t.Errorf("stringAmountToString() = %s, want %s", got, tc.want)
+			if got := addThousandsSeparator(tc.arg); got != tc.want {
+				t.Errorf("addThousandsSeparator() = %s, want %s", got, tc.want)
 			}
 		})
 	}
@@ -135,13 +135,13 @@ func TestAmountToString(t *testing.T) {
 		arg  float64
 		want string
 	}{
-		{name: "", arg: 1000, want: "1˙000.00"},
-		{name: "", arg: 10, want: "10.00"},
-		{name: "", arg: 0, want: "0.00"},
-		{name: "", arg: 0.5974, want: "0.60"},
-		{name: "", arg: 9990.5974, want: "9˙990.60"},
-		{name: "", arg: 999999990, want: "999˙999˙990.00"},
-		{name: "", arg: 9990, want: "9˙990.00"},
+		{name: "float input whith 4 decimal", arg: 0.5974, want: "0.60"},
+		{name: "float input whith 2 decimal", arg: 0.20, want: "0.20"},
+		{name: "0 as input", arg: 0, want: "0.00"},
+		{name: "10 as input", arg: 10, want: "10.00"},
+		{name: "100 as input", arg: 100, want: "100.00"},
+		{name: "1000 as input", arg: 1000, want: "1˙000.00"},
+		{name: "10000 as input", arg: 10000, want: "10˙000.00"},
 	}
 
 	for _, tc := range tests {
@@ -160,17 +160,18 @@ func TestAmountIntegerToString(t *testing.T) {
 		arg  int
 		want string
 	}{
-		{name: "", arg: 1000, want: "10.00"},
-		{name: "", arg: 10, want: "0.10"},
-		{name: "", arg: 0, want: "0.00"},
-		{name: "", arg: 999999990, want: "9˙999˙999.90"},
-		{name: "", arg: 9990, want: "99.90"},
+		{name: "-1 as input", arg: -1, want: "-0.01"},
+		{name: "0 as input", arg: 0, want: "0.00"},
+		{name: "10 as input", arg: 10, want: "0.10"},
+		{name: "100 as input", arg: 100, want: "1.00"},
+		{name: "1000 as input", arg: 1000, want: "10.00"},
+		{name: "10000 as input", arg: 10000, want: "100.00"},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			if got := AmountIntegerToString(tc.arg); got != tc.want {
-				t.Errorf("AmountToString() = %s, want %s", got, tc.want)
+				t.Errorf("AmountIntegerToString() = %s, want %s", got, tc.want)
 			}
 		})
 	}
@@ -183,11 +184,14 @@ func TestFormatIntToAmount(t *testing.T) {
 		arg  *int
 		want string
 	}{
-		{name: "", arg: nil, want: ""},
-		{name: "", arg: IntPtr(10), want: "0.10"},
-		{name: "", arg: IntPtr(0), want: "0.00"},
-		{name: "", arg: IntPtr(999999990), want: "9999999.90"},
-		{name: "", arg: IntPtr(9990), want: "99.90"},
+		{name: "nil as input", arg: nil, want: ""},
+		{name: "0 as input", arg: IntPtr(0), want: "0.00"},
+		{name: "1 as input", arg: IntPtr(1), want: "0.01"},
+		{name: "10 as input", arg: IntPtr(10), want: "0.10"},
+		{name: "100 as input", arg: IntPtr(100), want: "1.00"},
+		{name: "1000 as input", arg: IntPtr(1000), want: "10.00"},
+		{name: "10000 as input", arg: IntPtr(10000), want: "100.00"},
+		{name: "100000 as input", arg: IntPtr(100000), want: "1000.00"},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -204,16 +208,17 @@ func TestStringToAmount(t *testing.T) {
 		arg  string
 		want *int
 	}{
-		{name: "", arg: "10", want: IntPtr(1000)},
-		{name: "", arg: "10,00", want: IntPtr(1000)},
-		{name: "", arg: "12", want: IntPtr(1200)},
-		{name: "", arg: "12,00", want: IntPtr(1200)},
-		{name: "", arg: "12,99", want: IntPtr(1299)},
-		{name: "", arg: "10002,3594", want: IntPtr(1000235)},
-		{name: "", arg: "1359782", want: IntPtr(135978200)},
-		{name: "", arg: "987456321", want: IntPtr(98745632100)},
-		{name: "", arg: "pippo", want: nil},
-		{name: "", arg: "", want: nil},
+		{name: "0 as input", arg: "0", want: IntPtr(0)},
+		{name: "1 as input", arg: "1", want: IntPtr(100)},
+		{name: "input whith 4 decimal with 0 value", arg: "1,00", want: IntPtr(100)},
+		{name: "input whith 2 decimal with value", arg: "1,22", want: IntPtr(122)},
+		{name: "input whith 4 decimal", arg: "1,3594", want: IntPtr(135)},
+		{name: "10 as input", arg: "10", want: IntPtr(1000)},
+		{name: "100 as input", arg: "100", want: IntPtr(10000)},
+		{name: "1000 as input", arg: "1000", want: IntPtr(100000)},
+		{name: "10000 as input", arg: "10000", want: IntPtr(1000000)},
+		{name: "string as input", arg: "pippo", want: nil},
+		{name: "empty string as input", arg: "", want: nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -225,7 +230,7 @@ func TestStringToAmount(t *testing.T) {
 				return
 			}
 			if *got != *tt.want {
-				t.Errorf("StringToAmount() = %v, want %v", got, tt.want)
+				t.Errorf("StringToAmount() = %v, want %v", *got, *tt.want)
 			}
 		})
 	}

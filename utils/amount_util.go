@@ -29,7 +29,7 @@ func FormatAmount(number int) string {
 	return formatFloat(numberAsString)
 }
 
-func stringAmountToString(numberAsString string) string {
+func addThousandsSeparator(numberAsString string) string {
 
 	parts := strings.Split(numberAsString, decimalSeparator)
 	integerPart := parts[0]
@@ -45,12 +45,12 @@ func stringAmountToString(numberAsString string) string {
 
 func AmountToString(number float64) string {
 	numberAsString := formatFloat(number)
-	return stringAmountToString(numberAsString)
+	return addThousandsSeparator(numberAsString)
 }
 
 func AmountIntegerToString(number int) string {
 	numberAsString := FormatAmount(number)
-	return stringAmountToString(numberAsString)
+	return addThousandsSeparator(numberAsString)
 }
 
 func FormatIntToAmount(valueFrom *int) string {
