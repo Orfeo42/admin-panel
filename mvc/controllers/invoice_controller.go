@@ -190,13 +190,13 @@ func GetInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilte
 		customerID = nil
 	}
 
-	page := utils.StringToInt(echoCtx.QueryParam("page"))
-	if page != nil {
+	page, err := utils.StringToInt(echoCtx.QueryParam("page"))
+	if err == nil {
 		filter.Page = *page
 	}
 
 	filter.CustomerID = customerID
-	filter.Number = utils.StringToString(echoCtx.FormValue("number"))
+	filter.Number = utils.ParseString(echoCtx.FormValue("number"))
 	filter.DateFrom = utils.StringToTimePtr(echoCtx.FormValue("dateFrom"))
 	filter.DateTo = utils.StringToTimePtr(echoCtx.FormValue("dateTo"))
 	filter.PaymentDateFrom = utils.StringToTimePtr(echoCtx.FormValue("paymentDateFrom"))

@@ -91,12 +91,12 @@ func GetCustomerFilterFromContext(echoCtx echo.Context) repositories.CustomerFil
 
 	filter := repositories.NewCustomerFilter()
 
-	page := utils.StringToInt(echoCtx.QueryParam("page"))
-	if page != nil {
+	page, err := utils.StringToInt(echoCtx.QueryParam("page"))
+	if err == nil {
 		filter.Page = *page
 	}
 
-	filter.Name = utils.StringToString(echoCtx.FormValue("name"))
+	filter.Name = utils.ParseString(echoCtx.FormValue("name"))
 	filter.TotalAmountFrom = utils.StringToAmount(echoCtx.FormValue("totalAmountFrom"))
 	filter.TotalAmountTo = utils.StringToAmount(echoCtx.FormValue("totalAmountTo"))
 	filter.TotalToPayFrom = utils.StringToAmount(echoCtx.FormValue("totalToPayFrom"))
