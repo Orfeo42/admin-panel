@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -20,6 +22,7 @@ func main() {
 
 	app := echo.New()
 
+	app.HTTPErrorHandler = customHTTPErrorHandler
 	app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "[${time_rfc3339}] ${status} ${method} ${uri} (${remote_ip}) ${latency_human}\n",
 		Output: app.Logger.Output(),
@@ -40,8 +43,8 @@ func main() {
 }
 
 func homeController(echoCtx echo.Context) error {
-	echoCtx = utils.SetPage(echoCtx, enum.Home)
-	echoCtx = utils.SetTitle(echoCtx, "Home Page")
+	utils.SetPage(echoCtx, enum.Home)
+	utils.SetTitle(echoCtx, "Home Page")
 
 	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
 
@@ -99,5 +102,18 @@ func earningsToAreaChartData(earningList *[]repositories.MoneyByMonthResult) com
 	return component.AreaChartData{
 		Data:   data,
 		Labels: labels,
+	}
+}
+
+// TODO DA TESTARE E FARE PER BENE
+func customHTTPErrorHandler(err error, echoCtx echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	echoCtx.Logger().Error(err)
+	errorPage := fmt.Sprintf("%d.html", code)
+	if err := echoCtx.File(errorPage); err != nil {
+		echoCtx.Logger().Error(err)
 	}
 }

@@ -167,6 +167,7 @@ func SearchCustomerByName(name string) (*[]Customer, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var customerList []Customer
 	tx := dbInstance.
 		Where("lower(customers.name) LIKE '%' || lower(?) || '%'", name).
