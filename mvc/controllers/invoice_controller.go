@@ -18,7 +18,7 @@ func InvoiceController(application *echo.Echo) {
 		utils.SetPage(echoCtx, enum.InvoiceList)
 		utils.SetTitle(echoCtx, "Fatture")
 
-		filter := repositories.NewInvoiceFilter()
+		filter := getInvoiceFilterFromContext(echoCtx)
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
@@ -31,7 +31,7 @@ func InvoiceController(application *echo.Echo) {
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
 
-		filter := GetInvoiceFilterFromContext(echoCtx)
+		filter := getInvoiceFilterFromContext(echoCtx)
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
@@ -181,7 +181,7 @@ func isPaidToBool(valueFrom string) *bool {
 	return &value
 }
 
-func GetInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilter {
+func getInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilter {
 
 	filter := repositories.NewInvoiceFilter()
 

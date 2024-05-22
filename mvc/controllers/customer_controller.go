@@ -35,7 +35,7 @@ func CustomerController(application *echo.Echo) {
 
 	customerGroup.GET("/list", func(echoCtx echo.Context) error {
 
-		filter := repositories.NewCustomerFilter()
+		filter := getCustomerFilterFromContext(echoCtx)
 
 		items, err := repositories.GetAllCustomerWithTotals(filter)
 		if err != nil {
@@ -52,7 +52,9 @@ func CustomerController(application *echo.Echo) {
 	})
 
 	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
+
 		stringId := echoCtx.Param("id")
+
 		id, err := utils.StringToUint(stringId)
 		if err != nil {
 			return err
@@ -70,6 +72,7 @@ func CustomerController(application *echo.Echo) {
 		if err != nil {
 			return err
 		}
+
 		utils.SetPageNumber(echoCtx, filter.Page)
 
 		utils.SetPage(echoCtx, enum.CustomerList)

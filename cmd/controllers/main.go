@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -107,7 +105,7 @@ func earningsToAreaChartData(earningList *[]repositories.MoneyByMonthResult) com
 
 // TODO DA TESTARE E FARE PER BENE
 func customHTTPErrorHandler(err error, echoCtx echo.Context) {
-	code := http.StatusInternalServerError
+	/*code := http.StatusInternalServerError
 	if he, ok := err.(*echo.HTTPError); ok {
 		code = he.Code
 	}
@@ -115,5 +113,5 @@ func customHTTPErrorHandler(err error, echoCtx echo.Context) {
 	errorPage := fmt.Sprintf("%d.html", code)
 	if err := echoCtx.File(errorPage); err != nil {
 		echoCtx.Logger().Error(err)
-	}
+	}*/
 }

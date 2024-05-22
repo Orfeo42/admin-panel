@@ -18,7 +18,7 @@ templ CustomerListView(items []repositories.CustomerWithTotals, filter repositor
 		@customerFilter(filter)
 		<div class="row">
 			<div class="col-12 mb-4" style="text-align: right;">
-				<button type="submit" class="btn btn-primary" hx-get="/customer/add" hx-target="body" hx-replace-url="true">
+				<button type="submit" class="btn btn-primary" hx-get="/customer/add" hx-target="body" hx-push-url="true">
 					<i class="fas fa-fw fa-plus"></i>
 					Nuovo cliente
 				</button>
@@ -30,7 +30,7 @@ templ CustomerListView(items []repositories.CustomerWithTotals, filter repositor
 
 templ customerFilter(filter repositories.CustomerFilter) {
 	@component.CollapseCard("Filtri", "filter", false) {
-		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML">
+		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer/list" hx-ext="push-url-w-params">
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					@component.FormInput(component.FormInputParam{
@@ -45,8 +45,16 @@ templ customerFilter(filter repositories.CustomerFilter) {
 					<label for="isPaid">Pagamenti:</label>
 					<select class="form-control" name="isPaid" id="isPaid">
 						<option value="">Tutti</option>
-						<option value="true">Tutti pagamenti chiusi</option>
-						<option value="false">Con Pagamenti Aperti</option>
+						if filter.IsPaid != nil && *filter.IsPaid {
+							<option value="true" selected>Tutti pagamenti chiusi</option>
+						} else {
+							<option value="true">Tutti pagamenti chiusi</option>
+						}
+						if filter.IsPaid != nil && !*filter.IsPaid {
+							<option value="false" selected>Con pagamenti aperti</option>
+						} else {
+							<option value="false">Con pagamenti aperti</option>
+						}
 					</select>
 				</div>
 			</div>

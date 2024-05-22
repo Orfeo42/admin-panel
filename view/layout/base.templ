@@ -10,6 +10,19 @@ templ mainHead() {
 	<meta name="author" content=""/>
 	<title>{ utils.GetTitle(ctx) }</title>
 	<script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+	<script>
+		htmx.defineExtension('push-url-w-params', {
+			onEvent : function(name, e) {
+				//TODO controllare 
+				if (name === "htmx:configRequest") {
+					const path = e.target.getAttribute('data-push-url')
+					const params = new URLSearchParams(e.detail.parameters).toString()
+					const url = `${window.location.origin}${path}?${params}`
+					window.history.pushState({}, '', url);
+				}
+			}
+		})
+	</script>
 	<!-- Custom fonts for this template-->
 	<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
 	<link

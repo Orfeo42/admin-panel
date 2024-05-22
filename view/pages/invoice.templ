@@ -17,7 +17,7 @@ templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceF
 		@InvoiceFilter(filter, true)
 		<div class="row">
 			<div class="col-12 mb-4" style="text-align: right;">
-				<button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-replace-url="true">
+				<button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-push-url="true">
 					<i class="fas fa-fw fa-plus"></i>
 					Nuova fattura
 				</button>
@@ -47,8 +47,16 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						<label for="isPaid">Stato Pagamento:</label>
 						<select class="form-control" name="isPaid" id="isPaid">
 							<option value="">Tutte le fatture</option>
-							<option value="true">Pagate</option>
-							<option value="false">Non pagati</option>
+							if filter.IsPaid != nil && *filter.IsPaid {
+								<option value="true" selected>Pagate</option>
+							} else {
+								<option value="true">Pagate</option>
+							}
+							if filter.IsPaid != nil && !*filter.IsPaid {
+								<option value="false" selected>Non pagati</option>
+							} else {
+								<option value="false">Non pagati</option>
+							}
 						</select>
 					</div>
 				} else {
@@ -59,8 +67,16 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						<label for="isPaid">Stato Pagamento:</label>
 						<select class="form-control" name="isPaid" id="isPaid">
 							<option value="">Tutte le fatture</option>
-							<option value="true">Pagate</option>
-							<option value="false">Non pagati</option>
+							if filter.IsPaid != nil && *filter.IsPaid {
+								<option value="true" selected>Pagate</option>
+							} else {
+								<option value="true">Pagate</option>
+							}
+							if filter.IsPaid != nil && !*filter.IsPaid {
+								<option value="false" selected>Non pagati</option>
+							} else {
+								<option value="false">Non pagati</option>
+							}
 						</select>
 						<input type="hidden" name="customer" value={ utils.UintToString(*filter.CustomerID) }/>
 					</div>
