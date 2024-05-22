@@ -6,19 +6,17 @@ import (
 )
 
 func TestParseString(t *testing.T) {
-	type args struct {
-		value string
-	}
 	tests := []struct {
-		name string
-		args args
-		want *string
+		name  string
+		value string
+		want  *string
 	}{
-		// TODO: Add test cases.
+		{name: "enmpty string as input", value: "", want: nil},
+		{name: "complete string as input", value: "ciao pippo", want: StringPtr("ciao pippo")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ParseString(tt.args.value); !reflect.DeepEqual(got, tt.want) {
+			if got := ParseString(tt.value); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ParseString() = %v, want %v", got, tt.want)
 			}
 		})
@@ -26,19 +24,17 @@ func TestParseString(t *testing.T) {
 }
 
 func TestFormatStringToForm(t *testing.T) {
-	type args struct {
-		valueFrom *string
-	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name      string
+		valueFrom *string
+		want      string
 	}{
-		// TODO: Add test cases.
+		{name: "nil as input", valueFrom: nil, want: ""},
+		{name: "String pointer as input", valueFrom: StringPtr("Ciao"), want: "Ciao"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FormatStringToForm(tt.args.valueFrom); got != tt.want {
+			if got := FormatStringToForm(tt.valueFrom); got != tt.want {
 				t.Errorf("FormatStringToForm() = %v, want %v", got, tt.want)
 			}
 		})

@@ -13,3 +13,7 @@ func UintPtr(i uint) *uint {
 func TimePtr(i time.Time) *time.Time {
 	return &i
 }
+
+func StringPtr(str string) *string {
+	return &str
+}
