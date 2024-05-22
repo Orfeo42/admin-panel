@@ -24,3 +24,23 @@ func TestParseString(t *testing.T) {
 		})
 	}
 }
+
+func TestFormatStringToForm(t *testing.T) {
+	type args struct {
+		valueFrom *string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FormatStringToForm(tt.args.valueFrom); got != tt.want {
+				t.Errorf("FormatStringToForm() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -19,36 +19,15 @@ func StringToUint(valueFrom string) (*uint, error) {
 	return &result, nil
 }
 
-func StringToInt(valueFrom string) *int {
+func StringToInt(valueFrom string) (*int, error) {
 	if valueFrom == "" {
-		return nil
+		return nil, errors.New("empty can't be converted to int")
 	}
 	value, err := strconv.Atoi(strings.TrimSpace(valueFrom))
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return &value
-}
-
-func StringToString(valueFrom string) *string {
-	if strings.TrimSpace(valueFrom) == "" {
-		return nil
-	}
-	return &valueFrom
-}
-
-func FormatStringToForm(valueFrom *string) string {
-	if valueFrom == nil {
-		return ""
-	}
-	return strings.TrimSpace(*valueFrom)
-}
-
-func FormatUintToFormString(valueFrom *uint) string {
-	if valueFrom == nil {
-		return ""
-	}
-	return UintToString(*valueFrom)
+	return &value, nil
 }
 
 func UintToString(valueFrom uint) string {

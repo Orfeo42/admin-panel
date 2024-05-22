@@ -1,8 +1,17 @@
 package utils
 
-func ParseString(value string) *string {
-	if value == "" {
+import "strings"
+
+func ParseString(valueFrom string) *string {
+	if strings.TrimSpace(valueFrom) == "" {
 		return nil
 	}
-	return &value
+	return &valueFrom
+}
+
+func FormatStringToForm(valueFrom *string) string {
+	if valueFrom == nil {
+		return ""
+	}
+	return strings.TrimSpace(*valueFrom)
 }
