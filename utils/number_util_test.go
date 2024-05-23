@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestStringToUint(t *testing.T) {
+func TestStringToUintPtr(t *testing.T) {
 	tests := []struct {
 		name      string
 		valueFrom string
@@ -22,7 +22,7 @@ func TestStringToUint(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := StringToUint(tt.valueFrom)
+			got, err := StringToUintPtr(tt.valueFrom)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StringToUint() error = %v, wantErr %v", err, tt.wantErr)
 				return

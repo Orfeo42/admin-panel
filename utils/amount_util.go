@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 )
@@ -72,17 +73,26 @@ func formatIntWithSeparator(integerPart, separator string) string {
 	return string(result)
 }
 
-func StringToAmount(valueFrom string) *int {
+func StringToAmountPtr(valueFrom string) (*int, error) {
+	valueFrom = strings.TrimSpace(valueFrom)
 	if valueFrom == "" {
-		return nil
+		return nil, errors.New("empty can't be converted to int")
 	}
 	valueFrom = strings.Replace(valueFrom, ",", ".", -1)
-	valueFloat, err := strconv.ParseFloat(strings.TrimSpace(valueFrom), 64)
+	valueFloat, err := strconv.ParseFloat(valueFrom, 64)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	valueFloat = valueFloat * 100
 
 	value := int(valueFloat)
-	return &value
+	return &value, nil
+}
+
+func StringToAmountPtrNoErr(valueFrom string) *int {
+	amount, err := StringToAmountPtr(valueFrom)
+	if err != nil {
+		return nil
+	}
+	return amount
 }

@@ -1,18 +1,88 @@
 package component
 
-type AreaChartData struct {
-	Labels []string
-	Data   []float64
+type AreaChartParams struct {
+	XAxesLabels []string
+	DataSets    []AreaChartDataset
 }
 
-templ AreaChart(id string, areaChartData AreaChartData) {
+type AreaChartDataset struct {
+	Label                     string    `json:"label"`
+	LineTension               float64   `json:"lineTension"`
+	BackgroundColor           string    `json:"backgroundColor"`
+	BorderColor               string    `json:"borderColor"`
+	PointRadius               int       `json:"pointRadius"`
+	PointBackgroundColor      string    `json:"pointBackgroundColor"`
+	PointBorderColor          string    `json:"pointBorderColor"`
+	PointHoverRadius          int       `json:"pointHoverRadius"`
+	PointHoverBackgroundColor string    `json:"pointHoverBackgroundColor"`
+	PointHoverBorderColor     string    `json:"pointHoverBorderColor"`
+	PointHitRadius            int       `json:"pointHitRadius"`
+	PointBorderWidth          int       `json:"pointBorderWidth"`
+	Data                      []float64 `json:"data"`
+}
+
+func LoadBlueData(label string, data []float64) AreaChartDataset {
+	return AreaChartDataset{
+		Label:                     label,
+		LineTension:               0.3,
+		BackgroundColor:           "rgba(78, 115, 223, 0.05)",
+		BorderColor:               "rgba(78, 115, 223, 1)",
+		PointRadius:               3,
+		PointBackgroundColor:      "rgba(78, 115, 223, 1)",
+		PointBorderColor:          "rgba(78, 115, 223, 1)",
+		PointHoverRadius:          3,
+		PointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+		PointHoverBorderColor:     "rgba(78, 115, 223, 1)",
+		PointHitRadius:            10,
+		PointBorderWidth:          2,
+		Data:                      data,
+	}
+}
+
+func LoadRedData(label string, data []float64) AreaChartDataset {
+	return AreaChartDataset{
+		Label:                     label,
+		LineTension:               0.3,
+		BackgroundColor:           "rgba(222, 78, 78, 0.05)",
+		BorderColor:               "rgba(222, 78, 78, 1)",
+		PointRadius:               3,
+		PointBackgroundColor:      "rgba(222, 78, 78, 1)",
+		PointBorderColor:          "rgba(222, 78, 78, 1)",
+		PointHoverRadius:          3,
+		PointHoverBackgroundColor: "rgba(222, 78, 78, 1)",
+		PointHoverBorderColor:     "rgba(222, 78, 78, 1)",
+		PointHitRadius:            10,
+		PointBorderWidth:          2,
+		Data:                      data,
+	}
+}
+
+func LoadGreenData(label string, data []float64) AreaChartDataset {
+	return AreaChartDataset{
+		Label:                     label,
+		LineTension:               0.3,
+		BackgroundColor:           "rgba(66, 194, 84, 0.05)",
+		BorderColor:               "rgba(66, 194, 84, 1)",
+		PointRadius:               3,
+		PointBackgroundColor:      "rgba(66, 194, 84, 1)",
+		PointBorderColor:          "rgba(66, 194, 84, 1)",
+		PointHoverRadius:          3,
+		PointHoverBackgroundColor: "rgba(66, 194, 84, 1)",
+		PointHoverBorderColor:     "rgba(66, 194, 84, 1)",
+		PointHitRadius:            10,
+		PointBorderWidth:          2,
+		Data:                      data,
+	}
+}
+
+templ AreaChart(id string, areaChartParams AreaChartParams) {
 	<div class="chart-area">
 		<canvas id={ id }></canvas>
 	</div>
-	@areaChartScript(id, areaChartData)
+	@areaChartScript(id, areaChartParams)
 }
 
-script areaChartScript(id string, areaChartData AreaChartData) {
+script areaChartScript(id string, areaChartParams AreaChartParams) {
 
     Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
     Chart.defaults.global.defaultFontColor = '#858796';
@@ -45,22 +115,8 @@ script areaChartScript(id string, areaChartData AreaChartData) {
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: areaChartData.Labels,
-        datasets: [{
-          label: "Totale",
-          lineTension: 0.3,
-          backgroundColor: "rgba(78, 115, 223, 0.05)",
-          borderColor: "rgba(78, 115, 223, 1)",
-          pointRadius: 3,
-          pointBackgroundColor: "rgba(78, 115, 223, 1)",
-          pointBorderColor: "rgba(78, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: areaChartData.Data,
-        }],
+        labels: areaChartParams.XAxesLabels,
+        datasets: areaChartParams.DataSets,
       },
       options: {
         maintainAspectRatio: false,
@@ -89,7 +145,6 @@ script areaChartScript(id string, areaChartData AreaChartData) {
             ticks: {
               maxTicksLimit: 5,
               padding: 10,
-              // Include a dollar sign in the ticks
               callback: function (value, index, values) {
                 return '€' + number_format(value);
               }
@@ -104,7 +159,7 @@ script areaChartScript(id string, areaChartData AreaChartData) {
           }],
         },
         legend: {
-          display: false
+          display: true
         },
         tooltips: {
           backgroundColor: "rgb(255,255,255)",

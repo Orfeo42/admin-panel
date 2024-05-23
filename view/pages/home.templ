@@ -6,7 +6,7 @@ import (
 	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ HomeView(salesChartData component.AreaChartData, collectedChartData component.AreaChartData, salesMonth float64, salesYear float64, collectedMonth float64, collectedYear float64) {
+templ HomeView(areaChartParams component.AreaChartParams, salesMonth float64, salesYear float64, collectedMonth float64, collectedYear float64) {
 	@layout.BaseView() {
 		<div class="row">
 			<div class="col-xl-3 col-md-6 mb-4">
@@ -81,15 +81,15 @@ templ HomeView(salesChartData component.AreaChartData, collectedChartData compon
 		<div class="row">
 			<!-- Area Chart -->
 			<div class="col-xl-6 col-lg-6">
-				@component.TitledCardComp("Fatturato anno in corso") {
-					@component.AreaChart("salesChart", salesChartData)
+				@component.TitledCardComp("Grafico Fatturato/Riscosso") {
+					@component.AreaChart("salesChart", areaChartParams)
 				}
 			</div>
-			<div class="col-xl-6 col-lg-6">
+			/*<div class="col-xl-6 col-lg-6">
 				@component.TitledCardComp("Soldi incassati anno in corso") {
 					@component.AreaChart("collectedChart", collectedChartData)
 				}
-			</div>
+			</div>*/
 		</div>
 	}
 	<!--

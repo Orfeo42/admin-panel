@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func StringToUint(valueFrom string) (*uint, error) {
+func StringToUintPtr(valueFrom string) (*uint, error) {
 	if valueFrom == "" {
 		return nil, errors.New("empty can't be converted to uint")
 	}

@@ -20,10 +20,10 @@ func getCustomerFilterFromContext(echoCtx echo.Context) repositories.CustomerFil
 	}
 
 	filter.Name = utils.ParseString(echoCtx.FormValue("name"))
-	filter.TotalAmountFrom = utils.StringToAmount(echoCtx.FormValue("totalAmountFrom"))
-	filter.TotalAmountTo = utils.StringToAmount(echoCtx.FormValue("totalAmountTo"))
-	filter.TotalToPayFrom = utils.StringToAmount(echoCtx.FormValue("totalToPayFrom"))
-	filter.TotalToPayTo = utils.StringToAmount(echoCtx.FormValue("totalToPayTo"))
+	filter.TotalAmountFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountFrom"))
+	filter.TotalAmountTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountTo"))
+	filter.TotalToPayFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayFrom"))
+	filter.TotalToPayTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayTo"))
 	filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
 	return filter
 
@@ -55,7 +55,7 @@ func CustomerController(application *echo.Echo) {
 
 		stringId := echoCtx.Param("id")
 
-		id, err := utils.StringToUint(stringId)
+		id, err := utils.StringToUintPtr(stringId)
 		if err != nil {
 			return err
 		}

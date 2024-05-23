@@ -163,28 +163,28 @@ func GetInvoiceByIDString(id string) (*Invoice, error) {
 	return &invoice, nil
 }
 
-func CreateInvoice(invoice Invoice) (Invoice, error) {
+func CreateInvoice(invoice Invoice) (*Invoice, error) {
 
 	dbInstance, err := db.GetInstance()
 	if err != nil {
-		return Invoice{}, err
+		return nil, err
 	}
 
 	result := dbInstance.Create(&invoice)
 
-	return invoice, result.Error
+	return &invoice, result.Error
 }
 
-func UpdateInvoice(invoice Invoice) (Invoice, error) {
+func UpdateInvoice(invoice Invoice) (*Invoice, error) {
 
 	dbInstance, err := db.GetInstance()
 	if err != nil {
-		return Invoice{}, err
+		return nil, err
 	}
 
 	result := dbInstance.Save(&invoice)
 
-	return invoice, result.Error
+	return &invoice, result.Error
 }
 
 func CreateInvoiceListInTransaction(invoiceList *[]Invoice) (*[]Invoice, error) {

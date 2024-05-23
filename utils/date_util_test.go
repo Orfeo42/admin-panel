@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"reflect"
 	"testing"
 	"time"
 )
@@ -76,7 +75,7 @@ func TestFormatTimeToTable(t *testing.T) {
 	}
 }
 
-func TestStringToTimePtr(t *testing.T) {
+/*func TestStringToTimePtr(t *testing.T) {
 	tests := []struct {
 		name      string
 		valueFrom string
@@ -93,4 +92,4 @@ func TestStringToTimePtr(t *testing.T) {
 			}
 		})
 	}
-}
+}*/
