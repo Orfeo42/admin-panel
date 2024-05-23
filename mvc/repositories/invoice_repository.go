@@ -50,13 +50,7 @@ type InvoiceFilter struct {
 }
 
 func NewInvoiceFilter() InvoiceFilter {
-
-	dateTo := time.Now()
-	dateFrom := dateTo.AddDate(0, -1, 0)
-
 	return InvoiceFilter{
-		DateFrom: &dateFrom,
-		DateTo:   &dateTo,
 		Page:     1,
 		PageSize: 10,
 	}
