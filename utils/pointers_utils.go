@@ -1,6 +1,9 @@
 package utils
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 func IntPtr(i int) *int {
 	return &i
@@ -15,5 +18,12 @@ func TimePtr(i time.Time) *time.Time {
 }
 
 func StringPtr(str string) *string {
+	return &str
+}
+
+func StringPtrNilIfEmpty(str string) *string {
+	if strings.TrimSpace(str) != "" {
+		return nil
+	}
 	return &str
 }

@@ -21,10 +21,6 @@ type InvoiceDTO struct {
 	Note                *string
 }
 
-/*func (dto InvoiceDTO) validateDTO() error {
-
-}*/
-
 func GetInvoiceFromFilter(filter repositories.InvoiceFilter) (*[]repositories.Invoice, error) {
 	items, err := repositories.GetAllInvoice(filter)
 	if err != nil {
@@ -42,13 +38,16 @@ func CreateNewInvoice(dto InvoiceDTO) (*repositories.Invoice, error) {
 	}
 
 	invoice, err := repositories.CreateInvoice(repositories.Invoice{
-		CustomerID:  customer.ID,
-		Customer:    *customer,
-		Number:      dto.Number,
-		Date:        dto.Date,
-		PaymentDate: dto.PaymentDate,
-		Amount:      dto.Amount,
-		PaidAmount:  dto.PaidAmount,
+		CustomerID:          customer.ID,
+		Customer:            *customer,
+		Number:              dto.Number,
+		PaymentMethod:       dto.PaymentMethod,
+		Date:                dto.Date,
+		PaymentDate:         dto.PaymentDate,
+		Amount:              dto.Amount,
+		PaidAmount:          dto.PaidAmount,
+		ExpectedPaymentDate: dto.ExpectedPaymentDate,
+		Note:                dto.Note,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error creating the invoice: %+v", err)
@@ -75,6 +74,8 @@ func UpdateInvoice(id uint, dto InvoiceDTO) (*repositories.Invoice, error) {
 
 	inv.Number = dto.Number
 
+	inv.PaymentMethod = dto.PaymentMethod
+
 	inv.Date = dto.Date
 
 	inv.PaymentDate = dto.PaymentDate
@@ -82,6 +83,10 @@ func UpdateInvoice(id uint, dto InvoiceDTO) (*repositories.Invoice, error) {
 	inv.Amount = dto.Amount
 
 	inv.PaidAmount = dto.PaidAmount
+
+	inv.ExpectedPaymentDate = dto.ExpectedPaymentDate
+
+	inv.Note = dto.Note
 
 	updateInvoice, err := repositories.UpdateInvoice(*inv)
 	if err != nil {

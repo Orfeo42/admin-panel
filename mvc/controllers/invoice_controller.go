@@ -97,7 +97,7 @@ func InvoiceController(application *echo.Echo) {
 			return errors.New("invoice id is not valid")
 		}
 
-		invoiceDTO, err := getInvoiceDTOFromContext(echoCtx)
+		invoiceDTO, err := validateCreateUpdateRequest(echoCtx)
 		if err != nil {
 			//TODO GESTISCI ERRORE HTML
 			return err
@@ -134,8 +134,9 @@ func InvoiceController(application *echo.Echo) {
 
 	invoiceGroup.POST("", func(echoCtx echo.Context) error {
 
-		invoiceDTO, err := getInvoiceDTOFromContext(echoCtx)
+		invoiceDTO, err := validateCreateUpdateRequest(echoCtx)
 		if err != nil {
+			//TODO GESTISCI ERRORE HTML
 			return err
 		}
 
@@ -187,7 +188,7 @@ func getInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilte
 
 }
 
-func getInvoiceDTOFromContext(echoCtx echo.Context) (*services.InvoiceDTO, error) {
+func validateCreateUpdateRequest(echoCtx echo.Context) (*services.InvoiceDTO, error) {
 
 	customer, err := utils.StringToUintPtr(echoCtx.FormValue("customer"))
 	if err != nil {
@@ -219,21 +220,25 @@ func getInvoiceDTOFromContext(echoCtx echo.Context) (*services.InvoiceDTO, error
 		return nil, errors.New("paid amount is not valid")
 	}
 
-	/*paidAmount, err := utils.StringToAmountPtr(echoCtx.FormValue("paidAmount"))
+	paymentMethod := utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))
+
+	expectedPaymentDate, err := utils.StringToTimePtr(echoCtx.FormValue("expectedPaymentDate"))
 	if err != nil {
-		return nil, errors.New("paid amount is not valid")
-	}*/
+		return nil, errors.New("payment date is not valid")
+	}
+
+	note := utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))
 
 	return &services.InvoiceDTO{
 		CustomerID:          *customer,
 		Year:                0,
 		Number:              number,
-		PaymentMethod:       nil,
+		PaymentMethod:       paymentMethod,
 		Amount:              *amount,
 		PaidAmount:          *paidAmount,
 		Date:                date,
 		PaymentDate:         paymentDate,
-		ExpectedPaymentDate: nil,
-		Note:                nil,
+		ExpectedPaymentDate: expectedPaymentDate,
+		Note:                note,
 	}, nil
 }
