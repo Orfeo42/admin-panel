@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"time"
 
 	"github.com/Orfeo42/admin-panel/enum"
@@ -32,7 +31,12 @@ func InvoiceController(application *echo.Echo) {
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
-		return utils.Render(viewinvoice.InvoiceListView(*invoices, filter), echoCtx)
+		invoiceListParams := viewinvoice.InvoiceListParams{
+			Items:  *invoices,
+			Filter: filter,
+		}
+
+		return utils.Render(viewinvoice.InvoiceList(invoiceListParams), echoCtx)
 	})
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
@@ -47,12 +51,12 @@ func InvoiceController(application *echo.Echo) {
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
-		return utils.Render(viewinvoice.AllInvoiceRowsShow(*invoices), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRows(*invoices), echoCtx)
 	})
 
 	invoiceGroup.GET("/add", func(echoCtx echo.Context) error {
 		//TODO ESTRARRE DATI
-		invoice, err := services.CreateNewInvoice(services.InvoiceDTO{})
+		invoice, err := services.CreateNewInvoice(repositories.Invoice{})
 		if err != nil {
 			//TODO GESTIRE L'ERRORE HTML
 			return err
@@ -62,7 +66,7 @@ func InvoiceController(application *echo.Echo) {
 
 		utils.SetTitle(echoCtx, pageName)
 
-		return utils.Render(viewinvoice.InvoiceView(*invoice), echoCtx)
+		return utils.Render(viewinvoice.InvoiceEdit(*invoice), echoCtx)
 	})
 
 	invoiceGroup.GET("/:id/edit", func(echoCtx echo.Context) error {
@@ -74,7 +78,10 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(viewinvoice.InvoiceRowEdit(*inv), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRowEdit(viewinvoice.InvoiceRowEditParams{
+			Item:   *inv,
+			Errors: map[string]string{},
+		}), echoCtx)
 	})
 
 	invoiceGroup.GET("/:id", func(echoCtx echo.Context) error {
@@ -86,29 +93,30 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(viewinvoice.InvoiceRowShow(*inv), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRow(*inv), echoCtx)
 	})
 
 	invoiceGroup.PUT("/:id", func(echoCtx echo.Context) error {
 
 		id, err := utils.StringToUintPtr(echoCtx.Param("id"))
 		if err != nil {
-			//TODO GESTISCI ERRORE HTML
-			return errors.New("invoice id is not valid")
-		}
-
-		invoiceDTO, err := validateCreateUpdateRequest(echoCtx)
-		if err != nil {
-			//TODO GESTISCI ERRORE HTML
 			return err
 		}
 
-		invoice, err := services.UpdateInvoice(*id, *invoiceDTO)
-		if err != nil {
-			return err
+		invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
+		if len(errors) > 0 {
+			return utils.Render(viewinvoice.InvoiceRowEdit(viewinvoice.InvoiceRowEditParams{
+				Item:   invoiceIn,
+				Errors: errors,
+			}), echoCtx)
 		}
 
-		return utils.Render(viewinvoice.InvoiceRowShow(*invoice), echoCtx)
+		invoice, err := services.UpdateInvoice(*id, invoiceIn)
+		/*if err != nil {
+			return err
+		}*/
+
+		return utils.Render(viewinvoice.InvoiceRow(*invoice), echoCtx)
 	})
 
 	invoiceGroup.PUT("/:id/pay", func(echoCtx echo.Context) error {
@@ -129,18 +137,18 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(viewinvoice.InvoiceRowShow(*updateInvoice), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRow(*updateInvoice), echoCtx)
 	})
 
 	invoiceGroup.POST("", func(echoCtx echo.Context) error {
 
-		invoiceDTO, err := validateCreateUpdateRequest(echoCtx)
-		if err != nil {
+		invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
+		if len(errors) > 0 {
 			//TODO GESTISCI ERRORE HTML
-			return err
+
 		}
 
-		invoice, err := services.CreateNewInvoice(*invoiceDTO)
+		invoice, err := services.CreateNewInvoice(invoiceIn)
 		if err != nil {
 			return err
 		}
@@ -188,48 +196,49 @@ func getInvoiceFilterFromContext(echoCtx echo.Context) repositories.InvoiceFilte
 
 }
 
-func validateCreateUpdateRequest(echoCtx echo.Context) (*services.InvoiceDTO, error) {
+func validateCreateUpdateRequest(echoCtx echo.Context) (repositories.Invoice, map[string]string) {
+	errors := map[string]string{}
 
 	customer, err := utils.StringToUintPtr(echoCtx.FormValue("customer"))
 	if err != nil {
-		return nil, errors.New("customer is not valid")
+		errors["customer"] = "customer is not valid"
 	}
 
 	number := echoCtx.FormValue("number")
 	if number == "" {
-		return nil, errors.New("number is not valid")
+		errors["number"] = "number is not valid"
 	}
 
 	date, err := utils.StringToTimePtr(echoCtx.FormValue("date"))
 	if err != nil {
-		return nil, errors.New("date is not valid")
+		errors["date"] = "date is not valid"
 	}
 
 	paymentDate, err := utils.StringToTimePtr(echoCtx.FormValue("paymentDate"))
 	if err != nil {
-		return nil, errors.New("payment date is not valid")
+		errors["paymentDate"] = "payment date is not valid"
 	}
 
 	amount, err := utils.StringToAmountPtr(echoCtx.FormValue("amount"))
 	if err != nil {
-		return nil, errors.New("amount is not valid")
+		errors["amount"] = "amount is not valid"
 	}
 
 	paidAmount, err := utils.StringToAmountPtr(echoCtx.FormValue("paidAmount"))
 	if err != nil {
-		return nil, errors.New("paid amount is not valid")
+		errors["paidAmount"] = "paid amount is not valid"
 	}
 
 	paymentMethod := utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))
 
 	expectedPaymentDate, err := utils.StringToTimePtr(echoCtx.FormValue("expectedPaymentDate"))
 	if err != nil {
-		return nil, errors.New("payment date is not valid")
+		errors["expectedPaymentDate"] = "payment date is not valid"
 	}
 
 	note := utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))
 
-	return &services.InvoiceDTO{
+	return repositories.Invoice{
 		CustomerID:          *customer,
 		Year:                0,
 		Number:              number,
@@ -240,5 +249,5 @@ func validateCreateUpdateRequest(echoCtx echo.Context) (*services.InvoiceDTO, er
 		PaymentDate:         paymentDate,
 		ExpectedPaymentDate: expectedPaymentDate,
 		Note:                note,
-	}, nil
+	}, errors
 }

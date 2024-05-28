@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-templ CustomerSearchView(items []repositories.Customer) {
+templ CustomerSearch(items []repositories.Customer) {
 	for index, customer := range items {
 		<div class="preview-item" data-index={ strconv.Itoa(index) } data-id={ utils.UintToString(customer.ID) }>{ customer.Name }</div>
 	}

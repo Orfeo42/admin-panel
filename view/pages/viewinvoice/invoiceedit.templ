@@ -7,7 +7,12 @@ import (
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ InvoiceView(item repositories.Invoice) {
+type InvoiceEditParams struct {
+	Invoice repositories.Invoice
+	Errors  map[string]string
+}
+
+templ InvoiceEdit(item repositories.Invoice) {
 	@layout.BaseView() {
 		@InvoiceForm(item)
 	}

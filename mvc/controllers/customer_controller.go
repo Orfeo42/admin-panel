@@ -90,7 +90,7 @@ func CustomerController(application *echo.Echo) {
 			Filter:      filter,
 		}
 
-		return utils.Render(viewcustomer.CustomerDetailView(customerDetailParams), echoCtx)
+		return utils.Render(viewcustomer.CustomerDetail(customerDetailParams), echoCtx)
 	})
 
 	customerGroup.GET("/filter", func(echoCtx echo.Context) error {
@@ -115,6 +115,6 @@ func CustomerController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(viewcustomer.CustomerSearchView(*customerList), echoCtx)
+		return utils.Render(viewcustomer.CustomerSearch(*customerList), echoCtx)
 	})
 }

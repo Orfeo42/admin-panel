@@ -2,24 +2,10 @@ package services
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/Orfeo42/admin-panel/mvc/repositories"
 	"github.com/labstack/gommon/log"
 )
-
-type InvoiceDTO struct {
-	CustomerID          uint
-	Year                int
-	Number              string
-	PaymentMethod       *string
-	Amount              int
-	PaidAmount          int
-	Date                *time.Time
-	PaymentDate         *time.Time
-	ExpectedPaymentDate *time.Time
-	Note                *string
-}
 
 func GetInvoiceFromFilter(filter repositories.InvoiceFilter) (*[]repositories.Invoice, error) {
 	items, err := repositories.GetAllInvoice(filter)
@@ -30,9 +16,9 @@ func GetInvoiceFromFilter(filter repositories.InvoiceFilter) (*[]repositories.In
 	return &items, nil
 }
 
-func CreateNewInvoice(dto InvoiceDTO) (*repositories.Invoice, error) {
+func CreateNewInvoice(invoiceIn repositories.Invoice) (*repositories.Invoice, error) {
 
-	customer, err := repositories.GetCustomerByID(dto.CustomerID)
+	customer, err := repositories.GetCustomerByID(invoiceIn.CustomerID)
 	if err != nil {
 		return nil, fmt.Errorf("customer not valid: %+v", err)
 	}
@@ -40,14 +26,14 @@ func CreateNewInvoice(dto InvoiceDTO) (*repositories.Invoice, error) {
 	invoice, err := repositories.CreateInvoice(repositories.Invoice{
 		CustomerID:          customer.ID,
 		Customer:            *customer,
-		Number:              dto.Number,
-		PaymentMethod:       dto.PaymentMethod,
-		Date:                dto.Date,
-		PaymentDate:         dto.PaymentDate,
-		Amount:              dto.Amount,
-		PaidAmount:          dto.PaidAmount,
-		ExpectedPaymentDate: dto.ExpectedPaymentDate,
-		Note:                dto.Note,
+		Number:              invoiceIn.Number,
+		PaymentMethod:       invoiceIn.PaymentMethod,
+		Date:                invoiceIn.Date,
+		PaymentDate:         invoiceIn.PaymentDate,
+		Amount:              invoiceIn.Amount,
+		PaidAmount:          invoiceIn.PaidAmount,
+		ExpectedPaymentDate: invoiceIn.ExpectedPaymentDate,
+		Note:                invoiceIn.Note,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error creating the invoice: %+v", err)
@@ -56,14 +42,14 @@ func CreateNewInvoice(dto InvoiceDTO) (*repositories.Invoice, error) {
 	return invoice, nil
 }
 
-func UpdateInvoice(id uint, dto InvoiceDTO) (*repositories.Invoice, error) {
+func UpdateInvoice(id uint, invoiceIn repositories.Invoice) (*repositories.Invoice, error) {
 
 	inv, err := repositories.GetInvoiceByID(id)
 	if err != nil {
 		return nil, fmt.Errorf("invoice not fount: %+v", err)
 	}
 
-	customer, err := repositories.GetCustomerByID(dto.CustomerID)
+	customer, err := repositories.GetCustomerByID(invoiceIn.CustomerID)
 	if err != nil {
 		return nil, fmt.Errorf("customer not valid: %+v", err)
 	}
@@ -72,21 +58,21 @@ func UpdateInvoice(id uint, dto InvoiceDTO) (*repositories.Invoice, error) {
 
 	inv.Customer = *customer
 
-	inv.Number = dto.Number
+	inv.Number = invoiceIn.Number
 
-	inv.PaymentMethod = dto.PaymentMethod
+	inv.PaymentMethod = invoiceIn.PaymentMethod
 
-	inv.Date = dto.Date
+	inv.Date = invoiceIn.Date
 
-	inv.PaymentDate = dto.PaymentDate
+	inv.PaymentDate = invoiceIn.PaymentDate
 
-	inv.Amount = dto.Amount
+	inv.Amount = invoiceIn.Amount
 
-	inv.PaidAmount = dto.PaidAmount
+	inv.PaidAmount = invoiceIn.PaidAmount
 
-	inv.ExpectedPaymentDate = dto.ExpectedPaymentDate
+	inv.ExpectedPaymentDate = invoiceIn.ExpectedPaymentDate
 
-	inv.Note = dto.Note
+	inv.Note = invoiceIn.Note
 
 	updateInvoice, err := repositories.UpdateInvoice(*inv)
 	if err != nil {

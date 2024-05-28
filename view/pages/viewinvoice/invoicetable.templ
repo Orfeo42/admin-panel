@@ -6,10 +6,15 @@ import (
 	"github.com/Orfeo42/admin-panel/utils"
 )
 
-templ InvoiceTable(items []repositories.Invoice, hideFirstColumn bool) {
+type InvoiceTableParams struct {
+	Items        []repositories.Invoice
+	ShowCustomer bool
+}
+
+templ InvoiceTable(params InvoiceTableParams) {
 	@component.CardComp() {
 		<div class="table-responsive">
-			<table class={ "table", "table-bordered",templ.KV("hideFirstColumn", hideFirstColumn) } id="dataTable">
+			<table class={ "table", "table-bordered", templ.KV("hideFirstColumn", !params.ShowCustomer) } id="dataTable">
 				<thead>
 					<tr>
 						<th>Cliente</th>
@@ -23,30 +28,30 @@ templ InvoiceTable(items []repositories.Invoice, hideFirstColumn bool) {
 					</tr>
 				</thead>
 				<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
-					@AllInvoiceRowsShow(items)
+					@InvoiceRows(params.Items)
 				</tbody>
 			</table>
 		</div>
 	}
 }
 
-templ AllInvoiceRowsShow(items []repositories.Invoice) {
+templ InvoiceRows(items []repositories.Invoice) {
 	for index, item := range items {
 		if (index == len(items)-1) {
-			@invoiceRowShowLast(item)
+			@invoiceRowLast(item)
 		} else {
-			@InvoiceRowShow(item)
+			@InvoiceRow(item)
 		}
 	}
 }
 
-templ InvoiceRowShow(item repositories.Invoice) {
+templ InvoiceRow(item repositories.Invoice) {
 	<tr>
 		@invoiceColumns(item)
 	</tr>
 }
 
-templ invoiceRowShowLast(item repositories.Invoice) {
+templ invoiceRowLast(item repositories.Invoice) {
 	<tr
 		hx-get={ "/invoice/filter?page=" + utils.GetNextPageNumber(ctx) }
 		hx-trigger="revealed"
@@ -81,6 +86,107 @@ templ invoiceColumns(item repositories.Invoice) {
 		}
 	</td>
 	<td style="text-align: center">
-		@component.InvoiceEditButton(utils.UintToString(item.ID))
+		@invoiceEditButton(utils.UintToString(item.ID))
 	</td>
+}
+
+type InvoiceRowEditParams struct {
+	Item   repositories.Invoice
+	Errors map[string]string
+}
+
+templ InvoiceRowEdit(params InvoiceRowEditParams) {
+	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(params.Item.ID) }>
+		<td>
+			@component.CustomerSearchInput(component.CustomerSearchInputParams{
+				Id:            utils.UintToString(params.Item.ID),
+				CustomerValue: utils.UintToString(params.Item.CustomerID),
+				CustomerName:  params.Item.Customer.Name,
+				ShowLabel:     false,
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "number",
+				FormType: component.Text,
+				Value:    params.Item.Number,
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "date",
+				FormType: component.Date,
+				Value:    utils.FormatTimePtrToForm(params.Item.Date),
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "amount",
+				FormType: component.Number,
+				Value:    utils.FormatAmount(params.Item.Amount),
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "paymentDate",
+				FormType: component.Date,
+				Value:    utils.FormatTimePtrToForm(params.Item.PaymentDate),
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "paidAmount",
+				FormType: component.Number,
+				Value:    utils.FormatAmount(params.Item.PaidAmount),
+			})
+		</td>
+		<td style="text-align: center;"></td>
+		<td style="white-space: nowrap; text-align: center">
+			<button class="btn btn-primary" hx-put={ "/invoice/" + utils.UintToString(params.Item.ID) } hx-include="closest tr">
+				<i class="fa-solid fa-floppy-disk"></i>
+				Salva
+			</button>
+			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Item.ID) }>
+				<i class="fa-solid fa-xmark"></i>
+				Annulla
+			</button>
+		</td>
+	</tr>
+}
+
+templ invoiceEditButton(id string) {
+	<button
+		class="btn btn-primary"
+		hx-get={ "/invoice/" + id + "/edit" }
+		hx-trigger="edit"
+		id={ "invoiceEditButton_" + id }
+	>
+		<i class="fa-regular fa-pen-to-square"></i> Modifica
+	</button>
+	@invoiceEditButtonScript(id)
+}
+
+script invoiceEditButtonScript(id string) {
+    const editButton = document.getElementById(`invoiceEditButton_${id}`);
+
+    function buttonEditClick(){
+        let editing = document.querySelector('.editing')
+        if(editing) {
+            Swal.fire({
+                title: 'Stai già modificando!',
+                showCancelButton: true,
+                confirmButtonText: 'Sì, Modifica questa riga!',
+                text:'Stai già modificando un altra riga. Vuoi annullare per modificare questa?'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    htmx.trigger(editing, 'cancel')
+                    htmx.trigger(this, 'edit')
+                }
+            })
+        } else {
+            htmx.trigger(this, 'edit')
+        }
+    }
+
+    editButton.addEventListener('click', buttonEditClick);
 }

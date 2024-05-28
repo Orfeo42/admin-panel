@@ -6,11 +6,16 @@ import (
 	"github.com/Orfeo42/admin-panel/view/component"
 )
 
-templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
+type InvoiceFilterParams struct {
+	Filter       repositories.InvoiceFilter
+	ShowCustomer bool
+}
+
+templ InvoiceFilter(params InvoiceFilterParams) {
 	@component.CollapseCard("Filtri", "filter", false) {
 		<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 			<div class="form-row">
-				if (showCustomer) {
+				if (params.ShowCustomer) {
 					<div class="form-group col-md-6">
 						@component.CustomerSearchInput(component.CustomerSearchInputParams{
 							Id:            "filter",
@@ -20,18 +25,24 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						})
 					</div>
 					<div class="form-group col-md-3">
-						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Numero Fattura", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
+						@component.FormInput(component.FormInputParam{
+							Id:          "number",
+							Name:        "number",
+							Description: "Numero Fattura",
+							FormType:    component.Text,
+							Value:       utils.FormatStringToForm(params.Filter.Number),
+						})
 					</div>
 					<div class="form-group col-md-3">
 						<label for="isPaid">Stato Pagamento:</label>
 						<select class="form-control" name="isPaid" id="isPaid">
 							<option value="">Tutte le fatture</option>
-							if filter.IsPaid != nil && *filter.IsPaid {
+							if params.Filter.IsPaid != nil && *params.Filter.IsPaid {
 								<option value="true" selected>Pagate</option>
 							} else {
 								<option value="true">Pagate</option>
 							}
-							if filter.IsPaid != nil && !*filter.IsPaid {
+							if params.Filter.IsPaid != nil && !*params.Filter.IsPaid {
 								<option value="false" selected>Non pagati</option>
 							} else {
 								<option value="false">Non pagati</option>
@@ -40,24 +51,30 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 					</div>
 				} else {
 					<div class="form-group col-md-6">
-						@component.FormInput(component.FormInputParam{Id: "number", Name: "number", Description: "Numero Fattura", FormType: component.Text, Value: utils.FormatStringToForm(filter.Number)})
+						@component.FormInput(component.FormInputParam{
+							Id:          "number",
+							Name:        "number",
+							Description: "Numero Fattura",
+							FormType:    component.Text,
+							Value:       utils.FormatStringToForm(params.Filter.Number),
+						})
 					</div>
 					<div class="form-group col-md-6">
 						<label for="isPaid">Stato Pagamento:</label>
 						<select class="form-control" name="isPaid" id="isPaid">
 							<option value="">Tutte le fatture</option>
-							if filter.IsPaid != nil && *filter.IsPaid {
+							if params.Filter.IsPaid != nil && *params.Filter.IsPaid {
 								<option value="true" selected>Pagate</option>
 							} else {
 								<option value="true">Pagate</option>
 							}
-							if filter.IsPaid != nil && !*filter.IsPaid {
+							if params.Filter.IsPaid != nil && !*params.Filter.IsPaid {
 								<option value="false" selected>Non pagati</option>
 							} else {
 								<option value="false">Non pagati</option>
 							}
 						</select>
-						<input type="hidden" name="customer" value={ utils.UintToString(*filter.CustomerID) }/>
+						<input type="hidden" name="customer" value={ utils.UintToString(*params.Filter.CustomerID) }/>
 					</div>
 				}
 			</div>
@@ -68,7 +85,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "dateFrom",
 						Description: "Da Data Fattura",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePtrToForm(filter.DateFrom),
+						Value:       utils.FormatTimePtrToForm(params.Filter.DateFrom),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -76,7 +93,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "dateTo",
 						Description: "A Data Fattura",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePtrToForm(filter.DateTo),
+						Value:       utils.FormatTimePtrToForm(params.Filter.DateTo),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -85,7 +102,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "amountFrom",
 						Description: "Da Importo Fattura",
 						FormType:    component.Number,
-						Value:       utils.FormatIntToAmount(filter.AmountFrom),
+						Value:       utils.FormatIntToAmount(params.Filter.AmountFrom),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -94,7 +111,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "amountTo",
 						Description: "A Importo Fattura",
 						FormType:    component.Number,
-						Value:       utils.FormatIntToAmount(filter.AmountTo),
+						Value:       utils.FormatIntToAmount(params.Filter.AmountTo),
 					})
 				</div>
 			</div>
@@ -105,7 +122,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "paymentDateFrom",
 						Description: "Da Data Pagamento",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePtrToForm(filter.PaymentDateFrom),
+						Value:       utils.FormatTimePtrToForm(params.Filter.PaymentDateFrom),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -114,7 +131,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "paymentDateTo",
 						Description: "A Data Pagamento",
 						FormType:    component.Date,
-						Value:       utils.FormatTimePtrToForm(filter.PaymentDateTo),
+						Value:       utils.FormatTimePtrToForm(params.Filter.PaymentDateTo),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -123,7 +140,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "paidAmountFrom",
 						Description: "Da Importo Pagato",
 						FormType:    component.Number,
-						Value:       utils.FormatIntToAmount(filter.PaidAmountFrom),
+						Value:       utils.FormatIntToAmount(params.Filter.PaidAmountFrom),
 					})
 				</div>
 				<div class="form-group col-md-3">
@@ -132,7 +149,7 @@ templ InvoiceFilter(filter repositories.InvoiceFilter, showCustomer bool) {
 						Name:        "paidAmountTo",
 						Description: "A Importo Pagato",
 						FormType:    component.Number,
-						Value:       utils.FormatIntToAmount(filter.PaidAmountTo),
+						Value:       utils.FormatIntToAmount(params.Filter.PaidAmountTo),
 					})
 				</div>
 			</div>

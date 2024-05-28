@@ -14,7 +14,7 @@ type CustomerDetailParams struct {
 	Filter      repositories.InvoiceFilter
 }
 
-templ CustomerDetailView(params CustomerDetailParams) {
+templ CustomerDetail(params CustomerDetailParams) {
 	@layout.BaseView() {
 		@customerData(params)
 	}
@@ -38,6 +38,12 @@ templ customerData(params CustomerDetailParams) {
 			}
 		</div>
 	</div>
-	@viewinvoice.InvoiceFilter(params.Filter, false)
-	@viewinvoice.InvoiceTable(params.InvoiceList, true)
+	@viewinvoice.InvoiceFilter(viewinvoice.InvoiceFilterParams{
+		Filter:       params.Filter,
+		ShowCustomer: false,
+	})
+	@viewinvoice.InvoiceTable(viewinvoice.InvoiceTableParams{
+		Items:        params.InvoiceList,
+		ShowCustomer: true,
+	})
 }
