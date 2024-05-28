@@ -1,0 +1,43 @@
+package viewcustomer
+
+import (
+	"github.com/Orfeo42/admin-panel/view/component"
+	"github.com/Orfeo42/admin-panel/mvc/repositories"
+	"github.com/Orfeo42/admin-panel/view/pages/viewinvoice"
+
+	"github.com/Orfeo42/admin-panel/view/layout"
+)
+
+type CustomerDetailParams struct {
+	Item        repositories.Customer
+	InvoiceList []repositories.Invoice
+	Filter      repositories.InvoiceFilter
+}
+
+templ CustomerDetailView(params CustomerDetailParams) {
+	@layout.BaseView() {
+		@customerData(params)
+	}
+}
+
+templ customerData(params CustomerDetailParams) {
+	<div class="row">
+		<div class="col-lg-6 mb-4">
+			@component.TitledCardComp("Anagraphics") {
+				<div class="form-row">
+					<div class="form-group col-md-6">Name: { params.Item.Name }</div>
+					<div class="form-group col-md-6">Cognome: { params.Item.Surname }</div>
+				</div>
+				<div class="form-group">Indirizzo: { params.Item.Address }</div>
+			}
+		</div>
+		<div class="col-lg-6 mb-4">
+			@component.TitledCardComp("Contacts") {
+				<div class="form-group">Email: { params.Item.Email }</div>
+				<div class="form-group">Phone: { params.Item.Phone }</div>
+			}
+		</div>
+	</div>
+	@viewinvoice.InvoiceFilter(params.Filter, false)
+	@viewinvoice.InvoiceTable(params.InvoiceList, true)
+}

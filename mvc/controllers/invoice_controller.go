@@ -8,7 +8,7 @@ import (
 	"github.com/Orfeo42/admin-panel/mvc/repositories"
 	"github.com/Orfeo42/admin-panel/mvc/services"
 	"github.com/Orfeo42/admin-panel/utils"
-	"github.com/Orfeo42/admin-panel/view/pages"
+	"github.com/Orfeo42/admin-panel/view/pages/viewinvoice"
 	"github.com/labstack/echo/v4"
 )
 
@@ -32,7 +32,7 @@ func InvoiceController(application *echo.Echo) {
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
-		return utils.Render(pages.InvoiceListView(*invoices, filter), echoCtx)
+		return utils.Render(viewinvoice.InvoiceListView(*invoices, filter), echoCtx)
 	})
 
 	invoiceGroup.GET("/filter", func(echoCtx echo.Context) error {
@@ -47,7 +47,7 @@ func InvoiceController(application *echo.Echo) {
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
-		return utils.Render(pages.AllInvoiceRowsShow(*invoices), echoCtx)
+		return utils.Render(viewinvoice.AllInvoiceRowsShow(*invoices), echoCtx)
 	})
 
 	invoiceGroup.GET("/add", func(echoCtx echo.Context) error {
@@ -62,7 +62,7 @@ func InvoiceController(application *echo.Echo) {
 
 		utils.SetTitle(echoCtx, pageName)
 
-		return utils.Render(pages.InvoiceView(*invoice), echoCtx)
+		return utils.Render(viewinvoice.InvoiceView(*invoice), echoCtx)
 	})
 
 	invoiceGroup.GET("/:id/edit", func(echoCtx echo.Context) error {
@@ -74,7 +74,7 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(pages.InvoiceRowEdit(*inv), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRowEdit(*inv), echoCtx)
 	})
 
 	invoiceGroup.GET("/:id", func(echoCtx echo.Context) error {
@@ -86,7 +86,7 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(pages.InvoiceRowShow(*inv), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRowShow(*inv), echoCtx)
 	})
 
 	invoiceGroup.PUT("/:id", func(echoCtx echo.Context) error {
@@ -108,7 +108,7 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(pages.InvoiceRowShow(*invoice), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRowShow(*invoice), echoCtx)
 	})
 
 	invoiceGroup.PUT("/:id/pay", func(echoCtx echo.Context) error {
@@ -129,7 +129,7 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(pages.InvoiceRowShow(*updateInvoice), echoCtx)
+		return utils.Render(viewinvoice.InvoiceRowShow(*updateInvoice), echoCtx)
 	})
 
 	invoiceGroup.POST("", func(echoCtx echo.Context) error {
@@ -145,7 +145,7 @@ func InvoiceController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(pages.InvoiceForm(*invoice), echoCtx)
+		return utils.Render(viewinvoice.InvoiceForm(*invoice), echoCtx)
 	})
 }
 

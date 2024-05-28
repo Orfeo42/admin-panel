@@ -8,7 +8,7 @@ import (
 	"github.com/Orfeo42/admin-panel/mvc/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
 	"github.com/Orfeo42/admin-panel/view/component"
-	"github.com/Orfeo42/admin-panel/view/pages"
+	"github.com/Orfeo42/admin-panel/view/pages/viewhome"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -75,7 +75,14 @@ func homeController(echoCtx echo.Context) error {
 		DataSets:    dataSets,
 	}
 
-	return utils.Render(pages.HomeView(areaChartParams, salesMonth, salesYear, collectedMonth, collectedYear), echoCtx)
+	homePrams := viewhome.HomeParameters{
+		AreaChartParams: areaChartParams,
+		SalesMonth:      salesMonth,
+		SalesYear:       salesYear,
+		CollectedMonth:  collectedMonth,
+		CollectedYear:   collectedYear,
+	}
+	return utils.Render(viewhome.HomeView(homePrams), echoCtx)
 }
 
 func getMonthsBetweenDates(dateFrom, dateTo time.Time) []string {

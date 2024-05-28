@@ -1,0 +1,13 @@
+package viewcustomer
+
+import (
+	"github.com/Orfeo42/admin-panel/mvc/repositories"
+	"github.com/Orfeo42/admin-panel/utils"
+	"strconv"
+)
+
+templ CustomerSearchView(items []repositories.Customer) {
+	for index, customer := range items {
+		<div class="preview-item" data-index={ strconv.Itoa(index) } data-id={ utils.UintToString(customer.ID) }>{ customer.Name }</div>
+	}
+}

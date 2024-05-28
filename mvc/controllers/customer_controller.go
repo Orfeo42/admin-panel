@@ -6,7 +6,7 @@ import (
 	"github.com/Orfeo42/admin-panel/enum"
 	"github.com/Orfeo42/admin-panel/mvc/repositories"
 	"github.com/Orfeo42/admin-panel/utils"
-	"github.com/Orfeo42/admin-panel/view/pages"
+	"github.com/Orfeo42/admin-panel/view/pages/viewcustomer"
 	"github.com/labstack/echo/v4"
 )
 
@@ -48,7 +48,12 @@ func CustomerController(application *echo.Echo) {
 
 		utils.SetTitle(echoCtx, "Cliente")
 
-		return utils.Render(pages.CustomerListView(*items, filter), echoCtx)
+		customerListParams := viewcustomer.CustomerListParams{
+			Items:  *items,
+			Filter: filter,
+		}
+
+		return utils.Render(viewcustomer.CustomerListView(customerListParams), echoCtx)
 	})
 
 	customerGroup.GET("/:id/info", func(echoCtx echo.Context) error {
@@ -79,7 +84,13 @@ func CustomerController(application *echo.Echo) {
 
 		utils.SetTitle(echoCtx, fmt.Sprintf("%s - customer detail", customer.Name))
 
-		return utils.Render(pages.CustomerView(*customer, invoiceList, filter), echoCtx)
+		customerDetailParams := viewcustomer.CustomerDetailParams{
+			Item:        *customer,
+			InvoiceList: invoiceList,
+			Filter:      filter,
+		}
+
+		return utils.Render(viewcustomer.CustomerDetailView(customerDetailParams), echoCtx)
 	})
 
 	customerGroup.GET("/filter", func(echoCtx echo.Context) error {
@@ -93,7 +104,7 @@ func CustomerController(application *echo.Echo) {
 
 		utils.SetPageNumber(echoCtx, filter.Page)
 
-		return utils.Render(pages.AllCustomerRowsShow(*items), echoCtx)
+		return utils.Render(viewcustomer.AllCustomerRowsShow(*items), echoCtx)
 	})
 
 	customerGroup.GET("/search", func(echoCtx echo.Context) error {
@@ -104,6 +115,6 @@ func CustomerController(application *echo.Echo) {
 			return err
 		}
 
-		return utils.Render(pages.CustomerSearchView(*customerList), echoCtx)
+		return utils.Render(viewcustomer.CustomerSearchView(*customerList), echoCtx)
 	})
 }

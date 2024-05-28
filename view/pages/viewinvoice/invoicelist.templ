@@ -1,0 +1,87 @@
+package viewinvoice
+
+import (
+	"github.com/Orfeo42/admin-panel/view/layout"
+	"github.com/Orfeo42/admin-panel/mvc/repositories"
+	"github.com/Orfeo42/admin-panel/utils"
+	"github.com/Orfeo42/admin-panel/view/component"
+)
+
+templ InvoiceListView(items []repositories.Invoice, filter repositories.InvoiceFilter) {
+	@layout.TableView() {
+		<div class="row">
+			<div class="col-12 mb-4">
+				<h1 class="h3 mb-2 text-gray-800">Lista Fatture</h1>
+			</div>
+		</div>
+		@InvoiceFilter(filter, true)
+		<div class="row">
+			<div class="col-12 mb-4" style="text-align: right;">
+				<button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-push-url="true">
+					<i class="fas fa-fw fa-plus"></i>
+					Nuova fattura
+				</button>
+			</div>
+		</div>
+		@InvoiceTable(items, false)
+	}
+}
+
+templ InvoiceRowEdit(item repositories.Invoice) {
+	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
+		<td>
+			@component.CustomerSearchInput(component.CustomerSearchInputParams{
+				Id:            utils.UintToString(item.ID),
+				CustomerValue: utils.UintToString(item.CustomerID),
+				CustomerName:  item.Customer.Name,
+				ShowLabel:     false,
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "number",
+				FormType: component.Text,
+				Value:    item.Number,
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "date",
+				FormType: component.Date,
+				Value:    utils.FormatTimePtrToForm(item.Date),
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "amount",
+				FormType: component.Number,
+				Value:    utils.FormatAmount(item.Amount),
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "paymentDate",
+				FormType: component.Date,
+				Value:    utils.FormatTimePtrToForm(item.PaymentDate),
+			})
+		</td>
+		<td>
+			@component.Input(component.FormInputParam{
+				Name:     "paidAmount",
+				FormType: component.Number,
+				Value:    utils.FormatAmount(item.PaidAmount),
+			})
+		</td>
+		<td style="text-align: center;"></td>
+		<td style="white-space: nowrap; text-align: center">
+			<button class="btn btn-primary" hx-put={ "/invoice/" + utils.UintToString(item.ID) } hx-include="closest tr">
+				<i class="fa-solid fa-floppy-disk"></i>
+				Salva
+			</button>
+			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(item.ID) }>
+				<i class="fa-solid fa-xmark"></i>
+				Annulla
+			</button>
+		</td>
+	</tr>
+}
