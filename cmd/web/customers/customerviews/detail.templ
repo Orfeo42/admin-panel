@@ -1,0 +1,49 @@
+package customerviews
+
+import (
+	"admin-panel/cmd/web/components"
+	"admin-panel/mvc/repositories"
+	"admin-panel/cmd/web/invoices/invoiceviews"
+
+	"admin-panel/cmd/web/layout"
+)
+
+type CustomerDetailParams struct {
+	Item        repositories.Customer
+	InvoiceList []repositories.Invoice
+	Filter      repositories.InvoiceFilter
+}
+
+templ CustomerDetail(params CustomerDetailParams) {
+	@layout.BaseView() {
+		@customerData(params)
+	}
+}
+
+templ customerData(params CustomerDetailParams) {
+	<div class="row">
+		<div class="col-lg-6 mb-4">
+			@components.TitledCardComp("Anagraphics") {
+				<div class="form-row">
+					<div class="form-group col-md-6">Name: { params.Item.Name }</div>
+					<div class="form-group col-md-6">Cognome: { params.Item.Surname }</div>
+				</div>
+				<div class="form-group">Indirizzo: { params.Item.Address }</div>
+			}
+		</div>
+		<div class="col-lg-6 mb-4">
+			@components.TitledCardComp("Contacts") {
+				<div class="form-group">Email: { params.Item.Email }</div>
+				<div class="form-group">Phone: { params.Item.Phone }</div>
+			}
+		</div>
+	</div>
+	@invoiceviews.InvoiceFilter(invoiceviews.InvoiceFilterParams{
+		Filter:       params.Filter,
+		ShowCustomer: false,
+	})
+	@invoiceviews.InvoiceTable(invoiceviews.InvoiceTableParams{
+		Items:        params.InvoiceList,
+		ShowCustomer: true,
+	})
+}

@@ -1,0 +1,163 @@
+package invoiceviews
+
+import (
+	"admin-panel/mvc/repositories"
+	"admin-panel/utils"
+	"admin-panel/cmd/web/components"
+)
+
+type InvoiceFilterParams struct {
+	Filter       repositories.InvoiceFilter
+	ShowCustomer bool
+}
+
+templ InvoiceFilter(params InvoiceFilterParams) {
+	@components.CollapseCard("Filtri", "filter", false) {
+		<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
+			<div class="form-row">
+				if (params.ShowCustomer) {
+					<div class="form-group col-md-6">
+						@components.CustomerSearchInput(components.CustomerSearchInputParams{
+							Id:            "filter",
+							CustomerValue: "",
+							CustomerName:  "",
+							ShowLabel:     true,
+						})
+					</div>
+					<div class="form-group col-md-3">
+						@components.FormInput(components.FormInputParam{
+							Id:          "number",
+							Name:        "number",
+							Description: "Numero Fattura",
+							FormType:    components.Text,
+							Value:       utils.FormatStringToForm(params.Filter.Number),
+						})
+					</div>
+					<div class="form-group col-md-3">
+						<label for="isPaid">Stato Pagamento:</label>
+						<select class="form-control" name="isPaid" id="isPaid">
+							<option value="">Tutte le fatture</option>
+							if params.Filter.IsPaid != nil && *params.Filter.IsPaid {
+								<option value="true" selected>Pagate</option>
+							} else {
+								<option value="true">Pagate</option>
+							}
+							if params.Filter.IsPaid != nil && !*params.Filter.IsPaid {
+								<option value="false" selected>Non pagati</option>
+							} else {
+								<option value="false">Non pagati</option>
+							}
+						</select>
+					</div>
+				} else {
+					<div class="form-group col-md-6">
+						@components.FormInput(components.FormInputParam{
+							Id:          "number",
+							Name:        "number",
+							Description: "Numero Fattura",
+							FormType:    components.Text,
+							Value:       utils.FormatStringToForm(params.Filter.Number),
+						})
+					</div>
+					<div class="form-group col-md-6">
+						<label for="isPaid">Stato Pagamento:</label>
+						<select class="form-control" name="isPaid" id="isPaid">
+							<option value="">Tutte le fatture</option>
+							if params.Filter.IsPaid != nil && *params.Filter.IsPaid {
+								<option value="true" selected>Pagate</option>
+							} else {
+								<option value="true">Pagate</option>
+							}
+							if params.Filter.IsPaid != nil && !*params.Filter.IsPaid {
+								<option value="false" selected>Non pagati</option>
+							} else {
+								<option value="false">Non pagati</option>
+							}
+						</select>
+						<input type="hidden" name="customer" value={ utils.UintToString(*params.Filter.CustomerID) }/>
+					</div>
+				}
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "dateFrom",
+						Name:        "dateFrom",
+						Description: "Da Data Fattura",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Filter.DateFrom),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{Id: "dateTo",
+						Name:        "dateTo",
+						Description: "A Data Fattura",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Filter.DateTo),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "amountFrom",
+						Name:        "amountFrom",
+						Description: "Da Importo Fattura",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(params.Filter.AmountFrom),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "amountTo",
+						Name:        "amountTo",
+						Description: "A Importo Fattura",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(params.Filter.AmountTo),
+					})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "paymentDateFrom",
+						Name:        "paymentDateFrom",
+						Description: "Da Data Pagamento",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Filter.PaymentDateFrom),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "paymentDateTo",
+						Name:        "paymentDateTo",
+						Description: "A Data Pagamento",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Filter.PaymentDateTo),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "paidAmountFrom",
+						Name:        "paidAmountFrom",
+						Description: "Da Importo Pagato",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(params.Filter.PaidAmountFrom),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "paidAmountTo",
+						Name:        "paidAmountTo",
+						Description: "A Importo Pagato",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(params.Filter.PaidAmountTo),
+					})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col-lg-12">
+					<button type="submit" class="btn btn-primary">Filtra</button>
+				</div>
+			</div>
+		</form>
+	}
+}

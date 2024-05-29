@@ -1,5 +1,5 @@
 #Ignore generated file from templ
-/view/**/*.go
+**/*_templ.go
 
 */.idea/
 /.idea/

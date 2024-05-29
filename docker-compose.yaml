@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: ${APP_NAME}-db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DB}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - /home/${USER}/${APP_NAME}:/var/lib/postgresql/repositories

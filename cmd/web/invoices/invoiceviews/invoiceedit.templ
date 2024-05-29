@@ -1,0 +1,186 @@
+package invoiceviews
+
+import (
+	"admin-panel/cmd/web/layout"
+	"admin-panel/mvc/repositories"
+	"admin-panel/utils"
+	"admin-panel/cmd/web/components"
+)
+
+type InvoiceEditParams struct {
+	Invoice repositories.Invoice
+	Errors  map[string]string
+}
+
+templ InvoiceEdit(params InvoiceEditParams) {
+	@layout.BaseView() {
+		@InvoiceForm(params)
+	}
+}
+
+templ InvoiceForm(params InvoiceEditParams) {
+	@components.TitledCardComp("Nuova Fattura") {
+		<form hx-post="/invoice" hx-target="this" hx-swap="outerHTML">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@components.CustomerSearchInput(components.CustomerSearchInputParams{
+						Id:            "customer",
+						CustomerValue: utils.UintToString(params.Invoice.CustomerID),
+						CustomerName:  params.Invoice.Customer.Name,
+						ShowLabel:     true,
+					})
+				</div>
+				<div class="form-group col-md-6">
+					@components.FormInput(components.FormInputParam{
+						Id:          "number",
+						Name:        "number",
+						Description: "Numero Fattura",
+						FormType:    components.Text,
+						Value:       params.Invoice.Number,
+					})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@components.FormInput(components.FormInputParam{
+						Id:          "date",
+						Name:        "date",
+						Description: "Data Fattura",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Invoice.Date),
+					})
+				</div>
+				<div class="form-group col-md-6">
+					@components.FormInput(components.FormInputParam{
+						Id:          "amount",
+						Name:        "amount",
+						Description: "Importo Fattura",
+						FormType:    components.Number,
+						Value:       utils.FormatAmount(params.Invoice.Amount),
+					})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@components.FormInput(components.FormInputParam{
+						Id:          "paymentDate",
+						Name:        "paymentDate",
+						Description: "Data Pagamento",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Invoice.PaymentDate),
+					})
+				</div>
+				<div class="form-group col-md-6">
+					@components.FormInput(components.FormInputParam{
+						Id:          "paidAmount",
+						Name:        "paidAmount",
+						Description: "Importi Pagati",
+						FormType:    components.Number,
+						Value:       utils.FormatAmount(params.Invoice.PaidAmount),
+					})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col-lg-12">
+					<button type="submit" class="btn btn-primary">Salva</button>
+				</div>
+			</div>
+		</form>
+	}
+}
+
+templ InvoiceRowEdit(params InvoiceEditParams) {
+	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) }>
+		<td>
+			@components.CustomerSearchInput(components.CustomerSearchInputParams{
+				Id:            utils.UintToString(params.Invoice.ID),
+				CustomerValue: utils.UintToString(params.Invoice.CustomerID),
+				CustomerName:  params.Invoice.Customer.Name,
+				ShowLabel:     false,
+			})
+		</td>
+		<td>
+			@components.Input(components.FormInputParam{
+				Name:     "number",
+				FormType: components.Text,
+				Value:    params.Invoice.Number,
+			})
+		</td>
+		<td>
+			@components.Input(components.FormInputParam{
+				Name:     "date",
+				FormType: components.Date,
+				Value:    utils.FormatTimePtrToForm(params.Invoice.Date),
+			})
+		</td>
+		<td>
+			@components.Input(components.FormInputParam{
+				Name:     "amount",
+				FormType: components.Number,
+				Value:    utils.FormatAmount(params.Invoice.Amount),
+			})
+		</td>
+		<td>
+			@components.Input(components.FormInputParam{
+				Name:     "paymentDate",
+				FormType: components.Date,
+				Value:    utils.FormatTimePtrToForm(params.Invoice.PaymentDate),
+			})
+		</td>
+		<td>
+			@components.Input(components.FormInputParam{
+				Name:     "paidAmount",
+				FormType: components.Number,
+				Value:    utils.FormatAmount(params.Invoice.PaidAmount),
+			})
+		</td>
+		<td style="text-align: center;"></td>
+		<td style="white-space: nowrap; text-align: center">
+			<button class="btn btn-primary" hx-put={ "/invoice/" + utils.UintToString(params.Invoice.ID) } hx-include="closest tr">
+				<i class="fa-solid fa-floppy-disk"></i>
+				Salva
+			</button>
+			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) }>
+				<i class="fa-solid fa-xmark"></i>
+				Annulla
+			</button>
+		</td>
+	</tr>
+}
+
+templ invoiceEditButton(id string) {
+	<button
+		class="btn btn-primary"
+		hx-get={ "/invoice/" + id + "/edit" }
+		hx-trigger="edit"
+		id={ "invoiceEditButton_" + id }
+	>
+		<i class="fa-regular fa-pen-to-square"></i> Modifica
+	</button>
+	@invoiceEditButtonScript(id)
+}
+
+script invoiceEditButtonScript(id string) {
+    const editButton = document.getElementById(`invoiceEditButton_${id}`);
+
+    function buttonEditClick(){
+        let editing = document.querySelector('.editing')
+        if(editing) {
+            Swal.fire({
+                title: 'Stai già modificando!',
+                showCancelButton: true,
+                confirmButtonText: 'Sì, Modifica questa riga!',
+                text:'Stai già modificando un altra riga. Vuoi annullare per modificare questa?'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    htmx.trigger(editing, 'cancel')
+                    htmx.trigger(this, 'edit')
+                }
+            })
+        } else {
+            htmx.trigger(this, 'edit')
+        }
+    }
+
+    editButton.addEventListener('click', buttonEditClick);
+}

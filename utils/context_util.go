@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/Orfeo42/admin-panel/enum"
+	"admin-panel/cmd/enum"
 
 	"github.com/labstack/echo/v4"
 )

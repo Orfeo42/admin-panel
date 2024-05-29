@@ -1,0 +1,37 @@
+package invoiceviews
+
+import (
+	"admin-panel/cmd/web/layout"
+	"admin-panel/mvc/repositories"
+)
+
+type InvoiceListParams struct {
+	Items  []repositories.Invoice
+	Filter repositories.InvoiceFilter
+}
+
+templ InvoiceList(params InvoiceListParams) {
+	@layout.TableView() {
+		<div class="row">
+			<div class="col-12 mb-4">
+				<h1 class="h3 mb-2 text-gray-800">Lista Fatture</h1>
+			</div>
+		</div>
+		@InvoiceFilter(InvoiceFilterParams{
+			Filter:       params.Filter,
+			ShowCustomer: true,
+		})
+		<div class="row">
+			<div class="col-12 mb-4" style="text-align: right;">
+				<button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-push-url="true">
+					<i class="fas fa-fw fa-plus"></i>
+					Nuova fattura
+				</button>
+			</div>
+		</div>
+		@InvoiceTable(InvoiceTableParams{
+			Items:        params.Items,
+			ShowCustomer: true,
+		})
+	}
+}
