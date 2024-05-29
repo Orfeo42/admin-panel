@@ -1,13 +1,12 @@
-package invoiceviews
+package invoices
 
 import (
-	"admin-panel/mvc/repositories"
 	"admin-panel/cmd/web/components"
 	"admin-panel/utils"
 )
 
 type InvoiceTableParams struct {
-	Items        []repositories.Invoice
+	Items        []Invoice
 	ShowCustomer bool
 }
 
@@ -28,30 +27,30 @@ templ InvoiceTable(params InvoiceTableParams) {
 					</tr>
 				</thead>
 				<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
-					@InvoiceRows(params.Items)
+					@InvoiceTableRows(params.Items)
 				</tbody>
 			</table>
 		</div>
 	}
 }
 
-templ InvoiceRows(items []repositories.Invoice) {
+templ InvoiceTableRows(items []Invoice) {
 	for index, item := range items {
 		if (index == len(items)-1) {
-			@invoiceRowLast(item)
+			@invoiceTableRowLast(item)
 		} else {
-			@InvoiceRow(item)
+			@InvoiceTableRow(item)
 		}
 	}
 }
 
-templ InvoiceRow(item repositories.Invoice) {
+templ InvoiceTableRow(item Invoice) {
 	<tr>
 		@invoiceColumns(item)
 	</tr>
 }
 
-templ invoiceRowLast(item repositories.Invoice) {
+templ invoiceTableRowLast(item Invoice) {
 	<tr
 		hx-get={ "/invoice/filter?page=" + utils.GetNextPageNumber(ctx) }
 		hx-trigger="revealed"
@@ -62,7 +61,7 @@ templ invoiceRowLast(item repositories.Invoice) {
 	</tr>
 }
 
-templ invoiceColumns(item repositories.Invoice) {
+templ invoiceColumns(item Invoice) {
 	<td>{ item.Customer.Name }</td>
 	<td style="text-align: right;">{ item.Number }</td>
 	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.Date) }</td>

@@ -1,13 +1,12 @@
-package invoiceviews
+package invoices
 
 import (
 	"admin-panel/cmd/web/layout"
-	"admin-panel/mvc/repositories"
 )
 
 type InvoiceListParams struct {
-	Items  []repositories.Invoice
-	Filter repositories.InvoiceFilter
+	Items  []Invoice
+	Filter InvoiceFilter
 }
 
 templ InvoiceList(params InvoiceListParams) {
@@ -17,7 +16,7 @@ templ InvoiceList(params InvoiceListParams) {
 				<h1 class="h3 mb-2 text-gray-800">Lista Fatture</h1>
 			</div>
 		</div>
-		@InvoiceFilter(InvoiceFilterParams{
+		@InvoiceFilterForm(InvoiceFilterParams{
 			Filter:       params.Filter,
 			ShowCustomer: true,
 		})

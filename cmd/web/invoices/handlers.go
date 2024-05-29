@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"admin-panel/cmd/enum"
-	"admin-panel/cmd/web/invoices/invoiceviews"
 	"admin-panel/utils"
 
 	"github.com/labstack/echo/v4"
@@ -52,12 +51,12 @@ func (c *invoiceController) ReadAllHandler(echoCtx echo.Context) error {
 
 	utils.SetPageNumber(echoCtx, filter.Page)
 
-	invoiceListParams := invoiceviews.InvoiceListParams{
+	invoiceListParams := InvoiceListParams{
 		Items:  invoices,
 		Filter: filter,
 	}
 
-	return utils.Render(invoiceviews.InvoiceList(invoiceListParams), echoCtx)
+	return utils.Render(InvoiceList(invoiceListParams), echoCtx)
 }
 
 func (c *invoiceController) FilterHandler(echoCtx echo.Context) error {
@@ -72,13 +71,13 @@ func (c *invoiceController) FilterHandler(echoCtx echo.Context) error {
 
 	utils.SetPageNumber(echoCtx, filter.Page)
 
-	return utils.Render(invoiceviews.InvoiceRows(invoices), echoCtx)
+	return utils.Render(InvoiceTableRows(invoices), echoCtx)
 }
 
 func (c *invoiceController) CreatePageHandler(echoCtx echo.Context) error {
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
 	if len(errors) > 0 {
-		return utils.Render(invoiceviews.InvoiceEdit(invoiceviews.InvoiceEditParams{
+		return utils.Render(InvoiceEdit(InvoiceEditParams{
 			Invoice: invoiceIn,
 			Errors:  errors,
 		}), echoCtx)
@@ -93,7 +92,7 @@ func (c *invoiceController) CreatePageHandler(echoCtx echo.Context) error {
 
 	utils.SetTitle(echoCtx, pageName)
 
-	return utils.Render(invoiceviews.InvoiceEdit(invoiceviews.InvoiceEditParams{
+	return utils.Render(InvoiceEdit(InvoiceEditParams{
 		Invoice: *invoice,
 		Errors:  nil,
 	}), echoCtx)
@@ -110,7 +109,7 @@ func (c *invoiceController) UpdatePageHandler(echoCtx echo.Context) error {
 		return err
 	}
 
-	return utils.Render(invoiceviews.InvoiceRowEdit(invoiceviews.InvoiceEditParams{
+	return utils.Render(InvoiceRowEdit(InvoiceEditParams{
 		Invoice: *invoice,
 		Errors:  map[string]string{},
 	}), echoCtx)
@@ -127,7 +126,7 @@ func (c *invoiceController) ReadHandler(echoCtx echo.Context) error {
 		return err
 	}
 
-	return utils.Render(invoiceviews.InvoiceRow(*invoice), echoCtx)
+	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
 func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
@@ -140,7 +139,7 @@ func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
 
 	invoice, errors := validateCreateUpdateRequest(echoCtx)
 	if len(errors) > 0 {
-		return utils.Render(invoiceviews.InvoiceRowEdit(invoiceviews.InvoiceEditParams{
+		return utils.Render(InvoiceRowEdit(InvoiceEditParams{
 			Invoice: invoice,
 			Errors:  errors,
 		}), echoCtx)
@@ -153,7 +152,7 @@ func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
 		return err
 	}
 
-	return utils.Render(invoiceviews.InvoiceRow(invoice), echoCtx)
+	return utils.Render(InvoiceTableRow(invoice), echoCtx)
 }
 
 func (c *invoiceController) PayByID(echoCtx echo.Context) error {
@@ -179,14 +178,14 @@ func (c *invoiceController) PayByID(echoCtx echo.Context) error {
 		return err
 	}
 
-	return utils.Render(invoiceviews.InvoiceRow(invoice), echoCtx)
+	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
 func (c *invoiceController) CreateHandler(echoCtx echo.Context) error {
 
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
 	if len(errors) > 0 {
-		return utils.Render(invoiceviews.InvoiceForm(invoiceviews.InvoiceEditParams{
+		return utils.Render(InvoiceForm(InvoiceEditParams{
 			Invoice: invoiceIn,
 			Errors:  errors,
 		}), echoCtx)
@@ -197,7 +196,7 @@ func (c *invoiceController) CreateHandler(echoCtx echo.Context) error {
 		return err
 	}
 
-	return utils.Render(invoiceviews.InvoiceForm(invoiceviews.InvoiceEditParams{
+	return utils.Render(InvoiceForm(InvoiceEditParams{
 		Invoice: *invoice,
 		Errors:  nil,
 	}), echoCtx)

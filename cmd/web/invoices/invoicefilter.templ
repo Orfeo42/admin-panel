@@ -1,17 +1,16 @@
-package invoiceviews
+package invoices
 
 import (
-	"admin-panel/mvc/repositories"
 	"admin-panel/utils"
 	"admin-panel/cmd/web/components"
 )
 
 type InvoiceFilterParams struct {
-	Filter       repositories.InvoiceFilter
+	Filter       InvoiceFilter
 	ShowCustomer bool
 }
 
-templ InvoiceFilter(params InvoiceFilterParams) {
+templ InvoiceFilterForm(params InvoiceFilterParams) {
 	@components.CollapseCard("Filtri", "filter", false) {
 		<form hx-get="/invoice/filter" hx-target="#data" hx-swap="innerHTML">
 			<div class="form-row">
