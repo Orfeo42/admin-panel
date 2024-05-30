@@ -51,7 +51,9 @@ func InvoiceControllerInstance() InvoiceController {
 	if controllerInstance != nil {
 		return controllerInstance
 	}
-	controllerInstance = &invoiceController{}
+	controllerInstance = &invoiceController{
+		invRep: database.InvoiceRepositoryInstance(),
+	}
 	return controllerInstance
 }
 
@@ -229,7 +231,7 @@ func (c *invoiceController) PayByID(echoCtx echo.Context) error {
 
 /*--VARIUS FUNCTIONS--*/
 
-func isPaidToBool(valueFrom string) *bool {
+func IsPaidToBool(valueFrom string) *bool {
 	if valueFrom == "" {
 		return nil
 	}
@@ -263,7 +265,7 @@ func getInvoiceFilterFromContext(echoCtx echo.Context) database.InvoiceFilter {
 	filter.AmountFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("amountFrom"))
 	filter.AmountTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("amountTo"))
 	filter.PaidAmountFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("paidAmountFrom"))
-	filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+	filter.IsPaid = IsPaidToBool(echoCtx.FormValue("isPaid"))
 	return filter
 
 }

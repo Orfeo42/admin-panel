@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"admin-panel/cmd/enum"
+	"admin-panel/cmd/web/invoices"
 	"admin-panel/internal/database"
 	"admin-panel/utils"
 
@@ -182,7 +183,7 @@ func getCustomerFilterFromContext(echoCtx echo.Context) database.CustomerFilter 
 	filter.TotalAmountTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountTo"))
 	filter.TotalToPayFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayFrom"))
 	filter.TotalToPayTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayTo"))
-	//filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+	filter.IsPaid = invoices.IsPaidToBool(echoCtx.FormValue("isPaid"))
 	return filter
 
 }

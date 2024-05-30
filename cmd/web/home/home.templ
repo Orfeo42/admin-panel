@@ -87,7 +87,10 @@ templ HomeView(params HomeParameters) {
 			</div>
 		</div>
 		<div class="row">
-			<!-- Area Chart -->
+			<div class="col-xl-6 col-lg-6">
+				@components.TitledCardComp("Fatture ultimo mese") {
+				}
+			</div>
 			<div class="col-xl-6 col-lg-6">
 				@components.TitledCardComp("Grafico Fatturato/Riscosso") {
 					@components.AreaChart("salesChart", params.AreaChartParams)
