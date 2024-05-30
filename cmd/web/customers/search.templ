@@ -1,12 +1,12 @@
-package customerviews
+package customers
 
 import (
-	"admin-panel/mvc/repositories"
 	"admin-panel/utils"
 	"strconv"
+	"admin-panel/internal/database"
 )
 
-templ CustomerSearch(items []repositories.Customer) {
+templ CustomerSearch(items []database.Customer) {
 	for index, customer := range items {
 		<div class="preview-item" data-index={ strconv.Itoa(index) } data-id={ utils.UintToString(customer.ID) }>{ customer.Name }</div>
 	}

@@ -3,8 +3,7 @@ package home
 import (
 	"admin-panel/cmd/enum"
 	"admin-panel/cmd/web/components"
-	"admin-panel/cmd/web/home/homeviews"
-	"admin-panel/cmd/web/invoices"
+	"admin-panel/internal/database"
 	"admin-panel/utils"
 	"strconv"
 	"time"
@@ -20,7 +19,7 @@ type HomeController interface {
 }
 
 type homeController struct {
-	invRep invoices.InvoiceRepository
+	invRep database.InvoiceRepository
 }
 
 func HomeControllerInstance() HomeController {
@@ -28,7 +27,7 @@ func HomeControllerInstance() HomeController {
 		return controllerInstance
 	}
 	controllerInstance = &homeController{
-		invRep: invoices.InvoiceRepositoryInstance(),
+		invRep: database.InvoiceRepositoryInstance(),
 	}
 	return controllerInstance
 }
@@ -88,14 +87,14 @@ func (c *homeController) HomeHandler(echoCtx echo.Context) error {
 		DataSets:    dataSets,
 	}
 
-	homePrams := homeviews.HomeParameters{
+	homePrams := HomeParameters{
 		AreaChartParams: areaChartParams,
 		SalesMonth:      salesMonth,
 		SalesYear:       salesYear,
 		CollectedMonth:  collectedMonth,
 		CollectedYear:   collectedYear,
 	}
-	return utils.Render(homeviews.HomeView(homePrams), echoCtx)
+	return utils.Render(HomeView(homePrams), echoCtx)
 }
 
 func getMonthsBetweenDates(dateFrom, dateTo time.Time) []string {
@@ -132,7 +131,7 @@ func monthsBetween(dateFrom, dateTo time.Time) int {
 	return totalMonths
 }
 
-func earningsToAreaChartData(earningList []invoices.MoneyByMonthResult) []float64 {
+func earningsToAreaChartData(earningList []database.MoneyByMonthResult) []float64 {
 	var data []float64
 	for _, earning := range earningList {
 		amount := float64(earning.Amount) / 100

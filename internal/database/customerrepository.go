@@ -1,9 +1,7 @@
-package customers
+package database
 
 import (
 	"github.com/labstack/gommon/log"
-
-	db "admin-panel/internal/database"
 
 	"gorm.io/gorm"
 )
@@ -42,11 +40,7 @@ func NewCustomerFilter() CustomerFilter {
 }
 
 func GetAllCustomer() ([]Customer, error) {
-	dbInstance, err := db.DBInstance()
-	if err != nil {
-		return []Customer{}, err
-	}
-
+	dbInstance := DBInstance()
 	var items []Customer
 	result := dbInstance.Find(&items)
 
@@ -55,10 +49,7 @@ func GetAllCustomer() ([]Customer, error) {
 
 func GetAllCustomerWithTotals(filter CustomerFilter) (*[]CustomerWithTotals, error) {
 
-	dbInstance, err := db.DBInstance()
-	if err != nil {
-		return nil, err
-	}
+	dbInstance := DBInstance()
 
 	var results []CustomerWithTotals
 
@@ -113,24 +104,18 @@ func GetAllCustomerWithTotals(filter CustomerFilter) (*[]CustomerWithTotals, err
 
 func CreateCustomer(customer Customer) (Customer, error) {
 
-	dbInstance, err := db.DBInstance()
-	if err != nil {
-		return Customer{}, err
-	}
+	dbInstance := DBInstance()
 
 	result := dbInstance.Create(&customer)
 
 	return customer, result.Error
 }
 
-func CreateCustomerList(customerList *[]Customer) (*[]Customer, error) {
+func CreateCustomerList(customerList []Customer) ([]Customer, error) {
 	var result []Customer
-	dbInstance, err := db.DBInstance()
-	if err != nil {
-		return nil, err
-	}
-	err = dbInstance.Transaction(func(tx *gorm.DB) error {
-		for _, customer := range *customerList {
+	dbInstance := DBInstance()
+	err := dbInstance.Transaction(func(tx *gorm.DB) error {
+		for _, customer := range customerList {
 			if err := tx.Create(&customer).Error; err != nil {
 				log.Errorf("Error in creating customer %+v: %+v", customer, err)
 				return err
@@ -143,14 +128,11 @@ func CreateCustomerList(customerList *[]Customer) (*[]Customer, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	return result, nil
 }
 
 func GetCustomerByID(id uint) (*Customer, error) {
-	dbInstance, err := db.DBInstance()
-	if err != nil {
-		return nil, err
-	}
+	dbInstance := DBInstance()
 	var customer Customer
 	tx := dbInstance.First(&customer, id)
 	if tx.Error != nil {
@@ -164,10 +146,7 @@ func SearchCustomerByName(name string) (*[]Customer, error) {
 		return &[]Customer{}, nil
 	}
 
-	dbInstance, err := db.DBInstance()
-	if err != nil {
-		return nil, err
-	}
+	dbInstance := DBInstance()
 
 	var customerList []Customer
 	tx := dbInstance.

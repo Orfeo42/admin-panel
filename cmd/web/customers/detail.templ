@@ -1,17 +1,17 @@
-package customerviews
+package customers
 
 import (
 	"admin-panel/cmd/web/components"
-	"admin-panel/mvc/repositories"
-	"admin-panel/cmd/web/invoices/invoiceviews"
+	"admin-panel/cmd/web/invoices"
 
 	"admin-panel/cmd/web/layout"
+	"admin-panel/internal/database"
 )
 
 type CustomerDetailParams struct {
-	Item        repositories.Customer
-	InvoiceList []repositories.Invoice
-	Filter      repositories.InvoiceFilter
+	Item        database.Customer
+	InvoiceList []database.Invoice
+	Filter      database.InvoiceFilter
 }
 
 templ CustomerDetail(params CustomerDetailParams) {
@@ -38,11 +38,11 @@ templ customerData(params CustomerDetailParams) {
 			}
 		</div>
 	</div>
-	@invoiceviews.InvoiceFilter(invoiceviews.InvoiceFilterParams{
+	@invoices.InvoiceFilterForm(invoices.InvoiceFilterParams{
 		Filter:       params.Filter,
 		ShowCustomer: false,
 	})
-	@invoiceviews.InvoiceTable(invoiceviews.InvoiceTableParams{
+	@invoices.InvoiceTable(invoices.InvoiceTableParams{
 		Items:        params.InvoiceList,
 		ShowCustomer: true,
 	})

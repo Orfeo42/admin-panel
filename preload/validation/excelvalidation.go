@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"admin-panel/mvc/repositories"
+	"admin-panel/internal/database"
 	"admin-panel/utils"
 
 	"github.com/labstack/gommon/log"
@@ -14,14 +14,14 @@ import (
 const customerSheetName = "Totale per Cliente"
 const excelFilePath = "resources/Prima Nota.xlsx"
 
-func ValidateExcel() (*[]repositories.Customer, *[]repositories.Invoice, error) {
+func ValidateExcel() ([]database.Customer, []database.Invoice, error) {
 	xlFile, err := xlsx.OpenFile(excelFilePath)
 	if err != nil {
 		log.Errorf("Error reading excel %s, %+v", excelFilePath, err)
 		return nil, nil, err
 	}
 	log.Infof("Reading customer sheet")
-	var customerList []repositories.Customer
+	var customerList []database.Customer
 	for _, sheet := range xlFile.Sheets {
 		if sheet.Name == customerSheetName {
 			for index, row := range sheet.Rows {
@@ -32,14 +32,14 @@ func ValidateExcel() (*[]repositories.Customer, *[]repositories.Invoice, error) 
 				if text == "" {
 					continue
 				}
-				customerList = append(customerList, repositories.Customer{Name: row.Cells[0].String()})
+				customerList = append(customerList, database.Customer{Name: row.Cells[0].String()})
 			}
 		}
 	}
 	log.Infof("Found %d customers", len(customerList))
 
 	log.Info("Reading Invoices sheets")
-	var invoiceList []repositories.Invoice
+	var invoiceList []database.Invoice
 	for _, sheet := range xlFile.Sheets {
 		if _, err := strconv.Atoi(sheet.Name); err == nil {
 			log.Infof("Reading sheet %s", sheet.Name)
@@ -60,10 +60,10 @@ func ValidateExcel() (*[]repositories.Customer, *[]repositories.Invoice, error) 
 		}
 	}
 	log.Infof("Found %d invoices", len(invoiceList))
-	return &customerList, &invoiceList, nil
+	return customerList, invoiceList, nil
 }
 
-func excelRowToInvoice(row []*xlsx.Cell) *repositories.Invoice {
+func excelRowToInvoice(row []*xlsx.Cell) *database.Invoice {
 	date := getDateFromExcel(row[1])
 	if date == nil {
 		return nil
@@ -76,8 +76,8 @@ func excelRowToInvoice(row []*xlsx.Cell) *repositories.Invoice {
 	paymentDate := getDateFromExcel(row[5])
 	expectedPaymentDate := getDateFromExcel(row[7])
 
-	return &repositories.Invoice{
-		Customer:            repositories.Customer{Name: row[0].String()},
+	return &database.Invoice{
+		Customer:            database.Customer{Name: row[0].String()},
 		Date:                date,
 		Year:                year,
 		Number:              invoiceNumber,

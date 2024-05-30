@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"admin-panel/cmd/enum"
+	"admin-panel/internal/database"
 	"admin-panel/utils"
 
 	"github.com/labstack/echo/v4"
@@ -23,7 +24,7 @@ type InvoiceController interface {
 }
 
 type invoiceController struct {
-	invRep InvoiceRepository
+	invRep database.InvoiceRepository
 }
 
 const pageName = "Fatture"
@@ -215,9 +216,9 @@ func isPaidToBool(valueFrom string) *bool {
 	return &value
 }
 
-func getInvoiceFilterFromContext(echoCtx echo.Context) InvoiceFilter {
+func getInvoiceFilterFromContext(echoCtx echo.Context) database.InvoiceFilter {
 
-	filter := NewInvoiceFilter()
+	filter := database.NewInvoiceFilter()
 
 	customerID, err := utils.StringToUintPtr(echoCtx.FormValue("customer"))
 	if err != nil {
@@ -243,7 +244,7 @@ func getInvoiceFilterFromContext(echoCtx echo.Context) InvoiceFilter {
 
 }
 
-func validateCreateUpdateRequest(echoCtx echo.Context) (Invoice, map[string]string) {
+func validateCreateUpdateRequest(echoCtx echo.Context) (database.Invoice, map[string]string) {
 	errors := map[string]string{}
 
 	customer, err := utils.StringToUintPtr(echoCtx.FormValue("customer"))
@@ -285,7 +286,7 @@ func validateCreateUpdateRequest(echoCtx echo.Context) (Invoice, map[string]stri
 
 	note := utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))
 
-	return Invoice{
+	return database.Invoice{
 		CustomerID:          *customer,
 		Year:                0,
 		Number:              number,

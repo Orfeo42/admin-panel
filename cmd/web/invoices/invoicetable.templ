@@ -3,10 +3,11 @@ package invoices
 import (
 	"admin-panel/cmd/web/components"
 	"admin-panel/utils"
+	"admin-panel/internal/database"
 )
 
 type InvoiceTableParams struct {
-	Items        []Invoice
+	Items        []database.Invoice
 	ShowCustomer bool
 }
 
@@ -34,7 +35,7 @@ templ InvoiceTable(params InvoiceTableParams) {
 	}
 }
 
-templ InvoiceTableRows(items []Invoice) {
+templ InvoiceTableRows(items []database.Invoice) {
 	for index, item := range items {
 		if (index == len(items)-1) {
 			@invoiceTableRowLast(item)
@@ -44,13 +45,13 @@ templ InvoiceTableRows(items []Invoice) {
 	}
 }
 
-templ InvoiceTableRow(item Invoice) {
+templ InvoiceTableRow(item database.Invoice) {
 	<tr>
 		@invoiceColumns(item)
 	</tr>
 }
 
-templ invoiceTableRowLast(item Invoice) {
+templ invoiceTableRowLast(item database.Invoice) {
 	<tr
 		hx-get={ "/invoice/filter?page=" + utils.GetNextPageNumber(ctx) }
 		hx-trigger="revealed"
@@ -61,7 +62,7 @@ templ invoiceTableRowLast(item Invoice) {
 	</tr>
 }
 
-templ invoiceColumns(item Invoice) {
+templ invoiceColumns(item database.Invoice) {
 	<td>{ item.Customer.Name }</td>
 	<td style="text-align: right;">{ item.Number }</td>
 	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.Date) }</td>

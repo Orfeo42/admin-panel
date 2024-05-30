@@ -2,11 +2,12 @@ package invoices
 
 import (
 	"admin-panel/cmd/web/layout"
+	"admin-panel/internal/database"
 )
 
 type InvoiceListParams struct {
-	Items  []Invoice
-	Filter InvoiceFilter
+	Items  []database.Invoice
+	Filter database.InvoiceFilter
 }
 
 templ InvoiceList(params InvoiceListParams) {

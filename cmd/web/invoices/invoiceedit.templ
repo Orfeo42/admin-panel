@@ -4,10 +4,11 @@ import (
 	"admin-panel/cmd/web/layout"
 	"admin-panel/utils"
 	"admin-panel/cmd/web/components"
+	"admin-panel/internal/database"
 )
 
 type InvoiceEditParams struct {
-	Invoice Invoice
+	Invoice database.Invoice
 	Errors  map[string]string
 }
 

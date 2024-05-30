@@ -1,8 +1,6 @@
-package invoices
+package database
 
 import (
-	"admin-panel/cmd/web/customers"
-	"admin-panel/internal/database"
 	"fmt"
 	"time"
 
@@ -35,7 +33,7 @@ func InvoiceRepositoryInstance() InvoiceRepository {
 		return repoInstance
 	}
 	repoInstance = &invoiceRepository{
-		db: database.DBInstance(),
+		db: DBInstance(),
 	}
 	return repoInstance
 }
@@ -43,7 +41,7 @@ func InvoiceRepositoryInstance() InvoiceRepository {
 type Invoice struct {
 	gorm.Model
 	CustomerID          uint
-	Customer            customers.Customer
+	Customer            Customer
 	Year                int    //`gorm:"uniqueIndex:year_number"`
 	Number              string //`gorm:"uniqueIndex:year_number"`
 	PaymentMethod       *string

@@ -1,19 +1,18 @@
 package validation
 
 import (
+	"admin-panel/internal/database"
 	"errors"
-
-	"admin-panel/mvc/repositories"
 
 	"github.com/labstack/gommon/log"
 )
 
-func FindCustomerFromName(customers *[]repositories.Customer, name string) (repositories.Customer, error) {
-	for _, customer := range *customers {
+func FindCustomerFromName(customers []database.Customer, name string) (database.Customer, error) {
+	for _, customer := range customers {
 		if customer.Name == name {
 			return customer, nil
 		}
 	}
 	log.Infof("No customer with name '%s' found", name)
-	return repositories.Customer{}, errors.New("No customer with name " + name + " found")
+	return database.Customer{}, errors.New("No customer with name " + name + " found")
 }

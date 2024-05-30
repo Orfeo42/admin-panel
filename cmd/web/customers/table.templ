@@ -1,12 +1,12 @@
-package customerviews
+package customers
 
 import (
 	"admin-panel/cmd/web/components"
-	"admin-panel/mvc/repositories"
 	"admin-panel/utils"
+	"admin-panel/internal/database"
 )
 
-templ customerTable(items []repositories.CustomerWithTotals) {
+templ customerTable(items []database.CustomerWithTotals) {
 	@components.CardComp() {
 		<div class="table-responsive">
 			<table class="table table-bordered" id="dataTable">
@@ -28,7 +28,7 @@ templ customerTable(items []repositories.CustomerWithTotals) {
 	}
 }
 
-templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
+templ AllCustomerRowsShow(items []database.CustomerWithTotals) {
 	for index, item := range items {
 		if (index == len(items)-1) {
 			@CustomerRowShowLast(item)
@@ -38,13 +38,13 @@ templ AllCustomerRowsShow(items []repositories.CustomerWithTotals) {
 	}
 }
 
-templ CustomerRowShow(item repositories.CustomerWithTotals) {
+templ CustomerRowShow(item database.CustomerWithTotals) {
 	<tr>
 		@customerColumns(item)
 	</tr>
 }
 
-templ CustomerRowShowLast(item repositories.CustomerWithTotals) {
+templ CustomerRowShowLast(item database.CustomerWithTotals) {
 	<tr
 		hx-get={ "/customer/filter?page=" + utils.GetNextPageNumber(ctx) }
 		hx-trigger="revealed"
@@ -55,7 +55,7 @@ templ CustomerRowShowLast(item repositories.CustomerWithTotals) {
 	</tr>
 }
 
-templ customerColumns(item repositories.CustomerWithTotals) {
+templ customerColumns(item database.CustomerWithTotals) {
 	<td>{ item.Name }</td>
 	<td>{ item.Phone }</td>
 	<td>{ item.Email }</td>

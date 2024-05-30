@@ -1,14 +1,13 @@
 package dbupdate
 
 import (
-	db "admin-panel/internal/database"
-	"admin-panel/mvc/repositories"
+	"admin-panel/internal/database"
 	"admin-panel/preload/validation"
 
 	"github.com/labstack/gommon/log"
 )
 
-func LoadData(customerList *[]repositories.Customer, invoiceList *[]repositories.Invoice) {
+func LoadData(customerList []database.Customer, invoiceList []database.Invoice) {
 	log.Info("Start creating customers")
 	customerList, err := initializeCustomersData(customerList)
 	if err != nil {
@@ -19,14 +18,14 @@ func LoadData(customerList *[]repositories.Customer, invoiceList *[]repositories
 	log.Info("Start creating Invoices")
 	log.Info("Setting correct customer to all invoices")
 
-	for number, invoice := range *invoiceList {
+	for number, invoice := range invoiceList {
 		customer, err := validation.FindCustomerFromName(customerList, invoice.Customer.Name)
 		if err != nil {
 			log.Errorf("Error Finding Customer from Name with name %s: %+v", invoice.Customer.Name, err)
 			continue
 		}
 		invoice.Customer = customer
-		(*invoiceList)[number] = invoice
+		(invoiceList)[number] = invoice
 	}
 	log.Info("End of customer assignation")
 	_, err = initializeInvoiceData(invoiceList)
@@ -39,15 +38,12 @@ func LoadData(customerList *[]repositories.Customer, invoiceList *[]repositories
 
 func SchemaUpdate() error {
 	log.Info("Updating Schema...")
-	dbInstance, errConnection := db.DBInstance()
+	dbInstance := database.DBInstance()
 
-	if errConnection != nil {
-		return errConnection
-	}
 	err := dbInstance.AutoMigrate(
-		&repositories.Customer{},
-		&repositories.Invoice{},
-		&repositories.InvoiceRow{},
+		&database.Customer{},
+		&database.Invoice{},
+		&database.InvoiceRow{},
 	)
 	if err != nil {
 		log.Fatalf("Error in Updating Schema")
@@ -57,11 +53,12 @@ func SchemaUpdate() error {
 	return nil
 }
 
-func initializeCustomersData(customerList *[]repositories.Customer) (*[]repositories.Customer, error) {
-	return repositories.CreateCustomerList(customerList)
+func initializeCustomersData(customerList []database.Customer) ([]database.Customer, error) {
+	return database.CreateCustomerList(customerList)
 }
 
-func initializeInvoiceData(invoiceList *[]repositories.Invoice) (*[]repositories.Invoice, error) {
-	return repositories.CreateInvoiceList(invoiceList)
+func initializeInvoiceData(invoiceList []database.Invoice) ([]database.Invoice, error) {
+	invRepo := database.InvoiceRepositoryInstance()
 
+	return invRepo.CreateListInTransaction(invoiceList)
 }

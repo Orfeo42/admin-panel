@@ -1,13 +1,13 @@
-package customerviews
+package customers
 
 import (
 	"admin-panel/cmd/web/layout"
-	"admin-panel/mvc/repositories"
+	"admin-panel/internal/database"
 )
 
 type CustomerListParams struct {
-	Items  []repositories.CustomerWithTotals
-	Filter repositories.CustomerFilter
+	Items  []database.CustomerWithTotals
+	Filter database.CustomerFilter
 }
 
 templ CustomerListView(params CustomerListParams) {

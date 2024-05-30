@@ -4,17 +4,15 @@ import (
 	"fmt"
 
 	"admin-panel/cmd/enum"
-	"admin-panel/mvc/repositories"
+	"admin-panel/internal/database"
 	"admin-panel/utils"
-
-	"admin-panel/cmd/web/customers/customerviews"
 
 	"github.com/labstack/echo/v4"
 )
 
-func getCustomerFilterFromContext(echoCtx echo.Context) repositories.CustomerFilter {
+func getCustomerFilterFromContext(echoCtx echo.Context) database.CustomerFilter {
 
-	filter := repositories.NewCustomerFilter()
+	filter := database.NewCustomerFilter()
 
 	page, err := utils.StringToInt(echoCtx.QueryParam("page"))
 	if err == nil {
@@ -48,7 +46,7 @@ func listHandler(echoCtx echo.Context) error {
 
 	filter := getCustomerFilterFromContext(echoCtx)
 
-	items, err := repositories.GetAllCustomerWithTotals(filter)
+	items, err := database.GetAllCustomerWithTotals(filter)
 	if err != nil {
 		return err
 	}
@@ -59,12 +57,12 @@ func listHandler(echoCtx echo.Context) error {
 
 	utils.SetTitle(echoCtx, "Cliente")
 
-	customerListParams := customerviews.CustomerListParams{
+	customerListParams := CustomerListParams{
 		Items:  *items,
 		Filter: filter,
 	}
 
-	return utils.Render(customerviews.CustomerListView(customerListParams), echoCtx)
+	return utils.Render(CustomerListView(customerListParams), echoCtx)
 }
 
 func infoHandler(echoCtx echo.Context) error {
@@ -76,15 +74,15 @@ func infoHandler(echoCtx echo.Context) error {
 		return err
 	}
 
-	customer, err := repositories.GetCustomerByID(*id)
+	customer, err := database.GetCustomerByID(*id)
 	if err != nil {
 		return err
 	}
 
-	filter := repositories.NewInvoiceFilter()
+	filter := database.NewInvoiceFilter()
 	filter.CustomerID = &customer.ID
 
-	invoiceList, err := repositories.GetAllInvoice(filter)
+	invoiceList, err := database.GetAllInvoice(filter)
 	if err != nil {
 		return err
 	}
@@ -95,36 +93,36 @@ func infoHandler(echoCtx echo.Context) error {
 
 	utils.SetTitle(echoCtx, fmt.Sprintf("%s - customer detail", customer.Name))
 
-	customerDetailParams := customerviews.CustomerDetailParams{
+	customerDetailParams := CustomerDetailParams{
 		Item:        *customer,
 		InvoiceList: invoiceList,
 		Filter:      filter,
 	}
 
-	return utils.Render(customerviews.CustomerDetail(customerDetailParams), echoCtx)
+	return utils.Render(CustomerDetail(customerDetailParams), echoCtx)
 }
 
 func filterHandler(echoCtx echo.Context) error {
 
 	filter := getCustomerFilterFromContext(echoCtx)
 
-	items, err := repositories.GetAllCustomerWithTotals(filter)
+	items, err := database.GetAllCustomerWithTotals(filter)
 	if err != nil {
 		return err
 	}
 
 	utils.SetPageNumber(echoCtx, filter.Page)
 
-	return utils.Render(customerviews.AllCustomerRowsShow(*items), echoCtx)
+	return utils.Render(AllCustomerRowsShow(*items), echoCtx)
 }
 
 func searchHandler(echoCtx echo.Context) error {
 	name := echoCtx.QueryParam("name")
 
-	customerList, err := repositories.SearchCustomerByName(name)
+	customerList, err := database.SearchCustomerByName(name)
 	if err != nil {
 		return err
 	}
 
-	return utils.Render(customerviews.CustomerSearch(*customerList), echoCtx)
+	return utils.Render(CustomerSearch(*customerList), echoCtx)
 }

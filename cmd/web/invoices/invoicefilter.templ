@@ -3,10 +3,11 @@ package invoices
 import (
 	"admin-panel/utils"
 	"admin-panel/cmd/web/components"
+	"admin-panel/internal/database"
 )
 
 type InvoiceFilterParams struct {
-	Filter       InvoiceFilter
+	Filter       database.InvoiceFilter
 	ShowCustomer bool
 }
 
