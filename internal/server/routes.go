@@ -27,7 +27,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	registerHomeRoutes(e)
 
-	customers.RegisterRoutes(e)
+	registerCustomerRoutes(e)
 
 	registerInvoiceRoutes(e)
 
@@ -47,20 +47,31 @@ func registerInvoiceRoutes(application *echo.Echo) {
 	invoiceGroup := application.Group("/invoice")
 	controller := invoices.InvoiceControllerInstance()
 
-	invoiceGroup.POST("", controller.CreateHandler)
-
-	invoiceGroup.GET("/add", controller.CreatePageHandler)
-
-	invoiceGroup.GET("/list", controller.ReadAllHandler)
-
+	invoiceGroup.GET("", controller.ReadAllPageHandler)
+	invoiceGroup.GET("/:id", controller.ReadPageHandler)
 	invoiceGroup.GET("/filter", controller.FilterHandler)
 
-	invoiceGroup.PUT("/:id", controller.UpdateHandler)
-
-	invoiceGroup.PUT("/:id/pay", controller.PayByID)
+	invoiceGroup.GET("/add", controller.CreatePageHandler)
+	invoiceGroup.POST("", controller.CreateHandler)
 
 	invoiceGroup.GET("/:id/edit", controller.UpdatePageHandler)
+	invoiceGroup.PUT("/:id", controller.UpdateHandler)
+	invoiceGroup.PUT("/:id/pay", controller.PayByID)
+}
 
-	invoiceGroup.GET("/:id", controller.ReadHandler)
+func registerCustomerRoutes(application *echo.Echo) {
 
+	customerGroup := application.Group("/customer")
+	controller := customers.CustomerControllerInstance()
+
+	customerGroup.GET("", controller.ReadAllPageHandler)
+	customerGroup.GET("/:id", controller.ReadPageHandler)
+	customerGroup.GET("/filter", controller.FilterHandler)
+	customerGroup.GET("/search", controller.SearchByNameHandler)
+
+	customerGroup.GET("/add", controller.CreatePageHandler)
+	customerGroup.POST("", controller.CreateHandler)
+
+	customerGroup.GET("/:id/edit", controller.UpdatePageHandler)
+	customerGroup.PUT("/:id", controller.UpdateHandler)
 }

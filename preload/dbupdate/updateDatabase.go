@@ -54,7 +54,8 @@ func SchemaUpdate() error {
 }
 
 func initializeCustomersData(customerList []database.Customer) ([]database.Customer, error) {
-	return database.CreateCustomerList(customerList)
+	custRepo := database.CustomerRepositoryInstance()
+	return custRepo.CreateListInTransaction(customerList)
 }
 
 func initializeInvoiceData(invoiceList []database.Invoice) ([]database.Invoice, error) {

@@ -8,17 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-var repoInstance *invoiceRepository
+var invRepoInstance InvoiceRepository
 
 type InvoiceRepository interface {
 	Create(invoice Invoice) (*Invoice, error)
 	CreateListInTransaction(invoiceList []Invoice) ([]Invoice, error)
 	CreateList(invoiceList []Invoice) ([]Invoice, error)
 	Read(id uint) (*Invoice, error)
-	Update(invoice Invoice) error
-	Delete(id uint) error
 	ReadAll() ([]Invoice, error)
 	ReadAllFiltered(filter InvoiceFilter) ([]Invoice, error)
+	Update(invoice Invoice) error
+	Delete(id uint) error
 	ReadAllByCustomerIDAndPaid(customerID uint, isPaid *bool) ([]Invoice, error)
 	SalesByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
 	CollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
@@ -29,13 +29,13 @@ type invoiceRepository struct {
 }
 
 func InvoiceRepositoryInstance() InvoiceRepository {
-	if repoInstance != nil {
-		return repoInstance
+	if invRepoInstance != nil {
+		return invRepoInstance
 	}
-	repoInstance = &invoiceRepository{
+	invRepoInstance = &invoiceRepository{
 		db: DBInstance(),
 	}
-	return repoInstance
+	return invRepoInstance
 }
 
 type Invoice struct {
@@ -142,7 +142,6 @@ func (r *invoiceRepository) Update(invoice Invoice) error {
 }
 
 func (r *invoiceRepository) Delete(id uint) error {
-	r.db.Delete(&Invoice{}, id)
 	var invoice Invoice
 	if err := r.db.First(&invoice, 1).Error; err != nil {
 		fmt.Println("Record not found!")

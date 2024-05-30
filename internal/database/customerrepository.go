@@ -1,10 +1,40 @@
 package database
 
 import (
+	"fmt"
+
 	"github.com/labstack/gommon/log"
 
 	"gorm.io/gorm"
 )
+
+var custRepoInstance CustomerRepository
+
+type CustomerRepository interface {
+	Create(customer Customer) (*Customer, error)
+	CreateListInTransaction(customerList []Customer) ([]Customer, error)
+	CreateList(customerList []Customer) ([]Customer, error)
+	Read(id uint) (*Customer, error)
+	ReadAll() ([]Customer, error)
+	ReadAllFilteredWithTotals(filter CustomerFilter) ([]CustomerWithTotals, error)
+	ReadAllByName(name string) ([]Customer, error)
+	Update(customer Customer) error
+	Delete(id uint) error
+}
+
+type customerRepository struct {
+	db *gorm.DB
+}
+
+func CustomerRepositoryInstance() CustomerRepository {
+	if custRepoInstance != nil {
+		return custRepoInstance
+	}
+	custRepoInstance = &customerRepository{
+		db: DBInstance(),
+	}
+	return custRepoInstance
+}
 
 type Customer struct {
 	gorm.Model
@@ -39,21 +69,62 @@ func NewCustomerFilter() CustomerFilter {
 	}
 }
 
-func GetAllCustomer() ([]Customer, error) {
-	dbInstance := DBInstance()
-	var items []Customer
-	result := dbInstance.Find(&items)
+func (r *customerRepository) Create(customer Customer) (*Customer, error) {
+	result := r.db.Create(&customer)
+	return &customer, result.Error
+}
 
+func (r *customerRepository) CreateListInTransaction(customerList []Customer) ([]Customer, error) {
+	var result []Customer
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		for _, customer := range customerList {
+			if err := tx.Create(&customer).Error; err != nil {
+				log.Errorf("Error in creating customer %+v: %+v", customer, err)
+				return err
+			}
+			result = append(result, customer)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (r *customerRepository) CreateList(customerList []Customer) ([]Customer, error) {
+	var result []Customer
+	for _, customer := range customerList {
+		if _, err := r.Create(customer); err != nil {
+			log.Errorf("Error in creating customer %+v: %+v", customer, err)
+			continue
+		}
+		result = append(result, customer)
+	}
+	return result, nil
+}
+
+func (r *customerRepository) Read(id uint) (*Customer, error) {
+	var customer Customer
+	tx := r.db.First(&customer, id)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &customer, nil
+}
+
+func (r *customerRepository) ReadAll() ([]Customer, error) {
+	var items []Customer
+	result := r.db.Find(&items)
 	return items, result.Error
 }
 
-func GetAllCustomerWithTotals(filter CustomerFilter) (*[]CustomerWithTotals, error) {
-
-	dbInstance := DBInstance()
+func (r *customerRepository) ReadAllFilteredWithTotals(filter CustomerFilter) ([]CustomerWithTotals, error) {
 
 	var results []CustomerWithTotals
 
-	queryDB := dbInstance.Table("invoices").
+	queryDB := r.db.Table("invoices").
 		Select("invoices.customer_id as id," +
 			"max(customers.name) as name," +
 			"max(customers.surname) as surname," +
@@ -99,57 +170,16 @@ func GetAllCustomerWithTotals(filter CustomerFilter) (*[]CustomerWithTotals, err
 	if response.Error != nil {
 		return nil, response.Error
 	}
-	return &results, response.Error
+	return results, response.Error
 }
 
-func CreateCustomer(customer Customer) (Customer, error) {
-
-	dbInstance := DBInstance()
-
-	result := dbInstance.Create(&customer)
-
-	return customer, result.Error
-}
-
-func CreateCustomerList(customerList []Customer) ([]Customer, error) {
-	var result []Customer
-	dbInstance := DBInstance()
-	err := dbInstance.Transaction(func(tx *gorm.DB) error {
-		for _, customer := range customerList {
-			if err := tx.Create(&customer).Error; err != nil {
-				log.Errorf("Error in creating customer %+v: %+v", customer, err)
-				return err
-			}
-			result = append(result, customer)
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-func GetCustomerByID(id uint) (*Customer, error) {
-	dbInstance := DBInstance()
-	var customer Customer
-	tx := dbInstance.First(&customer, id)
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-	return &customer, nil
-}
-
-func SearchCustomerByName(name string) (*[]Customer, error) {
+func (r *customerRepository) ReadAllByName(name string) ([]Customer, error) {
 	if name == "" {
-		return &[]Customer{}, nil
+		return nil, nil
 	}
-
-	dbInstance := DBInstance()
 
 	var customerList []Customer
-	tx := dbInstance.
+	tx := r.db.
 		Where("lower(customers.name) LIKE '%' || lower(?) || '%'", name).
 		Limit(4).
 		Find(&customerList)
@@ -158,5 +188,24 @@ func SearchCustomerByName(name string) (*[]Customer, error) {
 		log.Errorf("Error in searching customer by name: %+v", tx.Error)
 		return nil, tx.Error
 	}
-	return &customerList, nil
+	return customerList, nil
+}
+
+func (r *customerRepository) Update(customer Customer) error {
+	result := r.db.Save(&customer)
+	return result.Error
+}
+
+func (r *customerRepository) Delete(id uint) error {
+	var customer Customer
+	if err := r.db.First(&customer, 1).Error; err != nil {
+		fmt.Println("Record not found!")
+		return err
+	}
+
+	if err := r.db.Delete(customer, 1).Error; err != nil {
+		fmt.Println("Error deleting user:", err)
+		return err
+	}
+	return nil
 }

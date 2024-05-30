@@ -10,43 +10,46 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func getCustomerFilterFromContext(echoCtx echo.Context) database.CustomerFilter {
+const pageName = "Fatture"
 
-	filter := database.NewCustomerFilter()
+var controllerInstance CustomerController
 
-	page, err := utils.StringToInt(echoCtx.QueryParam("page"))
-	if err == nil {
-		filter.Page = *page
+type CustomerController interface {
+	ReadAllPageHandler(echoCtx echo.Context) error
+	ReadPageHandler(echoCtx echo.Context) error
+	FilterHandler(echoCtx echo.Context) error
+	SearchByNameHandler(echoCtx echo.Context) error
+
+	CreatePageHandler(echoCtx echo.Context) error
+	CreateHandler(echoCtx echo.Context) error
+
+	UpdatePageHandler(echoCtx echo.Context) error
+	UpdateHandler(echoCtx echo.Context) error
+}
+
+type customerController struct {
+	custRep database.CustomerRepository
+	invRep  database.InvoiceRepository
+}
+
+func CustomerControllerInstance() CustomerController {
+	if controllerInstance != nil {
+		return controllerInstance
 	}
-
-	filter.Name = utils.ParseString(echoCtx.FormValue("name"))
-	filter.TotalAmountFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountFrom"))
-	filter.TotalAmountTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountTo"))
-	filter.TotalToPayFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayFrom"))
-	filter.TotalToPayTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayTo"))
-	//filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
-	return filter
-
+	controllerInstance = &customerController{
+		custRep: database.CustomerRepositoryInstance(),
+		invRep:  database.InvoiceRepositoryInstance(),
+	}
+	return controllerInstance
 }
 
-func RegisterRoutes(application *echo.Echo) {
+/*--READ HANDLER--*/
 
-	customerGroup := application.Group("/customer")
-
-	customerGroup.GET("/list", listHandler)
-
-	customerGroup.GET("/:id/info", infoHandler)
-
-	customerGroup.GET("/filter", filterHandler)
-
-	customerGroup.GET("/search", searchHandler)
-}
-
-func listHandler(echoCtx echo.Context) error {
+func (c *customerController) ReadAllPageHandler(echoCtx echo.Context) error {
 
 	filter := getCustomerFilterFromContext(echoCtx)
 
-	items, err := database.GetAllCustomerWithTotals(filter)
+	items, err := c.custRep.ReadAllFilteredWithTotals(filter)
 	if err != nil {
 		return err
 	}
@@ -55,17 +58,17 @@ func listHandler(echoCtx echo.Context) error {
 
 	utils.SetPage(echoCtx, enum.CustomerList)
 
-	utils.SetTitle(echoCtx, "Cliente")
+	utils.SetTitle(echoCtx, pageName)
 
 	customerListParams := CustomerListParams{
-		Items:  *items,
+		Items:  items,
 		Filter: filter,
 	}
 
 	return utils.Render(CustomerListView(customerListParams), echoCtx)
 }
 
-func infoHandler(echoCtx echo.Context) error {
+func (c *customerController) ReadPageHandler(echoCtx echo.Context) error {
 
 	stringId := echoCtx.Param("id")
 
@@ -74,7 +77,7 @@ func infoHandler(echoCtx echo.Context) error {
 		return err
 	}
 
-	customer, err := database.GetCustomerByID(*id)
+	customer, err := c.custRep.Read(*id)
 	if err != nil {
 		return err
 	}
@@ -82,7 +85,7 @@ func infoHandler(echoCtx echo.Context) error {
 	filter := database.NewInvoiceFilter()
 	filter.CustomerID = &customer.ID
 
-	invoiceList, err := database.GetAllInvoice(filter)
+	invoiceList, err := c.invRep.ReadAllFiltered(filter)
 	if err != nil {
 		return err
 	}
@@ -102,27 +105,67 @@ func infoHandler(echoCtx echo.Context) error {
 	return utils.Render(CustomerDetail(customerDetailParams), echoCtx)
 }
 
-func filterHandler(echoCtx echo.Context) error {
-
+func (c *customerController) FilterHandler(echoCtx echo.Context) error {
 	filter := getCustomerFilterFromContext(echoCtx)
 
-	items, err := database.GetAllCustomerWithTotals(filter)
+	items, err := c.custRep.ReadAllFilteredWithTotals(filter)
 	if err != nil {
 		return err
 	}
 
 	utils.SetPageNumber(echoCtx, filter.Page)
 
-	return utils.Render(AllCustomerRowsShow(*items), echoCtx)
+	return utils.Render(AllCustomerRowsShow(items), echoCtx)
 }
 
-func searchHandler(echoCtx echo.Context) error {
+func (c *customerController) SearchByNameHandler(echoCtx echo.Context) error {
 	name := echoCtx.QueryParam("name")
 
-	customerList, err := database.SearchCustomerByName(name)
+	customerList, err := c.custRep.ReadAllByName(name)
 	if err != nil {
 		return err
 	}
 
-	return utils.Render(CustomerSearch(*customerList), echoCtx)
+	return utils.Render(CustomerSearch(customerList), echoCtx)
+}
+
+/*--CREATE HANDLER--*/
+
+func (c *customerController) CreatePageHandler(echoCtx echo.Context) error {
+	return nil
+}
+
+func (c *customerController) CreateHandler(echoCtx echo.Context) error {
+	return nil
+}
+
+/*--UPDATE HANDLER--*/
+
+func (c *customerController) UpdatePageHandler(echoCtx echo.Context) error {
+	return nil
+}
+
+func (c *customerController) UpdateHandler(echoCtx echo.Context) error {
+	return nil
+}
+
+/**/
+
+func getCustomerFilterFromContext(echoCtx echo.Context) database.CustomerFilter {
+
+	filter := database.NewCustomerFilter()
+
+	page, err := utils.StringToInt(echoCtx.QueryParam("page"))
+	if err == nil {
+		filter.Page = *page
+	}
+
+	filter.Name = utils.ParseString(echoCtx.FormValue("name"))
+	filter.TotalAmountFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountFrom"))
+	filter.TotalAmountTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalAmountTo"))
+	filter.TotalToPayFrom = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayFrom"))
+	filter.TotalToPayTo = utils.StringToAmountPtrNoErr(echoCtx.FormValue("totalToPayTo"))
+	//filter.IsPaid = isPaidToBool(echoCtx.FormValue("isPaid"))
+	return filter
+
 }

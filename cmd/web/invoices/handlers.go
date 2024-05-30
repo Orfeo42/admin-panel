@@ -10,24 +10,26 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+const pageName = "Fatture"
+
 var controllerInstance *invoiceController
 
 type InvoiceController interface {
-	CreateHandler(echoCtx echo.Context) error
-	CreatePageHandler(echoCtx echo.Context) error
-	ReadAllHandler(echoCtx echo.Context) error
+	ReadAllPageHandler(echoCtx echo.Context) error
+	ReadPageHandler(echoCtx echo.Context) error
 	FilterHandler(echoCtx echo.Context) error
+
+	CreatePageHandler(echoCtx echo.Context) error
+	CreateHandler(echoCtx echo.Context) error
+
+	UpdatePageHandler(echoCtx echo.Context) error
 	UpdateHandler(echoCtx echo.Context) error
 	PayByID(echoCtx echo.Context) error
-	UpdatePageHandler(echoCtx echo.Context) error
-	ReadHandler(echoCtx echo.Context) error
 }
 
 type invoiceController struct {
 	invRep database.InvoiceRepository
 }
-
-const pageName = "Fatture"
 
 func InvoiceControllerInstance() InvoiceController {
 	if controllerInstance != nil {
@@ -37,7 +39,9 @@ func InvoiceControllerInstance() InvoiceController {
 	return controllerInstance
 }
 
-func (c *invoiceController) ReadAllHandler(echoCtx echo.Context) error {
+/*--READ HANDLER--*/
+
+func (c *invoiceController) ReadAllPageHandler(echoCtx echo.Context) error {
 	filter := getInvoiceFilterFromContext(echoCtx)
 
 	invoices, err := c.invRep.ReadAllFiltered(filter)
@@ -60,6 +64,20 @@ func (c *invoiceController) ReadAllHandler(echoCtx echo.Context) error {
 	return utils.Render(InvoiceList(invoiceListParams), echoCtx)
 }
 
+func (c *invoiceController) ReadPageHandler(echoCtx echo.Context) error {
+	id := echoCtx.Param("id")
+	idUint, err := utils.StringToUint(id)
+	if err != nil {
+		return err
+	}
+	invoice, err := c.invRep.Read(idUint)
+	if err != nil {
+		return err
+	}
+
+	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
+}
+
 func (c *invoiceController) FilterHandler(echoCtx echo.Context) error {
 
 	filter := getInvoiceFilterFromContext(echoCtx)
@@ -74,6 +92,8 @@ func (c *invoiceController) FilterHandler(echoCtx echo.Context) error {
 
 	return utils.Render(InvoiceTableRows(invoices), echoCtx)
 }
+
+/*--CREATE HANDLER--*/
 
 func (c *invoiceController) CreatePageHandler(echoCtx echo.Context) error {
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
@@ -99,6 +119,29 @@ func (c *invoiceController) CreatePageHandler(echoCtx echo.Context) error {
 	}), echoCtx)
 }
 
+func (c *invoiceController) CreateHandler(echoCtx echo.Context) error {
+
+	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
+	if len(errors) > 0 {
+		return utils.Render(InvoiceForm(InvoiceEditParams{
+			Invoice: invoiceIn,
+			Errors:  errors,
+		}), echoCtx)
+	}
+
+	invoice, err := c.invRep.Create(invoiceIn)
+	if err != nil {
+		return err
+	}
+
+	return utils.Render(InvoiceForm(InvoiceEditParams{
+		Invoice: *invoice,
+		Errors:  nil,
+	}), echoCtx)
+}
+
+/*--UPDATE HANDLER--*/
+
 func (c *invoiceController) UpdatePageHandler(echoCtx echo.Context) error {
 	id := echoCtx.Param("id")
 	idUint, err := utils.StringToUint(id)
@@ -114,20 +157,6 @@ func (c *invoiceController) UpdatePageHandler(echoCtx echo.Context) error {
 		Invoice: *invoice,
 		Errors:  map[string]string{},
 	}), echoCtx)
-}
-
-func (c *invoiceController) ReadHandler(echoCtx echo.Context) error {
-	id := echoCtx.Param("id")
-	idUint, err := utils.StringToUint(id)
-	if err != nil {
-		return err
-	}
-	invoice, err := c.invRep.Read(idUint)
-	if err != nil {
-		return err
-	}
-
-	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
 func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
@@ -182,28 +211,7 @@ func (c *invoiceController) PayByID(echoCtx echo.Context) error {
 	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
-func (c *invoiceController) CreateHandler(echoCtx echo.Context) error {
-
-	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
-	if len(errors) > 0 {
-		return utils.Render(InvoiceForm(InvoiceEditParams{
-			Invoice: invoiceIn,
-			Errors:  errors,
-		}), echoCtx)
-	}
-
-	invoice, err := c.invRep.Create(invoiceIn)
-	if err != nil {
-		return err
-	}
-
-	return utils.Render(InvoiceForm(InvoiceEditParams{
-		Invoice: *invoice,
-		Errors:  nil,
-	}), echoCtx)
-}
-
-/***/
+/*--VARIUS FUNCTIONS--*/
 
 func isPaidToBool(valueFrom string) *bool {
 	if valueFrom == "" {
