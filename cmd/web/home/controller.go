@@ -12,6 +12,15 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+func RegisterHomeRoutes(application *echo.Echo) {
+
+	homeGroup := application.Group("")
+
+	controller := HomeControllerInstance()
+
+	homeGroup.GET("", controller.HomeHandler)
+}
+
 var controllerInstance *homeController
 
 type HomeController interface {

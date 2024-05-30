@@ -25,53 +25,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	e.GET("/assets/*", echo.WrapHandler(fileServer)) //TODO
 
-	registerHomeRoutes(e)
+	home.RegisterHomeRoutes(e)
 
-	registerCustomerRoutes(e)
+	customers.RegisterCustomerRoutes(e)
 
-	registerInvoiceRoutes(e)
+	invoices.RegisterInvoiceRoutes(e)
 
 	return e
-}
-
-func registerHomeRoutes(application *echo.Echo) {
-
-	homeGroup := application.Group("")
-
-	controller := home.HomeControllerInstance()
-
-	homeGroup.GET("", controller.HomeHandler)
-}
-
-func registerInvoiceRoutes(application *echo.Echo) {
-	invoiceGroup := application.Group("/invoice")
-	controller := invoices.InvoiceControllerInstance()
-
-	invoiceGroup.GET("", controller.ReadAllPageHandler)
-	invoiceGroup.GET("/:id", controller.ReadPageHandler)
-	invoiceGroup.GET("/filter", controller.FilterHandler)
-
-	invoiceGroup.GET("/add", controller.CreatePageHandler)
-	invoiceGroup.POST("", controller.CreateHandler)
-
-	invoiceGroup.GET("/:id/edit", controller.UpdatePageHandler)
-	invoiceGroup.PUT("/:id", controller.UpdateHandler)
-	invoiceGroup.PUT("/:id/pay", controller.PayByID)
-}
-
-func registerCustomerRoutes(application *echo.Echo) {
-
-	customerGroup := application.Group("/customer")
-	controller := customers.CustomerControllerInstance()
-
-	customerGroup.GET("", controller.ReadAllPageHandler)
-	customerGroup.GET("/:id", controller.ReadPageHandler)
-	customerGroup.GET("/filter", controller.FilterHandler)
-	customerGroup.GET("/search", controller.SearchByNameHandler)
-
-	customerGroup.GET("/add", controller.CreatePageHandler)
-	customerGroup.POST("", controller.CreateHandler)
-
-	customerGroup.GET("/:id/edit", controller.UpdatePageHandler)
-	customerGroup.PUT("/:id", controller.UpdateHandler)
 }

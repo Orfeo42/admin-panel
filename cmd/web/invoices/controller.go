@@ -10,6 +10,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func RegisterInvoiceRoutes(application *echo.Echo) {
+	invoiceGroup := application.Group("/invoice")
+	controller := InvoiceControllerInstance()
+
+	invoiceGroup.GET("", controller.ReadAllPageHandler)
+	invoiceGroup.GET("/:id", controller.ReadPageHandler)
+	invoiceGroup.GET("/filter", controller.FilterHandler)
+
+	invoiceGroup.GET("/add", controller.CreatePageHandler)
+	invoiceGroup.POST("", controller.CreateHandler)
+
+	invoiceGroup.GET("/:id/edit", controller.UpdatePageHandler)
+	invoiceGroup.PUT("/:id", controller.UpdateHandler)
+	invoiceGroup.PUT("/:id/pay", controller.PayByID)
+}
+
 const pageName = "Fatture"
 
 var controllerInstance *invoiceController

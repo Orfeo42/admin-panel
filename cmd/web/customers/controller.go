@@ -10,6 +10,23 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func RegisterCustomerRoutes(application *echo.Echo) {
+
+	customerGroup := application.Group("/customer")
+	controller := CustomerControllerInstance()
+
+	customerGroup.GET("", controller.ReadAllPageHandler)
+	customerGroup.GET("/:id", controller.ReadPageHandler)
+	customerGroup.GET("/filter", controller.FilterHandler)
+	customerGroup.GET("/search", controller.SearchByNameHandler)
+
+	customerGroup.GET("/add", controller.CreatePageHandler)
+	customerGroup.POST("", controller.CreateHandler)
+
+	customerGroup.GET("/:id/edit", controller.UpdatePageHandler)
+	customerGroup.PUT("/:id", controller.UpdateHandler)
+}
+
 const pageName = "Fatture"
 
 var controllerInstance CustomerController
