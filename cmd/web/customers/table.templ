@@ -62,7 +62,7 @@ templ customerColumns(item database.CustomerWithTotals) {
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
 	<td style="text-align: center;">
-		<a class="btn btn-circle btn-primary" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID) + "/info") }>
+		<a class="btn btn-circle btn-primary" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID)) }>
 			<i class="fa-solid fa-info"></i>
 		</a>
 	</td>

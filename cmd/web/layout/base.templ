@@ -13,7 +13,7 @@ templ mainHead() {
 	<script>
 		htmx.defineExtension('push-url-w-params', {
 			onEvent : function(name, e) {
-				//TODO controllare 
+				//TODO controllare
 				if (name === "htmx:configRequest") {
 					const path = e.target.getAttribute('data-push-url')
 					const params = new URLSearchParams(e.detail.parameters).toString()

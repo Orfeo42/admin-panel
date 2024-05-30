@@ -8,7 +8,7 @@ import (
 
 templ customerFilter(filter database.CustomerFilter) {
 	@components.CollapseCard("Filtri", "filter", false) {
-		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer/list" hx-ext="push-url-w-params">
+		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer" hx-ext="push-url-w-params">
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					@components.FormInput(components.FormInputParam{
