@@ -8,23 +8,23 @@ import (
 )
 
 func StringToUintPtr(valueFrom string) (*uint, error) {
-	value, err := StringToUint(valueFrom)
-	if err != nil {
-		return nil, err
-	}
-	return &value, nil
-}
-
-func StringToUint(valueFrom string) (uint, error) {
 	if valueFrom == "" {
-		return 0, errors.New("empty can't be converted to uint")
+		return nil, errors.New("empty can't be converted to uint")
 	}
 	value, err := strconv.ParseUint(valueFrom, 10, 32)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	result := uint(value)
-	return result, nil
+	return &result, nil
+}
+
+func StringToUint(valueFrom string) (uint, error) {
+	value, err := StringToUintPtr(valueFrom)
+	if err != nil {
+		return 0, err
+	}
+	return *value, nil
 }
 
 func StringToInt(valueFrom string) (*int, error) {

@@ -89,6 +89,13 @@ templ InvoiceForm(params InvoiceEditParams) {
 	}
 }
 
+func getErrorString(errorMap map[string]string, key string) string {
+	if value, found := errorMap[key]; found {
+		return value
+	}
+	return ""
+}
+
 templ InvoiceRowEdit(params InvoiceEditParams) {
 	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) }>
 		<td>
@@ -97,13 +104,15 @@ templ InvoiceRowEdit(params InvoiceEditParams) {
 				CustomerValue: utils.UintToString(params.Invoice.CustomerID),
 				CustomerName:  params.Invoice.Customer.Name,
 				ShowLabel:     false,
+				ErrorString:   getErrorString(params.Errors, "number"),
 			})
 		</td>
 		<td>
 			@components.Input(components.FormInputParam{
-				Name:     "number",
-				FormType: components.Text,
-				Value:    params.Invoice.Number,
+				Name:        "number",
+				FormType:    components.Text,
+				Value:       params.Invoice.Number,
+				ErrorString: getErrorString(params.Errors, "number"),
 			})
 		</td>
 		<td>
@@ -129,9 +138,10 @@ templ InvoiceRowEdit(params InvoiceEditParams) {
 		</td>
 		<td>
 			@components.Input(components.FormInputParam{
-				Name:     "paidAmount",
-				FormType: components.Number,
-				Value:    utils.FormatAmount(params.Invoice.PaidAmount),
+				Name:        "paidAmount",
+				FormType:    components.Number,
+				Value:       utils.FormatAmount(params.Invoice.PaidAmount),
+				ErrorString: getErrorString(params.Errors, "expectedPaymentDate"),
 			})
 		</td>
 		<td style="text-align: center;"></td>
@@ -140,7 +150,7 @@ templ InvoiceRowEdit(params InvoiceEditParams) {
 				<i class="fa-solid fa-floppy-disk"></i>
 				Salva
 			</button>
-			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) }>
+			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) + "/row" }>
 				<i class="fa-solid fa-xmark"></i>
 				Annulla
 			</button>

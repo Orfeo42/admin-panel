@@ -8,6 +8,7 @@ import (
 	"admin-panel/utils"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 func RegisterInvoiceRoutes(application *echo.Echo) {
@@ -15,6 +16,7 @@ func RegisterInvoiceRoutes(application *echo.Echo) {
 	controller := InvoiceControllerInstance()
 
 	invoiceGroup.GET("", controller.ReadAllPageHandler)
+	invoiceGroup.GET("/:id/row", controller.ReadRowHandler)
 	invoiceGroup.GET("/:id", controller.ReadPageHandler)
 	invoiceGroup.GET("/filter", controller.FilterHandler)
 
@@ -32,6 +34,7 @@ var controllerInstance *invoiceController
 
 type InvoiceController interface {
 	ReadAllPageHandler(echoCtx echo.Context) error
+	ReadRowHandler(echoCtx echo.Context) error
 	ReadPageHandler(echoCtx echo.Context) error
 	FilterHandler(echoCtx echo.Context) error
 
@@ -82,7 +85,7 @@ func (c *invoiceController) ReadAllPageHandler(echoCtx echo.Context) error {
 	return utils.Render(InvoiceList(invoiceListParams), echoCtx)
 }
 
-func (c *invoiceController) ReadPageHandler(echoCtx echo.Context) error {
+func (c *invoiceController) ReadRowHandler(echoCtx echo.Context) error {
 	id := echoCtx.Param("id")
 	idUint, err := utils.StringToUint(id)
 	if err != nil {
@@ -93,6 +96,20 @@ func (c *invoiceController) ReadPageHandler(echoCtx echo.Context) error {
 		return err
 	}
 
+	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
+}
+
+func (c *invoiceController) ReadPageHandler(echoCtx echo.Context) error {
+	id := echoCtx.Param("id")
+	idUint, err := utils.StringToUint(id)
+	if err != nil {
+		return err
+	}
+	invoice, err := c.invRep.Read(idUint)
+	if err != nil {
+		return err
+	}
+	///TODO FARE PAGINA DETTAGLIO
 	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
@@ -186,6 +203,9 @@ func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
 	}
 
 	invoice, errors := validateCreateUpdateRequest(echoCtx)
+	invoice.ID = id
+
+	log.Errorf("errors: %+v", errors)
 	if len(errors) > 0 {
 		return utils.Render(InvoiceRowEdit(InvoiceEditParams{
 			Invoice: invoice,
@@ -272,56 +292,46 @@ func getInvoiceFilterFromContext(echoCtx echo.Context) database.InvoiceFilter {
 
 func validateCreateUpdateRequest(echoCtx echo.Context) (database.Invoice, map[string]string) {
 	errors := map[string]string{}
-
-	customer, err := utils.StringToUintPtr(echoCtx.FormValue("customer"))
+	invoice := database.Invoice{}
+	var err error
+	invoice.CustomerID, err = utils.StringToUint(echoCtx.FormValue("customer"))
 	if err != nil {
 		errors["customer"] = "customer is not valid"
 	}
 
-	number := echoCtx.FormValue("number")
-	if number == "" {
+	invoice.Number = echoCtx.FormValue("number")
+	if invoice.Number == "" {
 		errors["number"] = "number is not valid"
 	}
 
-	date, err := utils.StringToTimePtr(echoCtx.FormValue("date"))
+	invoice.Date, err = utils.StringToTimePtr(echoCtx.FormValue("date"))
 	if err != nil {
 		errors["date"] = "date is not valid"
 	}
 
-	paymentDate, err := utils.StringToTimePtr(echoCtx.FormValue("paymentDate"))
+	invoice.PaymentDate, err = utils.StringToTimePtr(echoCtx.FormValue("paymentDate"))
 	if err != nil {
 		errors["paymentDate"] = "payment date is not valid"
 	}
 
-	amount, err := utils.StringToAmountPtr(echoCtx.FormValue("amount"))
+	invoice.Amount, err = utils.StringToAmount(echoCtx.FormValue("amount"))
 	if err != nil {
 		errors["amount"] = "amount is not valid"
 	}
 
-	paidAmount, err := utils.StringToAmountPtr(echoCtx.FormValue("paidAmount"))
+	invoice.PaidAmount, err = utils.StringToAmountValidEmpty(echoCtx.FormValue("paidAmount"))
 	if err != nil {
 		errors["paidAmount"] = "paid amount is not valid"
 	}
 
-	paymentMethod := utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))
+	invoice.PaymentMethod = utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))
 
-	expectedPaymentDate, err := utils.StringToTimePtr(echoCtx.FormValue("expectedPaymentDate"))
+	invoice.ExpectedPaymentDate, err = utils.StringToTimePtr(echoCtx.FormValue("expectedPaymentDate"))
 	if err != nil {
 		errors["expectedPaymentDate"] = "payment date is not valid"
 	}
 
-	note := utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))
+	invoice.Note = utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))
 
-	return database.Invoice{
-		CustomerID:          *customer,
-		Year:                0,
-		Number:              number,
-		PaymentMethod:       paymentMethod,
-		Amount:              *amount,
-		PaidAmount:          *paidAmount,
-		Date:                date,
-		PaymentDate:         paymentDate,
-		ExpectedPaymentDate: expectedPaymentDate,
-		Note:                note,
-	}, errors
+	return invoice, errors
 }

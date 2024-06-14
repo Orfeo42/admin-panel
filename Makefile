@@ -28,12 +28,10 @@ build:
 	@go mod tidy
 	@go build -o ./bin/${APP_NAME} ./cmd/api/main.go
 
-run-fresh: build db-init
-	@clear
+run-fresh: build db-reset
 	@./bin/${APP_NAME}
 
 run: build db-up
-	@clear
 	@./bin/${APP_NAME}
 
 test:

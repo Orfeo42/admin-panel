@@ -5,6 +5,7 @@ type CustomerSearchInputParams struct {
 	CustomerValue string
 	CustomerName  string
 	ShowLabel     bool
+	ErrorString   string
 }
 
 templ CustomerSearchInput(params CustomerSearchInputParams) {
@@ -13,7 +14,7 @@ templ CustomerSearchInput(params CustomerSearchInputParams) {
 			<label for={ "search-input_" + params.Id }>Cliente</label>
 		}
 		<input
-			class="form-control"
+			class={ "form-control", templ.KV("is-invalid", params.ErrorString != "") }
 			autocomplete="off"
 			type="search"
 			name="name"

@@ -2,8 +2,8 @@ package database
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
 )
 
@@ -78,7 +78,7 @@ func (r *customerRepository) CreateListInTransaction(customerList []Customer) ([
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 		for _, customer := range customerList {
 			if err := tx.Create(&customer).Error; err != nil {
-				//log.Errorf("Error in creating customer %+v: %+v", customer, err)
+				log.Errorf("Error in creating customer %+v: %+v", customer, err)
 				return err
 			}
 			result = append(result, customer)
@@ -96,7 +96,7 @@ func (r *customerRepository) CreateList(customerList []Customer) ([]Customer, er
 	var result []Customer
 	for _, customer := range customerList {
 		if _, err := r.Create(customer); err != nil {
-			//log.Errorf("Error in creating customer %+v: %+v", customer, err)
+			log.Errorf("Error in creating customer %+v: %+v", customer, err)
 			continue
 		}
 		result = append(result, customer)
@@ -121,7 +121,7 @@ func (r *customerRepository) ReadAll() ([]Customer, error) {
 
 func (r *customerRepository) ReadAllFilteredWithTotals(filter CustomerFilter) ([]CustomerWithTotals, error) {
 
-	log.Printf("Filer: %+v", filter)
+	//log.Printf("Filer: %+v", filter)
 	var results []CustomerWithTotals
 
 	queryDB := r.db.Table("invoices").

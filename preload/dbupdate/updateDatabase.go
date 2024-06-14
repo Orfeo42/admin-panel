@@ -11,7 +11,7 @@ func LoadData(customerList []database.Customer, invoiceList []database.Invoice) 
 	log.Info("Start creating customers")
 	customerList, err := initializeCustomersData(customerList)
 	if err != nil {
-		log.Error("Error Creating customers", err)
+		log.Error("Error Creating customers: ", err)
 		return
 	}
 	log.Info("All customers are created")

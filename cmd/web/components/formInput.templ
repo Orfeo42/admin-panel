@@ -22,6 +22,7 @@ type FormInputParam struct {
 	Value       string
 	FormType    InputType
 	ComboItems  []ComboItem
+	ErrorString string
 }
 
 templ FormInput(params FormInputParam) {
@@ -31,7 +32,7 @@ templ FormInput(params FormInputParam) {
 
 templ Input(params FormInputParam) {
 	<input
-		class="form-control"
+		class={ "form-control", templ.KV("is-invalid", params.ErrorString != "") }
 		type={ string(params.FormType) }
 		name={ params.Name }
 		id={ params.Id }
