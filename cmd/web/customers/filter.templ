@@ -1,0 +1,84 @@
+package customers
+
+import (
+	"admin-panel/cmd/web/components"
+	"admin-panel/utils"
+	"admin-panel/internal/database"
+)
+
+templ customerFilter(filter database.CustomerFilter) {
+	@components.CollapseCard("Filtri", "filter", false) {
+		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer" hx-ext="push-url-w-params">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					@components.FormInput(components.FormInputParam{
+						Id:          "name",
+						Name:        "name",
+						Description: "Nome Cliente",
+						FormType:    components.Text,
+						Value:       utils.FormatStringToForm(filter.Name),
+					})
+				</div>
+				<div class="form-group col-md-6">
+					<label for="isPaid">Pagamenti:</label>
+					<select class="form-control" name="isPaid" id="isPaid">
+						<option value="">Tutti</option>
+						if filter.IsPaid != nil && *filter.IsPaid {
+							<option value="true" selected>Tutti pagamenti chiusi</option>
+						} else {
+							<option value="true">Tutti pagamenti chiusi</option>
+						}
+						if filter.IsPaid != nil && !*filter.IsPaid {
+							<option value="false" selected>Con pagamenti aperti</option>
+						} else {
+							<option value="false">Con pagamenti aperti</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "totalAmountFrom",
+						Name:        "totalAmountFrom",
+						Description: "Da Totale Fatturato",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(filter.TotalAmountFrom),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "totalAmountTo",
+						Name:        "totalAmountTo",
+						Description: "A Totale Fatturato",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(filter.TotalAmountTo),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "totalToPayFrom",
+						Name:        "totalToPayFrom",
+						Description: "Da Totale Da Pagare",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(filter.TotalToPayFrom),
+					})
+				</div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "totalToPayTo",
+						Name:        "totalToPayTo",
+						Description: "A Totale Da Pagare",
+						FormType:    components.Number,
+						Value:       utils.FormatIntToAmount(filter.TotalToPayTo),
+					})
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col-lg-12">
+					<button type="submit" class="btn btn-primary">Filtra</button>
+				</div>
+			</div>
+		</form>
+	}
+}

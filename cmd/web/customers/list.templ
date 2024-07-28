@@ -1,0 +1,31 @@
+package customers
+
+import (
+	"admin-panel/cmd/web/layout"
+	"admin-panel/internal/database"
+)
+
+type CustomerListParams struct {
+	Items  []database.CustomerWithTotals
+	Filter database.CustomerFilter
+}
+
+templ CustomerListView(params CustomerListParams) {
+	@layout.TableView() {
+		<div class="row">
+			<div class="col-12 mb-4">
+				<h1 class="h3 mb-2 text-gray-800">Lista Cliente</h1>
+			</div>
+		</div>
+		@customerFilter(params.Filter)
+		<div class="row">
+			<div class="col-12 mb-4" style="text-align: right;">
+				<button type="submit" class="btn btn-primary" hx-get="/customer/add" hx-target="body" hx-push-url="true">
+					<i class="fas fa-fw fa-plus"></i>
+					Nuovo cliente
+				</button>
+			</div>
+		</div>
+		@customerTable(params.Items)
+	}
+}

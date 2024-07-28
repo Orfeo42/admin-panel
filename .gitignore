@@ -1,0 +1,12 @@
+#Ignore generated file from templ
+**/*_templ.go
+
+*/.idea/
+/.idea/
+*/.vscode/
+/.vscode/
+
+*/bin/
+/bin/
+*.csv
+*.xlsx

@@ -1,0 +1,15 @@
+package layout
+
+templ styles() {
+	<!-- Stile solo per le tabelle -->
+	<link href="/assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+}
+
+templ scripts() {
+}
+
+templ TableView() {
+	@BaseExtendedView(styles(), scripts()) {
+		{ children... }
+	}
+}

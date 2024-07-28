@@ -1,0 +1,92 @@
+package components
+
+type CustomerSearchInputParams struct {
+	Id            string
+	CustomerValue string
+	CustomerName  string
+	ShowLabel     bool
+	ErrorString   string
+}
+
+templ CustomerSearchInput(params CustomerSearchInputParams) {
+	<div id="search-container">
+		if (params.ShowLabel) {
+			<label for={ "search-input_" + params.Id }>Cliente</label>
+		}
+		<input
+			class={ "form-control", templ.KV("is-invalid", params.ErrorString != "") }
+			autocomplete="off"
+			type="search"
+			name="name"
+			id={ "search-input_" + params.Id }
+			placeholder="Cerca..."
+			hx-get="/customer/search"
+			hx-trigger="input changed delay:500ms, search"
+			hx-target={ "#preview_" + params.Id }
+			value={ params.CustomerName }
+			hx-swap="innerHTML"
+		/>
+		<div class="preview" id={ "preview_" + params.Id }></div>
+		<input type="hidden" id={ "selected-id_" + params.Id } name="customer" value={ params.CustomerValue }/>
+	</div>
+	@customerSearchInputScript(params.Id)
+}
+
+script customerSearchInputScript(id string) {
+    const searchInput = document.getElementById(`search-input_${id}`);
+    const preview = document.getElementById(`preview_${id}`);
+    const selectedIdInput = document.getElementById(`selected-id_${id}`);
+    let selectedIndex = -1;
+    function showPreview() {
+        const query = this.value.trim();
+        if (query === ""){
+            selectedIdInput.value = '';
+            preview.style.display = 'none';
+            return
+        }
+        preview.style.display = 'block';
+    }
+
+    searchInput.addEventListener('input', showPreview);
+
+    function handleKeyboardNavigation(event) {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const items = Array.from(document.querySelectorAll(`#preview_${id} .preview-item`));
+            if (event.key === 'ArrowDown') {
+                selectedIndex = (selectedIndex + 1) % items.length;
+            } else {
+                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+            }
+            items.forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        } else if (event.key === 'Enter' && selectedIndex !== -1) {
+            event.preventDefault();
+            const selectedItem = document.querySelector(`#preview_${id} .preview-item[data-index="${selectedIndex}"]`);
+            if (selectedItem) {
+                searchInput.value = selectedItem.textContent;
+                selectedIdInput.value = selectedItem.dataset.id;
+                selectedIndex = -1;
+                preview.style.display = 'none';
+            }
+        }
+    }
+
+    function handlePreviewItemClick(event) {
+        const selectedItem = event.target;
+        const index = selectedItem.getAttribute('data-index');
+        if (index !== null) {
+            selectedIndex = parseInt(index);
+            searchInput.value = selectedItem.textContent;
+            selectedIdInput.value = selectedItem.dataset.id;
+            preview.style.display = 'none';
+        }
+    }
+    searchInput.addEventListener('keydown', handleKeyboardNavigation);
+    preview.addEventListener('click', handlePreviewItemClick);
+}

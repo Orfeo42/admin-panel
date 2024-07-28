@@ -1,0 +1,31 @@
+/* Stili CSS per la barra di ricerca e l'anteprima */
+#search-container {
+    position: relative;
+}
+
+.preview {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    z-index: 1;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.preview .preview-item {
+    padding: 10px;
+    color: #333;
+    cursor: pointer;
+}
+
+.preview .preview-item:hover {
+    background-color: #ddd;
+}
+
+.selected {
+    background-color: #ddd !important;
+}
