@@ -73,6 +73,26 @@ func formatIntWithSeparator(integerPart, separator string) string {
 	return string(result)
 }
 
+func StringToAmount(valueFrom string) (int, error) {
+	v, err := StringToAmountPtr(valueFrom)
+	if err != nil {
+		return 0, err
+	}
+	return *v, nil
+}
+
+func StringToAmountValidEmpty(valueFrom string) (int, error) {
+	valueFrom = strings.TrimSpace(valueFrom)
+	if valueFrom == "" {
+		return 0, nil
+	}
+	v, err := StringToAmountPtr(valueFrom)
+	if err != nil {
+		return 0, err
+	}
+	return *v, nil
+}
+
 func StringToAmountPtr(valueFrom string) (*int, error) {
 	valueFrom = strings.TrimSpace(valueFrom)
 	if valueFrom == "" {
