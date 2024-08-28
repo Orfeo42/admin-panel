@@ -12,8 +12,8 @@ func TestParseAmount(t *testing.T) {
 	}{
 		{name: "simple integer input", arg: "10", want: 1000},
 		{name: "integer with decimal but 0", arg: "10,00", want: 1000},
-		{name: "float input whith 2 decimal", arg: "12,99", want: 1299},
-		{name: "float input whith 4 decimal", arg: "10002,3594", want: 1000235},
+		{name: "float input with 2 decimal", arg: "12,99", want: 1299},
+		{name: "float input with 4 decimal", arg: "10002,3594", want: 1000235},
 		{name: "string input", arg: "pippo", want: 0},
 		{name: "empty string input", arg: "", want: 0},
 	}
@@ -36,8 +36,8 @@ func Test_formatFloat(t *testing.T) {
 	}{
 		{name: "simple integer input", arg: 1000, want: "1000.00"},
 		{name: "0 input", arg: 0, want: "0.00"},
-		{name: "float input whith 2 decimal", arg: 10.22, want: "10.22"},
-		{name: "float input whith 4 decimal", arg: 0.5974, want: "0.60"},
+		{name: "float input with 2 decimal", arg: 10.22, want: "10.22"},
+		{name: "float input with 4 decimal", arg: 0.5974, want: "0.60"},
 	}
 
 	for _, tc := range tests {
@@ -110,7 +110,7 @@ func Test_addThousandsSeparator(t *testing.T) {
 		want string
 	}{
 		{name: "0 as input", arg: "0", want: "0"},
-		{name: "0 as input whith zero decimal", arg: "0.00", want: "0.00"},
+		{name: "0 as input with zero decimal", arg: "0.00", want: "0.00"},
 		{name: "ten as input", arg: "10", want: "10"},
 		{name: "hundred as input", arg: "100", want: "100"},
 		{name: "thousand as input", arg: "1000", want: "1˙000"},
@@ -135,8 +135,8 @@ func TestAmountToString(t *testing.T) {
 		arg  float64
 		want string
 	}{
-		{name: "float input whith 4 decimal", arg: 0.5974, want: "0.60"},
-		{name: "float input whith 2 decimal", arg: 0.20, want: "0.20"},
+		{name: "float input with 4 decimal", arg: 0.5974, want: "0.60"},
+		{name: "float input with 2 decimal", arg: 0.20, want: "0.20"},
 		{name: "0 as input", arg: 0, want: "0.00"},
 		{name: "10 as input", arg: 10, want: "10.00"},
 		{name: "100 as input", arg: 100, want: "100.00"},
