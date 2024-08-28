@@ -50,7 +50,7 @@ func isDBCreated() bool {
 }
 
 func createDatabase() {
-	logger := logger.New(
+	logLocal := logger.New(
 		createNewLogger(),
 		logger.Config{
 			SlowThreshold:             time.Second,
@@ -62,9 +62,9 @@ func createDatabase() {
 	)
 	connString, err := getConnectionString()
 	if err != nil {
-		log.Fatal("Error creating connetion string", err)
+		log.Fatal("Error creating connection string", err)
 	}
-	db, err := gorm.Open(postgres.Open(connString), &gorm.Config{Logger: logger})
+	db, err := gorm.Open(postgres.Open(connString), &gorm.Config{Logger: logLocal})
 	if err != nil {
 		log.Fatal("Error in db connection", err)
 	}
@@ -74,9 +74,14 @@ func createDatabase() {
 func createNewLogger() *log.Logger {
 	file, err := os.OpenFile("gorm.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatal("Errore nell'aprire il file di log", err)
+		log.Fatal("Error opening log file", err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			log.Fatal("Error closing log file", err)
+		}
+	}(file)
 
 	return log.New(file, "Gorm: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
