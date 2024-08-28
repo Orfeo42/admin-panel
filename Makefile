@@ -1,10 +1,4 @@
-include .env
-$(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
-
-
-
 db-up:
-	@mkdir -p /home/${USER}/${APP_NAME}
 	@docker-compose -f docker-compose.yaml up -d postgres
 	@echo "🚀 Database is up and running!"
 
@@ -18,7 +12,7 @@ db-init: db-up
 	@echo "🤓 Database is initialized!"
 
 db-drop: db-down
-	@sudo rm -r /home/${USER}/${APP_NAME}
+	@docker-compose -f docker-compose.yaml rm -v postgres
 	@echo "💀 Database deleted!"
 
 db-reset: db-drop db-init
@@ -26,13 +20,13 @@ db-reset: db-drop db-init
 build:
 	@templ generate
 	@go mod tidy
-	@go build -o ./bin/${APP_NAME} ./cmd/api/main.go
+	@go build -o ./bin/admin-panel ./cmd/api/main.go
 
 run-fresh: build db-reset
-	@./bin/${APP_NAME}
+	@./bin/admin-panel
 
 run: build db-up
-	@./bin/${APP_NAME}
+	@./bin/admin-panel
 
 test:
 	@clear

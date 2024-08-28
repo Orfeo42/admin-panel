@@ -9,4 +9,8 @@ services:
     ports:
       - "${DB_PORT}:5432"
     volumes:
-      - /home/${USER}/${APP_NAME}:/var/lib/postgresql/repositories
+      - postgres-volume:/var/lib/postgresql/repositories
+
+volumes:
+  postgres-volume:
+    name: ${APP_NAME}-db-volume
