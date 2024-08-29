@@ -1,6 +1,7 @@
 package invoices
 
 import (
+	"net/http"
 	"time"
 
 	"admin-panel/cmd/enum"
@@ -11,8 +12,10 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+const baseUrl = "/invoice"
+
 func RegisterRoutes(application *echo.Echo) {
-	invoiceGroup := application.Group("/invoice")
+	invoiceGroup := application.Group(baseUrl)
 	controller := getControllerInstance()
 
 	invoiceGroup.GET("", controller.readAllPage)
@@ -131,25 +134,13 @@ func (c *controller) filter(echoCtx echo.Context) error {
 /*--CREATE HANDLER--*/
 
 func (c *controller) createPage(echoCtx echo.Context) error {
-	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
-	if len(errors) > 0 {
-		return utils.Render(InvoiceEdit(InvoiceEditParams{
-			Invoice: invoiceIn,
-			Errors:  errors,
-		}), echoCtx)
-	}
-	invoice, err := c.invRep.Create(invoiceIn)
-	if err != nil {
-		//TODO GESTIRE L'ERRORE HTML
-		return err
-	}
 
 	utils.SetPage(echoCtx, enum.InvoiceAdd)
 
 	utils.SetTitle(echoCtx, pageName)
 
 	return utils.Render(InvoiceEdit(InvoiceEditParams{
-		Invoice: *invoice,
+		Invoice: database.Invoice{},
 		Errors:  nil,
 	}), echoCtx)
 }
@@ -157,6 +148,7 @@ func (c *controller) createPage(echoCtx echo.Context) error {
 func (c *controller) create(echoCtx echo.Context) error {
 
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
+
 	if len(errors) > 0 {
 		return utils.Render(InvoiceForm(InvoiceEditParams{
 			Invoice: invoiceIn,
@@ -164,15 +156,11 @@ func (c *controller) create(echoCtx echo.Context) error {
 		}), echoCtx)
 	}
 
-	invoice, err := c.invRep.Create(invoiceIn)
+	_, err := c.invRep.Create(invoiceIn)
 	if err != nil {
 		return err
 	}
-
-	return utils.Render(InvoiceForm(InvoiceEditParams{
-		Invoice: *invoice,
-		Errors:  nil,
-	}), echoCtx)
+	return echoCtx.Redirect(http.StatusMovedPermanently, baseUrl)
 }
 
 /*--UPDATE HANDLER--*/
@@ -328,7 +316,7 @@ func validateCreateUpdateRequest(echoCtx echo.Context) (database.Invoice, map[st
 
 	invoice.ExpectedPaymentDate, err = utils.StringToTimePtr(echoCtx.FormValue("expectedPaymentDate"))
 	if err != nil {
-		errors["expectedPaymentDate"] = "payment date is not valid"
+		errors["expectedPaymentDate"] = "expectedPaymentDate date is not valid"
 	}
 
 	invoice.Note = utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))

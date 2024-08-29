@@ -19,10 +19,10 @@ templ InvoiceEdit(params InvoiceEditParams) {
 }
 
 templ InvoiceForm(params InvoiceEditParams) {
-	@components.TitledCardComp("Nuova Fattura") {
-		<form hx-post="/invoice" hx-target="this" hx-swap="outerHTML">
+	<form action="/invoice" method="post">
+	    @components.TitledCardComp("Nuova Fattura") {
 			<div class="form-row">
-				<div class="form-group col-md-6">
+				<div class="form-group col-md-3">
 					@components.CustomerSearchInput(components.CustomerSearchInputParams{
 						Id:            "customer",
 						CustomerValue: utils.UintToString(params.Invoice.CustomerID),
@@ -30,53 +30,67 @@ templ InvoiceForm(params InvoiceEditParams) {
 						ShowLabel:     true,
 					})
 				</div>
-				<div class="form-group col-md-6">
+				<div class="form-group col-md-3">
 					@components.FormInput(components.FormInputParam{
 						Id:          "number",
 						Name:        "number",
 						Description: "Numero Fattura",
 						FormType:    components.Text,
 						Value:       params.Invoice.Number,
+						ErrorString: params.Errors["number"],
 					})
 				</div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
+				<div class="form-group col-md-3">
 					@components.FormInput(components.FormInputParam{
 						Id:          "date",
 						Name:        "date",
 						Description: "Data Fattura",
 						FormType:    components.Date,
 						Value:       utils.FormatTimePtrToForm(params.Invoice.Date),
+						ErrorString: params.Errors["date"],
 					})
 				</div>
-				<div class="form-group col-md-6">
+				<div class="form-group col-md-3">
 					@components.FormInput(components.FormInputParam{
 						Id:          "amount",
 						Name:        "amount",
 						Description: "Importo Fattura",
 						FormType:    components.Number,
 						Value:       utils.FormatAmount(params.Invoice.Amount),
+						ErrorString: params.Errors["amount"],
 					})
 				</div>
 			</div>
 			<div class="form-row">
-				<div class="form-group col-md-6">
+				<div class="form-group col-md-3"></div>
+				<div class="form-group col-md-3">
+					@components.FormInput(components.FormInputParam{
+						Id:          "expectedPaymentDate",
+						Name:        "expectedPaymentDate",
+						Description: "Data Pagamento Attesa",
+						FormType:    components.Date,
+						Value:       utils.FormatTimePtrToForm(params.Invoice.ExpectedPaymentDate),
+						ErrorString: params.Errors["expectedPaymentDate"],
+					})
+				</div>
+				<div class="form-group col-md-3">
 					@components.FormInput(components.FormInputParam{
 						Id:          "paymentDate",
 						Name:        "paymentDate",
 						Description: "Data Pagamento",
 						FormType:    components.Date,
 						Value:       utils.FormatTimePtrToForm(params.Invoice.PaymentDate),
+						ErrorString: params.Errors["paymentDate"],
 					})
 				</div>
-				<div class="form-group col-md-6">
+				<div class="form-group col-md-3">
 					@components.FormInput(components.FormInputParam{
 						Id:          "paidAmount",
 						Name:        "paidAmount",
 						Description: "Importi Pagati",
 						FormType:    components.Number,
 						Value:       utils.FormatAmount(params.Invoice.PaidAmount),
+						ErrorString: params.Errors["paidAmount"],
 					})
 				</div>
 			</div>
@@ -85,8 +99,8 @@ templ InvoiceForm(params InvoiceEditParams) {
 					<button type="submit" class="btn btn-primary">Salva</button>
 				</div>
 			</div>
-		</form>
-	}
+	    }
+	</form>
 }
 
 func getErrorString(errorMap map[string]string, key string) string {
@@ -155,6 +169,7 @@ templ InvoiceRowEdit(params InvoiceEditParams) {
 				Annulla
 			</button>
 		</td>
+		<td></td>
 	</tr>
 }
 
@@ -193,4 +208,36 @@ script invoiceEditButtonScript(id string) {
     }
 
     editButton.addEventListener('click', buttonEditClick);
+}
+
+templ invoiceDeleteButton(id string) {
+	<button
+		class="btn btn-primary"
+		hx-delete={ "/invoice/" + id }
+		hx-trigger="delete"
+		id={ "invoiceDeleteButton_" + id }
+	>
+		<i class="fa-regular fa-pen-to-square"></i> Modifica
+	</button>
+	@invoiceDeleteButtonScript(id)
+}
+
+script invoiceDeleteButtonScript(id string) {
+    const button = document.getElementById(`invoiceDeleteButton_${id}`);
+
+    function buttonEditClick(){
+        Swal.fire({
+            title: 'Vuoi eliminare?',
+            showCancelButton: true,
+            confirmButtonText: 'Elimina',
+            text:'Vuoi procedere all''eliminazione di questo elemento?'
+        }).then((result) => {
+            if(result.isConfirmed) {
+                htmx.trigger(deleting, 'cancel')
+                htmx.trigger(this, 'delete')
+            }
+        })
+    }
+
+    button.addEventListener('click', buttonEditClick);
 }
