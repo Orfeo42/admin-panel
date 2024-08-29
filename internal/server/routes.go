@@ -25,11 +25,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	e.GET("/assets/*", echo.WrapHandler(fileServer)) //TODO
 
-	home.RegisterHomeRoutes(e)
+	home.RegisterRoutes(e)
 
 	customers.RegisterCustomerRoutes(e)
 
-	invoices.RegisterInvoiceRoutes(e)
+	invoices.RegisterRoutes(e)
 
 	return e
 }

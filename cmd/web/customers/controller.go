@@ -14,35 +14,35 @@ import (
 func RegisterCustomerRoutes(application *echo.Echo) {
 
 	customerGroup := application.Group("/customer")
-	controller := CustomerControllerInstance()
+	controller := getControllerInstance()
 
-	customerGroup.GET("", controller.ReadAllPageHandler)
-	customerGroup.GET("/:id", controller.ReadPageHandler)
-	customerGroup.GET("/filter", controller.FilterHandler)
-	customerGroup.GET("/search", controller.SearchByNameHandler)
+	customerGroup.GET("", controller.readAllPage)
+	customerGroup.GET("/:id", controller.readPage)
+	customerGroup.GET("/filter", controller.filter)
+	customerGroup.GET("/search", controller.searchByName)
 
-	customerGroup.GET("/add", controller.CreatePageHandler)
-	customerGroup.POST("", controller.CreateHandler)
+	customerGroup.GET("/add", controller.createPage)
+	customerGroup.POST("", controller.create)
 
-	customerGroup.GET("/:id/edit", controller.UpdatePageHandler)
-	customerGroup.PUT("/:id", controller.UpdateHandler)
+	customerGroup.GET("/:id/edit", controller.updatePage)
+	customerGroup.PUT("/:id", controller.update)
 }
 
 const pageName = "Fatture"
 
-var controllerInstance CustomerController
+var controllerInstance controller
 
-type CustomerController interface {
-	ReadAllPageHandler(echoCtx echo.Context) error
-	ReadPageHandler(echoCtx echo.Context) error
-	FilterHandler(echoCtx echo.Context) error
-	SearchByNameHandler(echoCtx echo.Context) error
+type controller interface {
+	readAllPage(echoCtx echo.Context) error
+	readPage(echoCtx echo.Context) error
+	filter(echoCtx echo.Context) error
+	searchByName(echoCtx echo.Context) error
 
-	CreatePageHandler(echoCtx echo.Context) error
-	CreateHandler(echoCtx echo.Context) error
+	createPage(echoCtx echo.Context) error
+	create(echoCtx echo.Context) error
 
-	UpdatePageHandler(echoCtx echo.Context) error
-	UpdateHandler(echoCtx echo.Context) error
+	updatePage(echoCtx echo.Context) error
+	update(echoCtx echo.Context) error
 }
 
 type customerController struct {
@@ -50,7 +50,7 @@ type customerController struct {
 	invRep  database.InvoiceRepository
 }
 
-func CustomerControllerInstance() CustomerController {
+func getControllerInstance() controller {
 	if controllerInstance != nil {
 		return controllerInstance
 	}
@@ -63,7 +63,7 @@ func CustomerControllerInstance() CustomerController {
 
 /*--READ HANDLER--*/
 
-func (c *customerController) ReadAllPageHandler(echoCtx echo.Context) error {
+func (c *customerController) readAllPage(echoCtx echo.Context) error {
 
 	filter := getCustomerFilterFromContext(echoCtx)
 
@@ -86,7 +86,7 @@ func (c *customerController) ReadAllPageHandler(echoCtx echo.Context) error {
 	return utils.Render(CustomerListView(customerListParams), echoCtx)
 }
 
-func (c *customerController) ReadPageHandler(echoCtx echo.Context) error {
+func (c *customerController) readPage(echoCtx echo.Context) error {
 
 	stringId := echoCtx.Param("id")
 
@@ -123,7 +123,7 @@ func (c *customerController) ReadPageHandler(echoCtx echo.Context) error {
 	return utils.Render(CustomerDetail(customerDetailParams), echoCtx)
 }
 
-func (c *customerController) FilterHandler(echoCtx echo.Context) error {
+func (c *customerController) filter(echoCtx echo.Context) error {
 	filter := getCustomerFilterFromContext(echoCtx)
 
 	items, err := c.custRep.ReadAllFilteredWithTotals(filter)
@@ -136,7 +136,7 @@ func (c *customerController) FilterHandler(echoCtx echo.Context) error {
 	return utils.Render(AllCustomerRowsShow(items), echoCtx)
 }
 
-func (c *customerController) SearchByNameHandler(echoCtx echo.Context) error {
+func (c *customerController) searchByName(echoCtx echo.Context) error {
 	name := echoCtx.QueryParam("name")
 
 	customerList, err := c.custRep.ReadAllByName(name)
@@ -149,21 +149,21 @@ func (c *customerController) SearchByNameHandler(echoCtx echo.Context) error {
 
 /*--CREATE HANDLER--*/
 
-func (c *customerController) CreatePageHandler(echoCtx echo.Context) error {
+func (c *customerController) createPage(echoCtx echo.Context) error {
 	return nil
 }
 
-func (c *customerController) CreateHandler(echoCtx echo.Context) error {
+func (c *customerController) create(echoCtx echo.Context) error {
 	return nil
 }
 
 /*--UPDATE HANDLER--*/
 
-func (c *customerController) UpdatePageHandler(echoCtx echo.Context) error {
+func (c *customerController) updatePage(echoCtx echo.Context) error {
 	return nil
 }
 
-func (c *customerController) UpdateHandler(echoCtx echo.Context) error {
+func (c *customerController) update(echoCtx echo.Context) error {
 	return nil
 }
 

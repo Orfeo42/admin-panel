@@ -11,50 +11,50 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func RegisterInvoiceRoutes(application *echo.Echo) {
+func RegisterRoutes(application *echo.Echo) {
 	invoiceGroup := application.Group("/invoice")
-	controller := InvoiceControllerInstance()
+	controller := getControllerInstance()
 
-	invoiceGroup.GET("", controller.ReadAllPageHandler)
-	invoiceGroup.GET("/:id/row", controller.ReadRowHandler)
-	invoiceGroup.GET("/:id", controller.ReadPageHandler)
-	invoiceGroup.GET("/filter", controller.FilterHandler)
+	invoiceGroup.GET("", controller.readAllPage)
+	invoiceGroup.GET("/:id/row", controller.readRow)
+	invoiceGroup.GET("/:id", controller.readPage)
+	invoiceGroup.GET("/filter", controller.filter)
 
-	invoiceGroup.GET("/add", controller.CreatePageHandler)
-	invoiceGroup.POST("", controller.CreateHandler)
+	invoiceGroup.GET("/add", controller.createPage)
+	invoiceGroup.POST("", controller.create)
 
-	invoiceGroup.GET("/:id/edit", controller.UpdatePageHandler)
-	invoiceGroup.PUT("/:id", controller.UpdateHandler)
-	invoiceGroup.PUT("/:id/pay", controller.PayByID)
+	invoiceGroup.GET("/:id/edit", controller.updatePage)
+	invoiceGroup.PUT("/:id", controller.update)
+	invoiceGroup.PUT("/:id/pay", controller.payByID)
 }
 
 const pageName = "Fatture"
 
-var controllerInstance *invoiceController
+type Controller interface {
+	readAllPage(echoCtx echo.Context) error
+	readRow(echoCtx echo.Context) error
+	readPage(echoCtx echo.Context) error
+	filter(echoCtx echo.Context) error
 
-type InvoiceController interface {
-	ReadAllPageHandler(echoCtx echo.Context) error
-	ReadRowHandler(echoCtx echo.Context) error
-	ReadPageHandler(echoCtx echo.Context) error
-	FilterHandler(echoCtx echo.Context) error
+	createPage(echoCtx echo.Context) error
+	create(echoCtx echo.Context) error
 
-	CreatePageHandler(echoCtx echo.Context) error
-	CreateHandler(echoCtx echo.Context) error
-
-	UpdatePageHandler(echoCtx echo.Context) error
-	UpdateHandler(echoCtx echo.Context) error
-	PayByID(echoCtx echo.Context) error
+	updatePage(echoCtx echo.Context) error
+	update(echoCtx echo.Context) error
+	payByID(echoCtx echo.Context) error
 }
 
-type invoiceController struct {
+type controller struct {
 	invRep database.InvoiceRepository
 }
 
-func InvoiceControllerInstance() InvoiceController {
+var controllerInstance *controller
+
+func getControllerInstance() Controller {
 	if controllerInstance != nil {
 		return controllerInstance
 	}
-	controllerInstance = &invoiceController{
+	controllerInstance = &controller{
 		invRep: database.InvoiceRepositoryInstance(),
 	}
 	return controllerInstance
@@ -62,7 +62,7 @@ func InvoiceControllerInstance() InvoiceController {
 
 /*--READ HANDLER--*/
 
-func (c *invoiceController) ReadAllPageHandler(echoCtx echo.Context) error {
+func (c *controller) readAllPage(echoCtx echo.Context) error {
 	filter := getInvoiceFilterFromContext(echoCtx)
 
 	invoices, err := c.invRep.ReadAllFiltered(filter)
@@ -85,7 +85,7 @@ func (c *invoiceController) ReadAllPageHandler(echoCtx echo.Context) error {
 	return utils.Render(InvoiceList(invoiceListParams), echoCtx)
 }
 
-func (c *invoiceController) ReadRowHandler(echoCtx echo.Context) error {
+func (c *controller) readRow(echoCtx echo.Context) error {
 	id := echoCtx.Param("id")
 	idUint, err := utils.StringToUint(id)
 	if err != nil {
@@ -99,7 +99,7 @@ func (c *invoiceController) ReadRowHandler(echoCtx echo.Context) error {
 	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
-func (c *invoiceController) ReadPageHandler(echoCtx echo.Context) error {
+func (c *controller) readPage(echoCtx echo.Context) error {
 	id := echoCtx.Param("id")
 	idUint, err := utils.StringToUint(id)
 	if err != nil {
@@ -113,7 +113,7 @@ func (c *invoiceController) ReadPageHandler(echoCtx echo.Context) error {
 	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
-func (c *invoiceController) FilterHandler(echoCtx echo.Context) error {
+func (c *controller) filter(echoCtx echo.Context) error {
 
 	filter := getInvoiceFilterFromContext(echoCtx)
 
@@ -130,7 +130,7 @@ func (c *invoiceController) FilterHandler(echoCtx echo.Context) error {
 
 /*--CREATE HANDLER--*/
 
-func (c *invoiceController) CreatePageHandler(echoCtx echo.Context) error {
+func (c *controller) createPage(echoCtx echo.Context) error {
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
 	if len(errors) > 0 {
 		return utils.Render(InvoiceEdit(InvoiceEditParams{
@@ -154,7 +154,7 @@ func (c *invoiceController) CreatePageHandler(echoCtx echo.Context) error {
 	}), echoCtx)
 }
 
-func (c *invoiceController) CreateHandler(echoCtx echo.Context) error {
+func (c *controller) create(echoCtx echo.Context) error {
 
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
 	if len(errors) > 0 {
@@ -177,7 +177,7 @@ func (c *invoiceController) CreateHandler(echoCtx echo.Context) error {
 
 /*--UPDATE HANDLER--*/
 
-func (c *invoiceController) UpdatePageHandler(echoCtx echo.Context) error {
+func (c *controller) updatePage(echoCtx echo.Context) error {
 	id := echoCtx.Param("id")
 	idUint, err := utils.StringToUint(id)
 	if err != nil {
@@ -194,7 +194,7 @@ func (c *invoiceController) UpdatePageHandler(echoCtx echo.Context) error {
 	}), echoCtx)
 }
 
-func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
+func (c *controller) update(echoCtx echo.Context) error {
 
 	id, err := utils.StringToUint(echoCtx.Param("id"))
 	if err != nil {
@@ -223,7 +223,7 @@ func (c *invoiceController) UpdateHandler(echoCtx echo.Context) error {
 	return utils.Render(InvoiceTableRow(invoice), echoCtx)
 }
 
-func (c *invoiceController) PayByID(echoCtx echo.Context) error {
+func (c *controller) payByID(echoCtx echo.Context) error {
 	id, err := utils.StringToUint(echoCtx.Param("id"))
 	if err != nil {
 		//TODO GESTISCI ERRORE HTML

@@ -3,7 +3,7 @@ package enum
 type Page string
 
 const (
-	Home         Page = "Home"
+	Home         Page = "home"
 	InvoiceList  Page = "InvoiceList"
 	InvoiceAdd   Page = "InvoiceAdd"
 	CustomerList Page = "CustomerList"
