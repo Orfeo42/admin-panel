@@ -12,38 +12,38 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func RegisterHomeRoutes(application *echo.Echo) {
+func RegisterRoutes(application *echo.Echo) {
 
 	homeGroup := application.Group("")
 
-	controller := HomeControllerInstance()
+	controller := getControllerInstance()
 
-	homeGroup.GET("", controller.HomeHandler)
+	homeGroup.GET("", controller.home)
 }
 
-var controllerInstance *homeController
+var controllerInstance *controller
 
-type HomeController interface {
-	HomeHandler(echoCtx echo.Context) error
+type Controller interface {
+	home(echoCtx echo.Context) error
 }
 
-type homeController struct {
+type controller struct {
 	invRep database.InvoiceRepository
 }
 
-func HomeControllerInstance() HomeController {
+func getControllerInstance() Controller {
 	if controllerInstance != nil {
 		return controllerInstance
 	}
-	controllerInstance = &homeController{
+	controllerInstance = &controller{
 		invRep: database.InvoiceRepositoryInstance(),
 	}
 	return controllerInstance
 }
 
-func (c *homeController) HomeHandler(echoCtx echo.Context) error {
+func (c *controller) home(echoCtx echo.Context) error {
 	utils.SetPage(echoCtx, enum.Home)
-	utils.SetTitle(echoCtx, "Home Page")
+	utils.SetTitle(echoCtx, "home Page")
 
 	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
 
