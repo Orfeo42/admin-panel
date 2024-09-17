@@ -139,7 +139,7 @@ func (c *controller) createPage(echoCtx echo.Context) error {
 
 	utils.SetTitle(echoCtx, pageName)
 
-	return utils.Render(InvoiceEdit(InvoiceEditParams{
+	return utils.Render(InvoiceRowAdd(InvoiceEditParams{
 		Invoice: database.Invoice{},
 		Errors:  nil,
 	}), echoCtx)
@@ -150,7 +150,7 @@ func (c *controller) create(echoCtx echo.Context) error {
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
 
 	if len(errors) > 0 {
-		return utils.Render(InvoiceForm(InvoiceEditParams{
+		return utils.Render(InvoiceRowAdd(InvoiceEditParams{
 			Invoice: invoiceIn,
 			Errors:  errors,
 		}), echoCtx)
@@ -313,11 +313,6 @@ func validateCreateUpdateRequest(echoCtx echo.Context) (database.Invoice, map[st
 	}
 
 	invoice.PaymentMethod = utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))
-
-	invoice.ExpectedPaymentDate, err = utils.StringToTimePtr(echoCtx.FormValue("expectedPaymentDate"))
-	if err != nil {
-		errors["expectedPaymentDate"] = "expectedPaymentDate date is not valid"
-	}
 
 	invoice.Note = utils.StringPtrNilIfEmpty(echoCtx.FormValue("note"))
 

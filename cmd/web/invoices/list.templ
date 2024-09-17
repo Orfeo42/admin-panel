@@ -23,10 +23,14 @@ templ InvoiceList(params InvoiceListParams) {
 		})
 		<div class="row">
 			<div class="col-12 mb-4" style="text-align: right;">
-				<a type="submit" class="btn btn-primary" href="/invoice/add">
-					<i class="fas fa-fw fa-plus"></i>
-					Nuova fattura
-				</a>
+				<button
+					class="btn btn-primary"
+					hx-target="#data"
+					hx-swap="afterbegin"
+					hx-get={ "/invoice/add" }
+				>
+					<i class="fas fa-fw fa-plus"></i> Nuova fattura
+				</button>
 			</div>
 		</div>
 		@InvoiceTable(InvoiceTableParams{

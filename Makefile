@@ -31,3 +31,4 @@ run: build db-up
 test:
 	@clear
 	@go test ./... -v
+
