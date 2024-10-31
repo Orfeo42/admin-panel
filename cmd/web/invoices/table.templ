@@ -25,6 +25,7 @@ templ InvoiceTable(params InvoiceTableParams) {
 						<th style="text-align: right;">Importo Pagato</th>
 						<th>Pagato</th>
 						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
@@ -84,6 +85,9 @@ templ invoiceColumns(item database.Invoice) {
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 		}
+	</td>
+	<td style="text-align: center">
+		@invoiceEditButton(utils.UintToString(item.ID))
 	</td>
 	<td style="text-align: center">
 		@invoiceEditButton(utils.UintToString(item.ID))

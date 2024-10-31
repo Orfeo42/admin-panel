@@ -23,9 +23,13 @@ templ InvoiceList(params InvoiceListParams) {
 		})
 		<div class="row">
 			<div class="col-12 mb-4" style="text-align: right;">
-				<button type="submit" class="btn btn-primary" hx-get="/invoice/add" hx-target="body" hx-push-url="true">
-					<i class="fas fa-fw fa-plus"></i>
-					Nuova fattura
+				<button
+					class="btn btn-primary"
+					hx-target="#data"
+					hx-swap="afterbegin"
+					hx-get={ "/invoice/add" }
+				>
+					<i class="fas fa-fw fa-plus"></i> Nuova fattura
 				</button>
 			</div>
 		</div>

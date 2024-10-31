@@ -1,7 +1,6 @@
 package invoices
 
 import (
-	"admin-panel/cmd/web/layout"
 	"admin-panel/utils"
 	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
@@ -10,83 +9,6 @@ import (
 type InvoiceEditParams struct {
 	Invoice database.Invoice
 	Errors  map[string]string
-}
-
-templ InvoiceEdit(params InvoiceEditParams) {
-	@layout.BaseView() {
-		@InvoiceForm(params)
-	}
-}
-
-templ InvoiceForm(params InvoiceEditParams) {
-	@components.TitledCardComp("Nuova Fattura") {
-		<form hx-post="/invoice" hx-target="this" hx-swap="outerHTML">
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					@components.CustomerSearchInput(components.CustomerSearchInputParams{
-						Id:            "customer",
-						CustomerValue: utils.UintToString(params.Invoice.CustomerID),
-						CustomerName:  params.Invoice.Customer.Name,
-						ShowLabel:     true,
-					})
-				</div>
-				<div class="form-group col-md-6">
-					@components.FormInput(components.FormInputParam{
-						Id:          "number",
-						Name:        "number",
-						Description: "Numero Fattura",
-						FormType:    components.Text,
-						Value:       params.Invoice.Number,
-					})
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					@components.FormInput(components.FormInputParam{
-						Id:          "date",
-						Name:        "date",
-						Description: "Data Fattura",
-						FormType:    components.Date,
-						Value:       utils.FormatTimePtrToForm(params.Invoice.Date),
-					})
-				</div>
-				<div class="form-group col-md-6">
-					@components.FormInput(components.FormInputParam{
-						Id:          "amount",
-						Name:        "amount",
-						Description: "Importo Fattura",
-						FormType:    components.Number,
-						Value:       utils.FormatAmount(params.Invoice.Amount),
-					})
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					@components.FormInput(components.FormInputParam{
-						Id:          "paymentDate",
-						Name:        "paymentDate",
-						Description: "Data Pagamento",
-						FormType:    components.Date,
-						Value:       utils.FormatTimePtrToForm(params.Invoice.PaymentDate),
-					})
-				</div>
-				<div class="form-group col-md-6">
-					@components.FormInput(components.FormInputParam{
-						Id:          "paidAmount",
-						Name:        "paidAmount",
-						Description: "Importi Pagati",
-						FormType:    components.Number,
-						Value:       utils.FormatAmount(params.Invoice.PaidAmount),
-					})
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="col-lg-12">
-					<button type="submit" class="btn btn-primary">Salva</button>
-				</div>
-			</div>
-		</form>
-	}
 }
 
 func getErrorString(errorMap map[string]string, key string) string {
@@ -98,64 +20,96 @@ func getErrorString(errorMap map[string]string, key string) string {
 
 templ InvoiceRowEdit(params InvoiceEditParams) {
 	<tr hx-trigger="cancel" class="editing" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) }>
-		<td>
-			@components.CustomerSearchInput(components.CustomerSearchInputParams{
-				Id:            utils.UintToString(params.Invoice.ID),
-				CustomerValue: utils.UintToString(params.Invoice.CustomerID),
-				CustomerName:  params.Invoice.Customer.Name,
-				ShowLabel:     false,
-				ErrorString:   getErrorString(params.Errors, "number"),
-			})
-		</td>
-		<td>
-			@components.Input(components.FormInputParam{
-				Name:        "number",
-				FormType:    components.Text,
-				Value:       params.Invoice.Number,
-				ErrorString: getErrorString(params.Errors, "number"),
-			})
-		</td>
-		<td>
-			@components.Input(components.FormInputParam{
-				Name:     "date",
-				FormType: components.Date,
-				Value:    utils.FormatTimePtrToForm(params.Invoice.Date),
-			})
-		</td>
-		<td>
-			@components.Input(components.FormInputParam{
-				Name:     "amount",
-				FormType: components.Number,
-				Value:    utils.FormatAmount(params.Invoice.Amount),
-			})
-		</td>
-		<td>
-			@components.Input(components.FormInputParam{
-				Name:     "paymentDate",
-				FormType: components.Date,
-				Value:    utils.FormatTimePtrToForm(params.Invoice.PaymentDate),
-			})
-		</td>
-		<td>
-			@components.Input(components.FormInputParam{
-				Name:        "paidAmount",
-				FormType:    components.Number,
-				Value:       utils.FormatAmount(params.Invoice.PaidAmount),
-				ErrorString: getErrorString(params.Errors, "expectedPaymentDate"),
-			})
-		</td>
-		<td style="text-align: center;"></td>
+		@InvoiceRowForm(params)
 		<td style="white-space: nowrap; text-align: center">
-			<button class="btn btn-primary" hx-put={ "/invoice/" + utils.UintToString(params.Invoice.ID) } hx-include="closest tr">
+			<button
+				class="btn btn-primary"
+				hx-put={ "/invoice/" + utils.UintToString(params.Invoice.ID) }
+				hx-include="closest tr"
+			>
 				<i class="fa-solid fa-floppy-disk"></i>
 				Salva
 			</button>
+		</td>
+		<td>
 			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) + "/row" }>
 				<i class="fa-solid fa-xmark"></i>
 				Annulla
 			</button>
 		</td>
 	</tr>
+}
+
+templ InvoiceRowAdd(params InvoiceEditParams) {
+	<tr hx-trigger="cancel" class="editing" hx-post={ "/invoice" }>
+		@InvoiceRowForm(params)
+		<td style="white-space: nowrap; text-align: center">
+			<button
+				class="btn btn-primary"
+				hx-post={ "/invoice" }
+				hx-include="closest tr"
+			>
+				<i class="fa-solid fa-floppy-disk"></i>
+				Salva
+			</button>
+		</td>
+		<td>
+			<button class="btn btn-danger">
+				<i class="fa-solid fa-xmark"></i>
+				Annulla
+			</button>
+		</td>
+	</tr>
+}
+
+templ InvoiceRowForm(params InvoiceEditParams) {
+	<td>
+		@components.CustomerSearchInput(components.CustomerSearchInputParams{
+			Id:            utils.UintToString(params.Invoice.ID),
+			CustomerValue: utils.UintToString(params.Invoice.CustomerID),
+			CustomerName:  params.Invoice.Customer.Name,
+			ShowLabel:     false,
+			ErrorString:   getErrorString(params.Errors, "number"),
+		})
+	</td>
+	<td>
+		@components.Input(components.FormInputParam{
+			Name:        "number",
+			FormType:    components.Text,
+			Value:       params.Invoice.Number,
+			ErrorString: getErrorString(params.Errors, "number"),
+		})
+	</td>
+	<td>
+		@components.Input(components.FormInputParam{
+			Name:     "date",
+			FormType: components.Date,
+			Value:    utils.FormatTimePtrToForm(params.Invoice.Date),
+		})
+	</td>
+	<td>
+		@components.Input(components.FormInputParam{
+			Name:     "amount",
+			FormType: components.Number,
+			Value:    utils.FormatAmount(params.Invoice.Amount),
+		})
+	</td>
+	<td>
+		@components.Input(components.FormInputParam{
+			Name:     "paymentDate",
+			FormType: components.Date,
+			Value:    utils.FormatTimePtrToForm(params.Invoice.PaymentDate),
+		})
+	</td>
+	<td>
+		@components.Input(components.FormInputParam{
+			Name:        "paidAmount",
+			FormType:    components.Number,
+			Value:       utils.FormatAmount(params.Invoice.PaidAmount),
+			ErrorString: getErrorString(params.Errors, "PaidAmount"),
+		})
+	</td>
+	<td style="text-align: center;"></td>
 }
 
 templ invoiceEditButton(id string) {
@@ -193,4 +147,31 @@ script invoiceEditButtonScript(id string) {
     }
 
     editButton.addEventListener('click', buttonEditClick);
+}
+
+templ invoiceDeleteButton(id string) {
+	<button class="btn btn-primary" hx-delete={ "/invoice/" + id } hx-trigger="delete" id={ "invoiceDeleteButton_" + id }>
+		<i class="fa-regular fa-pen-to-square"></i> Modifica
+	</button>
+	@invoiceDeleteButtonScript(id)
+}
+
+script invoiceDeleteButtonScript(id string) {
+    const button = document.getElementById(`invoiceDeleteButton_${id}`);
+
+    function buttonEditClick(){
+        Swal.fire({
+            title: 'Vuoi eliminare?',
+            showCancelButton: true,
+            confirmButtonText: 'Elimina',
+            text:'Vuoi procedere all''eliminazione di questo elemento?'
+        }).then((result) => {
+            if(result.isConfirmed) {
+                htmx.trigger(deleting, 'cancel')
+                htmx.trigger(this, 'delete')
+            }
+        })
+    }
+
+    button.addEventListener('click', buttonEditClick);
 }
