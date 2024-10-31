@@ -14,7 +14,7 @@ func LoadData(customerList []database.Customer, invoiceList []database.Invoice) 
 		log.Error("Error Creating customers: ", err)
 		return
 	}
-	log.Info("All customers are created")
+	log.Info("All customers are bean created")
 	log.Info("Start creating Invoices")
 	log.Info("Setting correct customer to all invoices")
 
