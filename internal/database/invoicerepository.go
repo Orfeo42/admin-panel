@@ -22,6 +22,8 @@ type InvoiceRepository interface {
 	ReadAllByCustomerIDAndPaid(customerID uint, isPaid *bool) ([]Invoice, error)
 	SalesByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
 	CollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
+	SalesTotal(dateFrom, dateTo time.Time) (int64, error)
+	CollectedTotal(dateFrom, dateTo time.Time) (int64, error)
 }
 
 type invoiceRepository struct {
@@ -243,10 +245,28 @@ func (r *invoiceRepository) CollectedByMonth(dateFrom, dateTo time.Time) ([]Mone
 	var earningsByMonthResult []MoneyByMonthResult
 
 	r.db.Table("invoices").
-		Select("date_part('year', payment_date) as Year, date_part('month', payment_date) as Month, sum(amount) as Amount").
+		Select("date_part('year', payment_date) as Year, date_part('month', payment_date) as Month, sum(paid_amount) as Amount").
 		Where("payment_date between ? and ?", dateFrom, dateTo).
 		Group("date_part('year', payment_date), date_part('month', payment_date)").
 		Order("date_part('year', payment_date), date_part('month', payment_date)").
 		Scan(&earningsByMonthResult)
 	return earningsByMonthResult, nil
+}
+
+func (r *invoiceRepository) SalesTotal(dateFrom, dateTo time.Time) (int64, error) {
+	var totalAmount int64
+	r.db.Table("invoices").
+		Select("sum(amount) as Amount").
+		Where("date between ? and ?", dateFrom, dateTo).
+		Scan(&totalAmount)
+	return totalAmount, nil
+}
+
+func (r *invoiceRepository) CollectedTotal(dateFrom, dateTo time.Time) (int64, error) {
+	var totalAmount int64
+	r.db.Table("invoices").
+		Select("sum(paid_amount) as Amount").
+		Where("payment_date between ? and ?", dateFrom, dateTo).
+		Scan(&totalAmount)
+	return totalAmount, nil
 }

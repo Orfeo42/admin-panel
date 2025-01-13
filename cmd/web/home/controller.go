@@ -5,6 +5,7 @@ import (
 	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
 	"admin-panel/utils"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -19,12 +20,24 @@ func RegisterRoutes(application *echo.Echo) {
 	controller := getControllerInstance()
 
 	homeGroup.GET("", controller.home)
+	homeGroup.GET("/graph", controller.graph)
+
+	homeGroup.GET("/sales/month", controller.salesMonth)
+	homeGroup.GET("/sales/year", controller.salesYear)
+
+	homeGroup.GET("/collected/month", controller.collectedMonth)
+	homeGroup.GET("/collected/year", controller.collectedYear)
 }
 
 var controllerInstance *controller
 
 type Controller interface {
 	home(echoCtx echo.Context) error
+	graph(echoCtx echo.Context) error
+	salesMonth(echoCtx echo.Context) error
+	salesYear(echoCtx echo.Context) error
+	collectedMonth(echoCtx echo.Context) error
+	collectedYear(echoCtx echo.Context) error
 }
 
 type controller struct {
@@ -43,30 +56,9 @@ func getControllerInstance() Controller {
 
 func (c *controller) home(echoCtx echo.Context) error {
 	utils.SetPage(echoCtx, enum.Home)
-	utils.SetTitle(echoCtx, "home Page")
+	utils.SetTitle(echoCtx, "Home Page")
 
-	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
-
-	dateFrom := startOfYear
-	dateTo := time.Now()
-
-	labels := getMonthsBetweenDates(dateFrom, dateTo)
-
-	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
-	if err != nil {
-		log.Errorf("Error in Sales retrive: %+v", err)
-		return err
-	}
-	collectedList, err := c.invRep.CollectedByMonth(startOfYear, time.Now())
-	if err != nil {
-		log.Errorf("Error in collected retrive: %+v", err)
-		return err
-	}
-
-	salesData := earningsToAreaChartData(salesList)
-	collectedData := earningsToAreaChartData(collectedList)
-
-	salesMonth := salesData[len(salesData)-1]
+	/*salesMonth := salesData[len(salesData)-1]
 	salesMonth = utils.ToFixed(salesMonth, 2)
 
 	salesYear := float64(0)
@@ -82,7 +74,31 @@ func (c *controller) home(echoCtx echo.Context) error {
 	for _, v := range collectedData {
 		collectedYear += v
 	}
-	collectedYear = utils.ToFixed(collectedYear, 2)
+	collectedYear = utils.ToFixed(collectedYear, 2)*/
+
+	return utils.Render(HomeView(), echoCtx)
+}
+
+func (c *controller) graph(echoCtx echo.Context) error {
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+	dateTo := time.Now()
+
+	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
+	}
+	salesData := earningsToAreaChartData(salesList)
+
+	collectedList, err := c.invRep.CollectedByMonth(startOfYear, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+	collectedData := earningsToAreaChartData(collectedList)
 
 	dataSets := []components.AreaChartDataset{
 		components.LoadBlueData("Fatturato", salesData),
@@ -91,19 +107,91 @@ func (c *controller) home(echoCtx echo.Context) error {
 
 	log.Infof("dataSets: %+v", dataSets)
 
+	labels := getMonthsBetweenDates(dateFrom, dateTo)
 	areaChartParams := components.AreaChartParams{
 		XAxesLabels: labels,
 		DataSets:    dataSets,
 	}
 
-	homePrams := HomeParameters{
-		AreaChartParams: areaChartParams,
-		SalesMonth:      salesMonth,
-		SalesYear:       salesYear,
-		CollectedMonth:  collectedMonth,
-		CollectedYear:   collectedYear,
+	return utils.Render(components.AreaChart("salesChart", areaChartParams), echoCtx)
+}
+
+func (c *controller) salesMonth(echoCtx echo.Context) error {
+
+	dateTo := time.Now()
+
+	startOfMonth := time.Date(dateTo.Year(), dateTo.Month(), 1, 0, 0, 0, 0, dateTo.Location())
+
+	dateFrom := startOfMonth
+
+	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
 	}
-	return utils.Render(HomeView(homePrams), echoCtx)
+	if len(salesList) == 0 {
+		return echoCtx.String(http.StatusOK, "0.00")
+	}
+	salesMonth := salesList[len(salesList)-1]
+
+	formattedAmount := utils.AmountIntegerToString(salesMonth.Amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) salesYear(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.SalesTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) collectedMonth(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfMonth := time.Date(dateTo.Year(), dateTo.Month(), 1, 0, 0, 0, 0, dateTo.Location())
+
+	dateFrom := startOfMonth
+
+	collectedList, err := c.invRep.CollectedByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	if len(collectedList) == 0 {
+		return echoCtx.String(http.StatusOK, "0.00")
+	}
+	collectedMonth := collectedList[len(collectedList)-1]
+
+	formattedAmount := utils.AmountIntegerToString(collectedMonth.Amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) collectedYear(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.CollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
 }
 
 func getMonthsBetweenDates(dateFrom, dateTo time.Time) []string {

@@ -25,7 +25,7 @@ func formatFloat(number float64) string {
 	return strconv.FormatFloat(number, 'f', 2, 64)
 }
 
-func FormatAmount(number int) string {
+func FormatAmount[T int | int64](number T) string {
 	numberAsString := float64(number) / 100
 	return formatFloat(numberAsString)
 }
@@ -49,12 +49,12 @@ func AmountToString(number float64) string {
 	return addThousandsSeparator(numberAsString)
 }
 
-func AmountIntegerToString(number int) string {
+func AmountIntegerToString[T int | int64](number T) string {
 	numberAsString := FormatAmount(number)
 	return addThousandsSeparator(numberAsString)
 }
 
-func FormatIntToAmount(valueFrom *int) string {
+func FormatIntToAmount[T int | int64](valueFrom *T) string {
 	if valueFrom == nil {
 		return ""
 	}
