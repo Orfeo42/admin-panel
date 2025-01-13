@@ -84,7 +84,9 @@ templ HomeView() {
 			</div>
 			<div class="col-xl-6 col-lg-6">
 				@components.TitledCardComp("Grafico Fatturato/Riscosso") {
-					<div hx-get="/graph" hx-trigger="load"></div>
+					<div hx-get="/graph" hx-trigger="load">
+						<i class="fa-solid fa-spinner htmx-indicator"></i>
+					</div>
 				}
 			</div>
 		</div>
