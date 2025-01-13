@@ -1,7 +1,9 @@
 package components
 
-import "strconv"
-import "admin-panel/cmd/enum"
+import (
+	"admin-panel/cmd/enum"
+	"strconv"
+)
 
 func formatPerc(percent float64) string {
 	return strconv.FormatFloat(percent, 'f', 0, 64)

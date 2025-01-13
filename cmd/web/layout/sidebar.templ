@@ -1,8 +1,11 @@
 package layout
 
-import "strconv"
-import "admin-panel/utils"
-import "admin-panel/cmd/enum"
+import (
+	"admin-panel/cmd/enum"
+	"admin-panel/utils"
+	"context"
+	"strconv"
+)
 
 templ sidebar() {
 	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">

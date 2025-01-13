@@ -4,12 +4,12 @@ db-up:
 
 db-down:
 	@docker-compose -f docker-compose.yaml down --volumes
-	@echo "❄️ Database is down!"
+	@echo "💥 Database is down!"
 
 db-init: db-up
 	@sleep 5
 	@go run ./preload/main.go
-	@echo "🤓 Database is initialized!"
+	@echo "🎩 Database is initialized!"
 
 db-drop: db-down
 	@docker-compose -f docker-compose.yaml rm -v postgres
@@ -31,4 +31,3 @@ run: build db-up
 test:
 	@clear
 	@go test ./... -v
-
