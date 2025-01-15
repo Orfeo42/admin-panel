@@ -8,36 +8,31 @@ import (
 )
 
 templ sidebar() {
-	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-			<div class="sidebar-brand-icon rotate-n-15">
-				<i class="fas fa-laugh-wink"></i>
-			</div>
-			<div class="sidebar-brand-text mx-3">Ellemme</div>
-		</a>
-		@divider("my-0")
-		@navItem("/", enum.Home) {
-			<i class="fas fa-fw fa-tachometer-alt"></i>
-			<span>Home Page</span>
-		}
-		@divider("")
-		@heading("Clienti")
-		@navItem("/customer", enum.CustomerList) {
-			<i class="fas fa-fw fa-list-ul"></i>
-			<span>Lista Clienti</span>
-		}
-		@divider("")
-		@heading("Fatture")
-		@navItem("/invoice", enum.InvoiceList) {
-			<i class="fas fa-fw fa-list-ul"></i>
-			<span>Lista Fatture</span>
-		}
-		@divider("d-none d-md-block")
-		<!-- Sidebar Toggler (Sidebar) -->
-		<div class="text-center d-none d-md-inline">
-			<button class="rounded-circle border-0" id="sidebarToggle"></button>
+	<div class="sidebar sidebar-fixed border-end" id="sidebar">
+		<div class="sidebar-header border-bottom">
+			<div class="sidebar-brand">Ellemme</div>
 		</div>
-	</ul>
+		<ul class="sidebar-nav">
+			<li class="nav-item">
+				<a href="/" class={ "nav-link", templ.KV("active", isActive(ctx, enum.Home)) }>
+					<i class="nav-icon cil-speedometer"></i> Riepilogo
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class={ "nav-link", templ.KV("active", isActive(ctx, enum.InvoiceList)) } href="/invoice">
+					<i class="nav-icon cil-list"></i> Fatture
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class={ "nav-link", templ.KV("active", isActive(ctx, enum.CustomerList)) } href="/customer">
+					<i class="nav-icon cil-user"></i> Clienti
+				</a>
+			</li>
+		</ul>
+		<div class="sidebar-footer border-top d-flex">
+			<button class="sidebar-toggler" type="button"></button>
+		</div>
+	</div>
 }
 
 func isActive(ctx context.Context, page enum.Page) bool {

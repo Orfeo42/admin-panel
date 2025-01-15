@@ -196,8 +196,8 @@ func (c *controller) update(echoCtx echo.Context) error {
 	invoice, errors := validateCreateUpdateRequest(echoCtx)
 	invoice.ID = id
 
-	log.Errorf("errors: %+v", errors)
 	if len(errors) > 0 {
+		log.Errorf("Errors in update validation: %+v", errors)
 		return utils.Render(InvoiceRowEdit(InvoiceEditParams{
 			Invoice: invoice,
 			Errors:  errors,
@@ -320,19 +320,22 @@ func validateCreateUpdateRequest(echoCtx echo.Context) (database.Invoice, map[st
 		errors["date"] = "date is not valid"
 	}
 
-	invoice.PaymentDate, err = utils.StringToTimePtr(echoCtx.FormValue("paymentDate"))
+	invoice.PaidAmount, err = utils.StringToAmountValidEmpty(echoCtx.FormValue("paidAmount"))
 	if err != nil {
-		errors["paymentDate"] = "payment date is not valid"
+		errors["paidAmount"] = "paid amount is not valid"
+	}
+
+	paymentDate := echoCtx.FormValue("paymentDate")
+	if paymentDate != "" || invoice.PaidAmount != 0 {
+		invoice.PaymentDate, err = utils.StringToTimePtr(paymentDate)
+		if err != nil {
+			errors["paymentDate"] = "payment date is not valid"
+		}
 	}
 
 	invoice.Amount, err = utils.StringToAmount(echoCtx.FormValue("amount"))
 	if err != nil {
 		errors["amount"] = "amount is not valid"
-	}
-
-	invoice.PaidAmount, err = utils.StringToAmountValidEmpty(echoCtx.FormValue("paidAmount"))
-	if err != nil {
-		errors["paidAmount"] = "paid amount is not valid"
 	}
 
 	invoice.PaymentMethod = utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))
