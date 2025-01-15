@@ -71,20 +71,7 @@ templ invoiceColumns(item database.Invoice) {
 	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.PaymentDate) }</td>
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.PaidAmount) } €</td>
 	<td style="text-align: center;">
-		if item.Amount-item.PaidAmount == 0 {
-			<div class="btn-success btn-circle" style="pointer-events: none;">
-				<i class="fa-solid fa-check"></i>
-			</div>
-		} else {
-			<button
-				class="btn btn-danger btn-circle"
-				hx-target="closest tr"
-				hx-swap="outerHTML"
-				hx-put={ "/invoice/" + utils.UintToString(item.ID) + "/pay" }
-			>
-				<i class="fa-solid fa-xmark"></i>
-			</button>
-		}
+		@invoicePayButton(utils.UintToString(item.ID), item.Amount-item.PaidAmount)
 	</td>
 	<td style="text-align: center">
 		@invoiceEditButton(utils.UintToString(item.ID))

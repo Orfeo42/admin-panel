@@ -133,7 +133,7 @@ func (r *invoiceRepository) CreateList(invoiceList []Invoice) ([]Invoice, error)
 
 func (r *invoiceRepository) Read(id uint) (*Invoice, error) {
 	var invoice Invoice
-	tx := r.db.First(&invoice, id)
+	tx := r.db.Preload("Customer").First(&invoice, id)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

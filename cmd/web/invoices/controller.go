@@ -210,8 +210,12 @@ func (c *controller) update(echoCtx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	invoiceRes, err := c.invRep.Read(id)
+	if err != nil {
+		return err
+	}
 
-	return utils.Render(InvoiceTableRow(invoice), echoCtx)
+	return utils.Render(InvoiceTableRow(*invoiceRes), echoCtx)
 }
 
 func (c *controller) payByID(echoCtx echo.Context) error {

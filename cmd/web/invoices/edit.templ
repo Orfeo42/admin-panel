@@ -127,3 +127,29 @@ templ invoiceDeleteButton(id string) {
 		<i class="fa-regular fa-trash-can"></i> Elimina
 	</button>
 }
+
+templ invoicePayButton(id string, amountToPay int) {
+	if amountToPay == 0 {
+		@payedButton()
+	} else {
+		@toPayButton(id)
+	}
+}
+
+templ payedButton() {
+	<div class="btn-success btn-circle" style="pointer-events: none;">
+		<i class="fa-solid fa-check"></i>
+	</div>
+}
+
+templ toPayButton(id string) {
+	<button
+		class="btn btn-danger btn-circle invoice-pay-button"
+		hx-target="closest tr"
+		hx-swap="outerHTML"
+		hx-trigger="pay"
+		hx-put={ "/invoice/" + id + "/pay" }
+	>
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+}

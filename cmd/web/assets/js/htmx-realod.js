@@ -45,6 +45,30 @@ document.addEventListener("htmx:afterSwap", _ => {
     enableEditButtons();
 });
 
+const buttonPayClick = (element) => {
+    Swal.fire({
+        title: 'Vuoi impostare come pagata questa fattura?',
+        showCancelButton: true,
+        confirmButtonText: 'Paga',
+        text: 'Vuoi procedere all\'impostare questa fattura pagata?',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            htmx.trigger(element, 'pay')
+        }
+    });
+}
+
+const enablePayButtons = () => {
+    const elements = document.querySelectorAll('.invoice-pay-button')
+    elements.forEach(element => element.addEventListener('click', () => buttonPayClick(element)));
+}
+
+document.addEventListener("htmx:afterSwap", _ => {
+    enableDeleteButtons();
+    enableEditButtons();
+    enablePayButtons();
+});
 
 enableDeleteButtons();
 enableEditButtons();
+enablePayButtons();
