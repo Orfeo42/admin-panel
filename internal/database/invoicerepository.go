@@ -24,6 +24,7 @@ type InvoiceRepository interface {
 	CollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
 	SalesTotal(dateFrom, dateTo time.Time) (int64, error)
 	CollectedTotal(dateFrom, dateTo time.Time) (int64, error)
+	ToBeCollectedTotal(dateFrom, dateTo time.Time) (int64, error)
 }
 
 type invoiceRepository struct {
@@ -269,4 +270,18 @@ func (r *invoiceRepository) CollectedTotal(dateFrom, dateTo time.Time) (int64, e
 		Where("payment_date between ? and ?", dateFrom, dateTo).
 		Scan(&totalAmount)
 	return totalAmount, nil
+}
+
+func (r *invoiceRepository) ToBeCollectedTotal(dateFrom, dateTo time.Time) (int64, error) {
+	totalSales, err := r.SalesTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return 0, err
+	}
+	totalCollected, err := r.CollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return 0, err
+	}
+	return totalSales - totalCollected, nil
 }

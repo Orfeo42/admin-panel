@@ -114,64 +114,16 @@ templ InvoiceRowForm(params InvoiceEditParams) {
 
 templ invoiceEditButton(id string) {
 	<button
-		class="btn btn-primary"
+		class="btn btn-primary invoice-edit-button"
 		hx-get={ "/invoice/" + id + "/edit" }
 		hx-trigger="edit"
-		id={ "invoiceEditButton_" + id }
 	>
 		<i class="fa-regular fa-pen-to-square"></i> Modifica
 	</button>
-	@invoiceEditButtonScript(id)
-}
-
-script invoiceEditButtonScript(id string) {
-    const editButton = document.getElementById(`invoiceEditButton_${id}`);
-
-    function buttonEditClick(){
-        let editing = document.querySelector('.editing')
-        if(editing) {
-            Swal.fire({
-                title: 'Stai già modificando!',
-                showCancelButton: true,
-                confirmButtonText: 'Sì, Modifica questa riga!',
-                text:'Stai già modificando un altra riga. Vuoi annullare per modificare questa?'
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    htmx.trigger(editing, 'cancel')
-                    htmx.trigger(this, 'edit')
-                }
-            })
-        } else {
-            htmx.trigger(this, 'edit')
-        }
-    }
-
-    editButton.addEventListener('click', buttonEditClick);
 }
 
 templ invoiceDeleteButton(id string) {
-	<button class="btn btn-primary" hx-delete={ "/invoice/" + id } hx-trigger="delete" id={ "invoiceDeleteButton_" + id }>
-		<i class="fa-regular fa-pen-to-square"></i> Modifica
+	<button class="btn btn-danger invoice-delete-button" hx-trigger="delete" hx-delete={ "/invoice/" + id }>
+		<i class="fa-regular fa-trash-can"></i> Elimina
 	</button>
-	@invoiceDeleteButtonScript(id)
-}
-
-script invoiceDeleteButtonScript(id string) {
-    const button = document.getElementById(`invoiceDeleteButton_${id}`);
-
-    function buttonEditClick(){
-        Swal.fire({
-            title: 'Vuoi eliminare?',
-            showCancelButton: true,
-            confirmButtonText: 'Elimina',
-            text:'Vuoi procedere all''eliminazione di questo elemento?'
-        }).then((result) => {
-            if(result.isConfirmed) {
-                htmx.trigger(deleting, 'cancel')
-                htmx.trigger(this, 'delete')
-            }
-        })
-    }
-
-    button.addEventListener('click', buttonEditClick);
 }

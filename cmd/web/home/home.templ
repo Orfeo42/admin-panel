@@ -8,76 +8,99 @@ import (
 templ HomeView() {
 	@layout.BaseView() {
 		<div class="row">
-			<div class="col-xl-3 col-md-6 mb-4">
+			<div class="col-xl-4 col-md-6 mb-4">
 				<div class="card border-left-primary shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
-							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-									Fatturato ultimo mese
+							<div class="col">
+								<div class="text-xs font-weight-bold text-primary text-uppercase mb-2">
+									Ultimo mese
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">€ <span hx-get="/sales/month" hx-trigger="load"></span></div>
-							</div>
-							<div class="col-auto">
-								<i class="fas fa-calendar fa-2x text-gray-300"></i>
+								<div class="h5 mb-0 text-gray-800">
+									<table class="w-100">
+										<tbody>
+											<tr class="text-success font-weight-bold">
+												<th>Fatturato</th>
+												<td class="text-right">€ <span hx-get="/sales/month" hx-trigger="load"></span></td>
+											</tr>
+											<tr class="text-warning font-weight-bold">
+												<th>Riscosso</th>
+												<td class="text-right">€ <span hx-get="/collected/month" hx-trigger="load"></span></td>
+											</tr>
+											<tr class="text-danger font-weight-bold">
+												<th>Da riscuotere</th>
+												<td class="text-right">€ <span hx-get="/to-be-collected/month" hx-trigger="load"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-xl-3 col-md-6 mb-4">
-				<div class="card border-left-success shadow h-100 py-2">
-					<div class="card-body">
-						<div class="row no-gutters align-items-center">
-							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-									Riscosso ultimo mese
-								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">€ <span hx-get="/collected/month" hx-trigger="load"></span></div>
-							</div>
-							<div class="col-auto">
-								<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-md-6 mb-4">
+			<div class="col-xl-4 col-md-6 mb-4">
 				<div class="card border-left-info shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
-							<div class="col mr-2">
+							<div class="col">
 								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-									Fatturato ultimo anno
+									Ultimo anno
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">€ <span hx-get="/sales/year" hx-trigger="load"></span></div>
-							</div>
-							<div class="col-auto">
-								<i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+								<div class="h5 mb-0 text-gray-800">
+									<table class="w-100">
+										<tbody>
+											<tr class="text-success font-weight-bold">
+												<th>Fatturato</th>
+												<td class="text-right">€ <span hx-get="/sales/year" hx-trigger="load"></span></td>
+											</tr>
+											<tr class="text-warning font-weight-bold">
+												<th>Riscosso</th>
+												<td class="text-right">€ <span hx-get="/collected/year" hx-trigger="load"></span></td>
+											</tr>
+											<tr class="text-danger font-weight-bold">
+												<th>Da riscuotere</th>
+												<td class="text-right">€ <span hx-get="/to-be-collected/year" hx-trigger="load"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-xl-3 col-md-6 mb-4">
-				<div class="card border-left-warning shadow h-100 py-2">
+			<div class="col-xl-4 col-md-6 mb-4">
+				<div class="card border-left-info shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
-							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-									Riscosso ultimo Anno
+							<div class="col">
+								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+									Generale
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">€ <span hx-get="/collected/year" hx-trigger="load"></span></div>
-							</div>
-							<div class="col-auto">
-								<i class="fas fa-comments fa-2x text-gray-300"></i>
+								<div class="h5 mb-0 text-gray-800">
+									<table class="w-100">
+										<tbody>
+											<tr class="text-success font-weight-bold">
+												<th>Fatturato</th>
+												<td class="text-right">€ <span hx-get="/sales/all" hx-trigger="load"></span></td>
+											</tr>
+											<tr class="text-warning font-weight-bold">
+												<th>Riscosso</th>
+												<td class="text-right">€ <span hx-get="/collected/all" hx-trigger="load"></span></td>
+											</tr>
+											<tr class="text-danger font-weight-bold">
+												<th>Da riscuotere</th>
+												<td class="text-right">€ <span hx-get="/to-be-collected/all" hx-trigger="load"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
 			<div class="col-xl-6 col-lg-6">
 				@components.TitledCardComp("Fatture ultimo mese") {
 				}
