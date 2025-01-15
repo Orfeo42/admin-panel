@@ -28,7 +28,8 @@ func RegisterRoutes(application *echo.Echo) {
 
 	invoiceGroup.GET("/:id/edit", controller.updatePage)
 	invoiceGroup.PUT("/:id", controller.update)
-	invoiceGroup.PUT("/:id/pay", controller.payByID)
+	invoiceGroup.PUT("/:id/pay", controller.payByID) //TODO MEGLIO PATHC
+	invoiceGroup.DELETE("/:id", controller.delete)
 }
 
 const pageName = "Fatture"
@@ -45,6 +46,8 @@ type Controller interface {
 	updatePage(echoCtx echo.Context) error
 	update(echoCtx echo.Context) error
 	payByID(echoCtx echo.Context) error
+
+	delete(echoCtx echo.Context) error
 }
 
 type controller struct {
@@ -235,6 +238,22 @@ func (c *controller) payByID(echoCtx echo.Context) error {
 	}
 
 	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
+}
+func (c *controller) delete(echoCtx echo.Context) error {
+	id, err := utils.StringToUint(echoCtx.Param("id"))
+	if err != nil {
+		//TODO GESTISCI ERRORE HTML
+
+		log.Errorf("errors: %+v", err)
+		return err
+	}
+	err = c.invRep.Delete(id)
+	if err != nil {
+		//TODO GESTISCI ERRORE HTML
+		log.Errorf("errors: %+v", err)
+		return err
+	}
+	return nil
 }
 
 /*--VARIUS FUNCTIONS--*/

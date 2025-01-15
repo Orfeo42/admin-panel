@@ -55,6 +55,7 @@ type Invoice struct {
 	ExpectedPaymentDate *time.Time
 	Rows                *[]InvoiceRow
 	Note                *string
+	DeletedAt           gorm.DeletedAt `gorm:"index"`
 }
 
 type InvoiceRow struct {
@@ -145,13 +146,12 @@ func (r *invoiceRepository) Update(invoice Invoice) error {
 }
 
 func (r *invoiceRepository) Delete(id uint) error {
-	var invoice Invoice
-	if err := r.db.First(&invoice, 1).Error; err != nil {
+	if err := r.db.First(&Invoice{}, id).Error; err != nil {
 		fmt.Println("Record not found!")
 		return err
 	}
 
-	if err := r.db.Delete(invoice, 1).Error; err != nil {
+	if err := r.db.Delete(&Invoice{}, id).Error; err != nil {
 		fmt.Println("Error deleting user:", err)
 		return err
 	}
