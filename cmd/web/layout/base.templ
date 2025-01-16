@@ -11,15 +11,17 @@ templ mainHead() {
 	<link rel="icon" href="/assets/favicon.ico" type="image/x-icon"/>
 	<title>{ utils.GetTitle(ctx) }</title>
 	<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-	<script src="/assets/js/chart.js"></script>
 	<link href="/assets/css/coreui.css" rel="stylesheet"/>
 	<link href="/assets/css/icons/all.css" rel="stylesheet"/>
 	<link href="/assets/css/incremental-search.css" rel="stylesheet"/>
+	<link href="/assets/css/coreui-chartjs.css" rel="stylesheet"/>
 	<link href="/assets/css/style.css" rel="stylesheet"/>
 }
 
 templ mainScripts() {
-	<script src="/assets/js/coreui.js"></script>
+	<script src="/assets/js/coreui.bundle.js"></script>
+	<script src="/assets/js/chart.js/dist/chart.umd.js"></script>
+	<script src="/assets/js/chartjs/dist/js/coreui-chartjs.js"></script>
 	<script src="/assets/js/scripts.js"></script>
 }
 
