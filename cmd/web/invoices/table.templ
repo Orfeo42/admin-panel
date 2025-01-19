@@ -1,7 +1,6 @@
 package invoices
 
 import (
-	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
 	"admin-panel/utils"
 )
@@ -12,28 +11,24 @@ type InvoiceTableParams struct {
 }
 
 templ InvoiceTable(params InvoiceTableParams) {
-	@components.CardComp() {
-		<div class="table-responsive">
-			<table class={ "table", "table-bordered", templ.KV("hideFirstColumn", !params.ShowCustomer) } id="dataTable">
-				<thead>
-					<tr>
-						<th>Cliente</th>
-						<th>Numero</th>
-						<th>Data Fattura</th>
-						<th style="text-align: right;">Importo Fattura</th>
-						<th>Data Pagamento</th>
-						<th style="text-align: right;">Importo Pagato</th>
-						<th>Pagato</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
-					@InvoiceTableRows(params.Items)
-				</tbody>
-			</table>
-		</div>
-	}
+	<table class={ "table", "table-bordered", "table-striped", "table-hover", templ.KV("hideFirstColumn", !params.ShowCustomer) } id="dataTable">
+		<thead>
+			<tr>
+				<th scope="col" style="text-wrap: nowrap;">Cliente</th>
+				<th scope="col" style="text-wrap: nowrap;">Numero</th>
+				<th scope="col" style="text-wrap: nowrap;">Data Fattura</th>
+				<th scope="col" style="text-wrap: nowrap; text-align: right;">Importo Fattura</th>
+				<th scope="col" style="text-wrap: nowrap;">Data Pagamento</th>
+				<th scope="col" style="text-wrap: nowrap; text-align: right;">Importo Pagato</th>
+				<th scope="col" style="text-wrap: nowrap;">Pagato</th>
+				<th scope="col" style="text-wrap: nowrap;"></th>
+				<th scope="col" style="text-wrap: nowrap;"></th>
+			</tr>
+		</thead>
+		<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
+			@InvoiceTableRows(params.Items)
+		</tbody>
+	</table>
 }
 
 templ InvoiceTableRows(items []database.Invoice) {
@@ -64,7 +59,7 @@ templ invoiceTableRowLast(item database.Invoice) {
 }
 
 templ invoiceColumns(item database.Invoice) {
-	<td>{ item.Customer.Name }</td>
+	<th scope="row">{ item.Customer.Name }</th>
 	<td style="text-align: right;">{ item.Number }</td>
 	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.Date) }</td>
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.Amount) } €</td>

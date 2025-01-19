@@ -1,9 +1,6 @@
 package home
 
-import (
-	"admin-panel/cmd/web/components"
-	"admin-panel/cmd/web/layout"
-)
+import "admin-panel/cmd/web/layout"
 
 templ HomeView() {
 	@layout.BaseView() {
@@ -83,15 +80,20 @@ templ HomeView() {
 		</div>
 		<div class="row g-4 mb-4">
 			<div class="col-xl-6 col-lg-6">
-				@components.TitledCardComp("Fatture ultimo mese") {
-				}
+				<div class="card">
+					<div class="card-header">Fatture ultimo mese</div>
+					<div class="card-body"></div>
+				</div>
 			</div>
 			<div class="col-xl-6 col-lg-6">
-				@components.TitledCardComp("Grafico Fatturato/Riscosso") {
-					<div hx-get="/graph" hx-trigger="load">
-						<i class="fa-solid fa-spinner htmx-indicator"></i>
+				<div class="card">
+					<div class="card-header">Grafico Fatturato/Riscosso</div>
+					<div class="card-body">
+						<div hx-get="/graph" hx-trigger="load">
+							<i class="fa-solid fa-spinner htmx-indicator"></i>
+						</div>
 					</div>
-				}
+				</div>
 			</div>
 		</div>
 	}

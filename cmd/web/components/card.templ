@@ -1,34 +1,6 @@
 package components
 
-import (
-	"admin-panel/cmd/enum"
-	"strconv"
-)
-
-templ CardComp() {
-	<div class="card shadow mb-4">
-		<div class="card-body">
-			{ children... }
-		</div>
-	</div>
-}
-
-templ TitledCardComp(title string) {
-	<div class="card shadow mb-4">
-		<div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">{ title }</h6></div>
-		<div class="card-body">
-			{ children... }
-		</div>
-	</div>
-}
-
-templ CardBgComp(color enum.Color) {
-	<div class={ "card", string(color), "text-white", "shadow" }>
-		<div class="card-body">
-			{ children... }
-		</div>
-	</div>
-}
+import "strconv"
 
 templ CollapseCard(title string, id string, expanded bool) {
 	<div class="card shadow mb-4">

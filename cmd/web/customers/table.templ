@@ -1,31 +1,26 @@
 package customers
 
 import (
-	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
 	"admin-panel/utils"
 )
 
 templ customerTable(items []database.CustomerWithTotals) {
-	@components.CardComp() {
-		<div class="table-responsive">
-			<table class="table table-bordered" id="dataTable">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Telefono</th>
-						<th>E-mail</th>
-						<th style="text-align: right;">Totale fatturato</th>
-						<th style="text-align: right;">Totale da pagare</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody id="data">
-					@AllCustomerRowsShow(items)
-				</tbody>
-			</table>
-		</div>
-	}
+	<table class="table table-striped table-hover" id="dataTable">
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Telefono</th>
+				<th scope="col">E-mail</th>
+				<th scope="col" style="text-align: right;">Totale fatturato</th>
+				<th scope="col" style="text-align: right;">Totale da pagare</th>
+				<th scope="col"></th>
+			</tr>
+		</thead>
+		<tbody id="data">
+			@AllCustomerRowsShow(items)
+		</tbody>
+	</table>
 }
 
 templ AllCustomerRowsShow(items []database.CustomerWithTotals) {
@@ -56,7 +51,7 @@ templ CustomerRowShowLast(item database.CustomerWithTotals) {
 }
 
 templ customerColumns(item database.CustomerWithTotals) {
-	<td>{ item.Name }</td>
+	<th scope="row">{ item.Name }</th>
 	<td>{ item.Phone }</td>
 	<td>{ item.Email }</td>
 	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
