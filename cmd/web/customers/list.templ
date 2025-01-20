@@ -12,19 +12,19 @@ type CustomerListParams struct {
 
 templ CustomerListView(params CustomerListParams) {
 	@layout.TableView() {
-		<div class="row">
-			<div class="col-12 mb-4">
-				<h1 class="h3 mb-2 text-gray-800">Lista Cliente</h1>
+		<h3 class="mb-4">Lista Cliente</h3>
+		<div class="card mb-4">
+			<div class="card-header">Filtri</div>
+			<div class="card-body">
+				@customerFilter(params.Filter)
 			</div>
 		</div>
-		@customerFilter(params.Filter)
-		<div class="row">
-			<div class="col-12 mb-4" style="text-align: right;">
-				<a type="submit" class="btn btn-primary" href="/customer/add">
-					<i class="fas fa-fw fa-plus"></i>
-					Nuovo cliente
-				</a>
-			</div>
+		<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+			<button
+				class="btn btn-outline-success"
+				type="button"
+				href="/customer/add"
+			><i class="cil-plus"></i> Nuovo cliente</button>
 		</div>
 		@customerTable(params.Items)
 	}

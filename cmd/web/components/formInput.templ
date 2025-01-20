@@ -23,13 +23,18 @@ type FormInputParam struct {
 	FormType    InputType
 	ComboItems  []ComboItem
 	ErrorString string
-	ShowLabel   bool
+	HideLabel   bool
 }
 
 templ FormInput(params FormInputParam) {
+	{{
+	if params.Id == "" {
+		params.Id = params.Name
+	}
+	}}
 	<div class="input-group">
-		if params.ShowLabel {
-			<label for="number" class={ params.Id }>{ params.Description }</label>
+		if !params.HideLabel {
+			<label for={ params.Id } class="input-group-text">{ params.Description }</label>
 		}
 		<input
 			class="form-control"
@@ -40,6 +45,7 @@ templ FormInput(params FormInputParam) {
 			value={ params.Value }
 			step=".01"
 		/>
+		{ children... }
 	</div>
 	if params.ErrorString != "" {
 		<div class="invalid-feedback">{ params.ErrorString }</div>
@@ -47,6 +53,6 @@ templ FormInput(params FormInputParam) {
 }
 
 templ Input(params FormInputParam) {
-	{{ params.ShowLabel = false }}
+	{{ params.HideLabel = true }}
 	@FormInput(params)
 }

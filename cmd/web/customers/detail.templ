@@ -42,10 +42,15 @@ templ customerData(params CustomerDetailParams) {
 			</div>
 		</div>
 	</div>
-	@invoices.InvoiceFilterForm(invoices.InvoiceFilterParams{
-		Filter:       params.Filter,
-		ShowCustomer: false,
-	})
+	<div class="card mb-4">
+		<div class="card-header">Filtri</div>
+		<div class="card-body">
+			@invoices.InvoiceFilterForm(invoices.InvoiceFilterParams{
+				Filter:       params.Filter,
+				ShowCustomer: false,
+			})
+		</div>
+	</div>
 	@invoices.InvoiceTable(invoices.InvoiceTableParams{
 		Items:        params.InvoiceList,
 		ShowCustomer: true,

@@ -28,10 +28,12 @@ templ InvoiceFilterForm(params InvoiceFilterParams) {
 				</div>
 			}
 			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label for="number" class="input-group-text">Numero Fattura</label>
-					<input type="text" class="form-control" id="number" name="number" aria-label="numero fattura" value={ utils.FormatStringToForm(params.Filter.Number) }/>
-				</div>
+				@components.FormInput(components.FormInputParam{
+					Name:        "number",
+					Description: "Numero Fattura",
+					FormType:    components.Text,
+					Value:       utils.FormatStringToForm(params.Filter.Number),
+				})
 			</div>
 			<div class="col-md-3 mb-3">
 				<div class="input-group">
@@ -52,54 +54,76 @@ templ InvoiceFilterForm(params InvoiceFilterParams) {
 				</div>
 			</div>
 			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label for="dateFrom" class="input-group-text">Da Data Fattura</label>
-					<input type="date" class="form-control" id="dateFrom" name="dateFrom" aria-label="Da Data Fattura" value={ utils.FormatTimePtrToForm(params.Filter.DateFrom) }/>
-				</div>
+				@components.FormInput(components.FormInputParam{
+					Name:        "dateFrom",
+					Description: "Da Data Fattura",
+					FormType:    components.Date,
+					Value:       utils.FormatTimePtrToForm(params.Filter.DateFrom),
+				})
 			</div>
 			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label for="dateTo" class="input-group-text">A Data Fattura</label>
-					<input type="date" class="form-control" id="dateTo" name="dateTo" aria-label="A Data Fattura" value={ utils.FormatTimePtrToForm(params.Filter.DateTo) }/>
-				</div>
+				@components.FormInput(components.FormInputParam{
+					Name:        "dateTo",
+					Description: "A Data Fattura",
+					FormType:    components.Date,
+					Value:       utils.FormatTimePtrToForm(params.Filter.DateTo),
+				})
 			</div>
 			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label class="input-group-text" for="amountFrom">Da Importo Fattura</label>
-					<input type="number" step=".01" class="form-control" id="amountFrom" name="amountFrom" aria-label="Da Importo Fattura" value={ utils.FormatIntToAmount(params.Filter.AmountFrom) }/>
-				</div>
-			</div>
-			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label class="input-group-text" for="amountTo">A Importo Fattura</label>
-					<input type="number" step=".01" class="form-control" id="amountTo" name="amountTo" aria-label="A Importo Fattura" value={ utils.FormatIntToAmount(params.Filter.AmountTo) }/>
-				</div>
-			</div>
-			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label class="input-group-text" for="paymentDateFrom">Da Data Pagamento</label>
-					<input type="date" class="form-control" id="paymentDateFrom" name="paymentDateFrom" aria-label="Da Data Pagamento" value={ utils.FormatTimePtrToForm(params.Filter.PaymentDateFrom) }/>
-				</div>
-			</div>
-			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label class="input-group-text" for="paymentDateTo">A Data Pagamento</label>
-					<input type="date" class="form-control" id="paymentDateTo" name="paymentDateTo" aria-label="A Data Pagamento" value={ utils.FormatTimePtrToForm(params.Filter.PaymentDateTo) }/>
-				</div>
-			</div>
-			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label class="input-group-text" for="paidAmountFrom">Da Importo Pagato</label>
-					<input type="number" step=".01" class="form-control" id="paidAmountFrom" name="paidAmountFrom" aria-label="Da Importo Pagato" value={ utils.FormatIntToAmount(params.Filter.PaidAmountFrom) }/>
+				@components.FormInput(components.FormInputParam{
+					Name:        "amountFrom",
+					Description: "Da Importo Fattura",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(params.Filter.AmountFrom),
+				}) {
 					<span class="input-group-text">€</span>
-				</div>
+				}
 			</div>
 			<div class="col-md-3 mb-3">
-				<div class="input-group">
-					<label class="input-group-text" for="paidAmountTo">A Importo Pagato</label>
-					<input type="number" step=".01" class="form-control" id="paidAmountTo" name="paidAmountTo" aria-label="A Importo Pagato" value={ utils.FormatIntToAmount(params.Filter.PaidAmountTo) }/>
+				@components.FormInput(components.FormInputParam{
+					Name:        "amountTo",
+					Description: "A Importo Fattura",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(params.Filter.AmountTo),
+				}) {
 					<span class="input-group-text">€</span>
-				</div>
+				}
+			</div>
+			<div class="col-md-3 mb-3">
+				@components.FormInput(components.FormInputParam{
+					Name:        "paymentDateFrom",
+					Description: "Da Data Pagamento",
+					FormType:    components.Date,
+					Value:       utils.FormatTimePtrToForm(params.Filter.PaymentDateFrom),
+				})
+			</div>
+			<div class="col-md-3 mb-3">
+				@components.FormInput(components.FormInputParam{
+					Name:        "paymentDateTo",
+					Description: "A Data Pagamento",
+					FormType:    components.Date,
+					Value:       utils.FormatTimePtrToForm(params.Filter.PaymentDateTo),
+				})
+			</div>
+			<div class="col-md-3 mb-3">
+				@components.FormInput(components.FormInputParam{
+					Name:        "paidAmountFrom",
+					Description: "Da Importo Pagato",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(params.Filter.PaidAmountFrom),
+				}) {
+					<span class="input-group-text">€</span>
+				}
+			</div>
+			<div class="col-md-3 mb-3">
+				@components.FormInput(components.FormInputParam{
+					Name:        "paidAmountTo",
+					Description: "A Importo Pagato",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(params.Filter.PaidAmountTo),
+				}) {
+					<span class="input-group-text">€</span>
+				}
 			</div>
 			<div class="col-12">
 				<div class="d-grid gap-2 d-md-flex justify-content-md-end">

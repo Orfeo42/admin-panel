@@ -7,116 +7,79 @@ import (
 )
 
 templ customerFilter(filter database.CustomerFilter) {
-	//@components.CollapseCard("Filtri", "filter", false) {
-	<div class="accordion" id="accordionExample">
-		<div class="accordion-item">
-			<h2 class="accordion-header">
-				<button class="accordion-button" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-					Accordion Item #1
-				</button>
-			</h2>
-			<div id="collapseOne" class="accordion-collapse collapse show" data-coreui-parent="#accordionExample">
-				<div class="accordion-body">
-					<strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-				</div>
-			</div>
-		</div>
-		<div class="accordion-item">
-			<h2 class="accordion-header">
-				<button class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-					Accordion Item #2
-				</button>
-			</h2>
-			<div id="collapseTwo" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
-				<div class="accordion-body">
-					<strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-				</div>
-			</div>
-		</div>
-		<div class="accordion-item">
-			<h2 class="accordion-header" i>
-				<button class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-					Accordion Item #3
-				</button>
-			</h2>
-			<div id="collapseThree" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
-				<div class="accordion-body">
-					<strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-				</div>
-			</div>
-		</div>
-	</div>
 	<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer" hx-ext="push-url-w-params">
-		<div class="form-row">
-			<div class="form-group col-md-6">
+		<div class="row g-2">
+			<div class="col-md-6">
 				@components.FormInput(components.FormInputParam{
-					Id:          "name",
 					Name:        "name",
 					Description: "Nome Cliente",
 					FormType:    components.Text,
 					Value:       utils.FormatStringToForm(filter.Name),
 				})
 			</div>
-			<div class="form-group col-md-6">
-				<label for="isPaid">Pagamenti:</label>
-				<select class="form-control" name="isPaid" id="isPaid">
-					<option value="">Tutti</option>
-					if filter.IsPaid != nil && *filter.IsPaid {
-						<option value="true" selected>Tutti pagamenti chiusi</option>
-					} else {
-						<option value="true">Tutti pagamenti chiusi</option>
-					}
-					if filter.IsPaid != nil && !*filter.IsPaid {
-						<option value="false" selected>Con pagamenti aperti</option>
-					} else {
-						<option value="false">Con pagamenti aperti</option>
-					}
-				</select>
+			<div class="col-md-6">
+				<div class="input-group">
+					<label for="isPaid" class="input-group-text">Stato Pagamento:</label>
+					<select class="form-select" name="isPaid" id="isPaid">
+						<option value="">Tutti</option>
+						if filter.IsPaid != nil && *filter.IsPaid {
+							<option value="true" selected>Tutti pagamenti chiusi</option>
+						} else {
+							<option value="true">Tutti pagamenti chiusi</option>
+						}
+						if filter.IsPaid != nil && !*filter.IsPaid {
+							<option value="false" selected>Con pagamenti aperti</option>
+						} else {
+							<option value="false">Con pagamenti aperti</option>
+						}
+					</select>
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-group col-md-3">
+			<div class="col-md-3 mb-3">
 				@components.FormInput(components.FormInputParam{
-					Id:          "totalAmountFrom",
 					Name:        "totalAmountFrom",
 					Description: "Da Totale Fatturato",
 					FormType:    components.Number,
 					Value:       utils.FormatIntToAmount(filter.TotalAmountFrom),
-				})
+				}) {
+					<span class="input-group-text">€</span>
+				}
 			</div>
-			<div class="form-group col-md-3">
+			<div class="col-md-3 mb-3">
 				@components.FormInput(components.FormInputParam{
-					Id:          "totalAmountTo",
 					Name:        "totalAmountTo",
 					Description: "A Totale Fatturato",
 					FormType:    components.Number,
 					Value:       utils.FormatIntToAmount(filter.TotalAmountTo),
-				})
+				}) {
+					<span class="input-group-text">€</span>
+				}
 			</div>
-			<div class="form-group col-md-3">
+			<div class="col-md-3 mb-3">
 				@components.FormInput(components.FormInputParam{
-					Id:          "totalToPayFrom",
 					Name:        "totalToPayFrom",
 					Description: "Da Totale Da Pagare",
 					FormType:    components.Number,
 					Value:       utils.FormatIntToAmount(filter.TotalToPayFrom),
-				})
+				}) {
+					<span class="input-group-text">€</span>
+				}
 			</div>
-			<div class="form-group col-md-3">
+			<div class="col-md-3 mb-3">
 				@components.FormInput(components.FormInputParam{
-					Id:          "totalToPayTo",
 					Name:        "totalToPayTo",
 					Description: "A Totale Da Pagare",
 					FormType:    components.Number,
 					Value:       utils.FormatIntToAmount(filter.TotalToPayTo),
-				})
+				}) {
+					<span class="input-group-text">€</span>
+				}
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="col-lg-12">
-				<button type="submit" class="btn btn-primary">Filtra</button>
+			<div class="col-12">
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+					<button type="submit" class="btn btn-outline-info"><i class="cil-search"></i></button>
+				</div>
 			</div>
 		</div>
 	</form>
-	//}
 }
