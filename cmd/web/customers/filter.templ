@@ -7,78 +7,116 @@ import (
 )
 
 templ customerFilter(filter database.CustomerFilter) {
-	@components.CollapseCard("Filtri", "filter", false) {
-		<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer" hx-ext="push-url-w-params">
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					@components.FormInput(components.FormInputParam{
-						Id:          "name",
-						Name:        "name",
-						Description: "Nome Cliente",
-						FormType:    components.Text,
-						Value:       utils.FormatStringToForm(filter.Name),
-					})
-				</div>
-				<div class="form-group col-md-6">
-					<label for="isPaid">Pagamenti:</label>
-					<select class="form-control" name="isPaid" id="isPaid">
-						<option value="">Tutti</option>
-						if filter.IsPaid != nil && *filter.IsPaid {
-							<option value="true" selected>Tutti pagamenti chiusi</option>
-						} else {
-							<option value="true">Tutti pagamenti chiusi</option>
-						}
-						if filter.IsPaid != nil && !*filter.IsPaid {
-							<option value="false" selected>Con pagamenti aperti</option>
-						} else {
-							<option value="false">Con pagamenti aperti</option>
-						}
-					</select>
+	//@components.CollapseCard("Filtri", "filter", false) {
+	<div class="accordion" id="accordionExample">
+		<div class="accordion-item">
+			<h2 class="accordion-header">
+				<button class="accordion-button" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					Accordion Item #1
+				</button>
+			</h2>
+			<div id="collapseOne" class="accordion-collapse collapse show" data-coreui-parent="#accordionExample">
+				<div class="accordion-body">
+					<strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-3">
-					@components.FormInput(components.FormInputParam{
-						Id:          "totalAmountFrom",
-						Name:        "totalAmountFrom",
-						Description: "Da Totale Fatturato",
-						FormType:    components.Number,
-						Value:       utils.FormatIntToAmount(filter.TotalAmountFrom),
-					})
-				</div>
-				<div class="form-group col-md-3">
-					@components.FormInput(components.FormInputParam{
-						Id:          "totalAmountTo",
-						Name:        "totalAmountTo",
-						Description: "A Totale Fatturato",
-						FormType:    components.Number,
-						Value:       utils.FormatIntToAmount(filter.TotalAmountTo),
-					})
-				</div>
-				<div class="form-group col-md-3">
-					@components.FormInput(components.FormInputParam{
-						Id:          "totalToPayFrom",
-						Name:        "totalToPayFrom",
-						Description: "Da Totale Da Pagare",
-						FormType:    components.Number,
-						Value:       utils.FormatIntToAmount(filter.TotalToPayFrom),
-					})
-				</div>
-				<div class="form-group col-md-3">
-					@components.FormInput(components.FormInputParam{
-						Id:          "totalToPayTo",
-						Name:        "totalToPayTo",
-						Description: "A Totale Da Pagare",
-						FormType:    components.Number,
-						Value:       utils.FormatIntToAmount(filter.TotalToPayTo),
-					})
+		</div>
+		<div class="accordion-item">
+			<h2 class="accordion-header">
+				<button class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+					Accordion Item #2
+				</button>
+			</h2>
+			<div id="collapseTwo" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+				<div class="accordion-body">
+					<strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="col-lg-12">
-					<button type="submit" class="btn btn-primary">Filtra</button>
+		</div>
+		<div class="accordion-item">
+			<h2 class="accordion-header" i>
+				<button class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+					Accordion Item #3
+				</button>
+			</h2>
+			<div id="collapseThree" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+				<div class="accordion-body">
+					<strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
 				</div>
 			</div>
-		</form>
-	}
+		</div>
+	</div>
+	<form hx-get="/customer/filter" hx-target="#data" hx-swap="innerHTML" data-push-url="/customer" hx-ext="push-url-w-params">
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				@components.FormInput(components.FormInputParam{
+					Id:          "name",
+					Name:        "name",
+					Description: "Nome Cliente",
+					FormType:    components.Text,
+					Value:       utils.FormatStringToForm(filter.Name),
+				})
+			</div>
+			<div class="form-group col-md-6">
+				<label for="isPaid">Pagamenti:</label>
+				<select class="form-control" name="isPaid" id="isPaid">
+					<option value="">Tutti</option>
+					if filter.IsPaid != nil && *filter.IsPaid {
+						<option value="true" selected>Tutti pagamenti chiusi</option>
+					} else {
+						<option value="true">Tutti pagamenti chiusi</option>
+					}
+					if filter.IsPaid != nil && !*filter.IsPaid {
+						<option value="false" selected>Con pagamenti aperti</option>
+					} else {
+						<option value="false">Con pagamenti aperti</option>
+					}
+				</select>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-md-3">
+				@components.FormInput(components.FormInputParam{
+					Id:          "totalAmountFrom",
+					Name:        "totalAmountFrom",
+					Description: "Da Totale Fatturato",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(filter.TotalAmountFrom),
+				})
+			</div>
+			<div class="form-group col-md-3">
+				@components.FormInput(components.FormInputParam{
+					Id:          "totalAmountTo",
+					Name:        "totalAmountTo",
+					Description: "A Totale Fatturato",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(filter.TotalAmountTo),
+				})
+			</div>
+			<div class="form-group col-md-3">
+				@components.FormInput(components.FormInputParam{
+					Id:          "totalToPayFrom",
+					Name:        "totalToPayFrom",
+					Description: "Da Totale Da Pagare",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(filter.TotalToPayFrom),
+				})
+			</div>
+			<div class="form-group col-md-3">
+				@components.FormInput(components.FormInputParam{
+					Id:          "totalToPayTo",
+					Name:        "totalToPayTo",
+					Description: "A Totale Da Pagare",
+					FormType:    components.Number,
+					Value:       utils.FormatIntToAmount(filter.TotalToPayTo),
+				})
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col-lg-12">
+				<button type="submit" class="btn btn-primary">Filtra</button>
+			</div>
+		</div>
+	</form>
+	//}
 }

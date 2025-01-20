@@ -23,18 +23,16 @@ templ InvoiceRowEdit(params InvoiceEditParams) {
 		@InvoiceRowForm(params)
 		<td style="white-space: nowrap; text-align: center">
 			<button
-				class="btn btn-primary"
+				class="btn btn-outline-info"
 				hx-put={ "/invoice/" + utils.UintToString(params.Invoice.ID) }
 				hx-include="closest tr"
 			>
-				<i class="fa-solid fa-floppy-disk"></i>
-				Salva
+				<i class="cil-save"></i>
 			</button>
 		</td>
 		<td>
-			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) + "/row" }>
-				<i class="fa-solid fa-xmark"></i>
-				Annulla
+			<button class="btn btn-outline-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) + "/row" }>
+				<i class="cil-x"></i>
 			</button>
 		</td>
 	</tr>
@@ -45,19 +43,15 @@ templ InvoiceRowAdd(params InvoiceEditParams) {
 		@InvoiceRowForm(params)
 		<td style="white-space: nowrap; text-align: center">
 			<button
-				class="btn btn-primary"
+				class="btn btn-outline-info"
 				hx-post={ "/invoice" }
 				hx-include="closest tr"
 			>
-				<i class="fa-solid fa-floppy-disk"></i>
-				Salva
+				<i class="cil-save"></i>
 			</button>
 		</td>
 		<td>
-			<button class="btn btn-danger">
-				<i class="fa-solid fa-xmark"></i>
-				Annulla
-			</button>
+			<button class="btn btn-outline-danger"><i class="cil-x"></i></button><!--TODO RIMUOVERE LA RIGA-->
 		</td>
 	</tr>
 }
@@ -110,46 +104,4 @@ templ InvoiceRowForm(params InvoiceEditParams) {
 		})
 	</td>
 	<td style="text-align: center;"></td>
-}
-
-templ invoiceEditButton(id string) {
-	<button
-		class="btn btn-primary invoice-edit-button"
-		hx-get={ "/invoice/" + id + "/edit" }
-		hx-trigger="edit"
-	>
-		<i class="fa-regular fa-pen-to-square"></i> Modifica
-	</button>
-}
-
-templ invoiceDeleteButton(id string) {
-	<button class="btn btn-danger invoice-delete-button" hx-trigger="delete" hx-delete={ "/invoice/" + id }>
-		<i class="fa-regular fa-trash-can"></i> Elimina
-	</button>
-}
-
-templ invoicePayButton(id string, amountToPay int) {
-	if amountToPay == 0 {
-		@payedButton()
-	} else {
-		@toPayButton(id)
-	}
-}
-
-templ payedButton() {
-	<div class="btn-success btn-circle" style="pointer-events: none;">
-		<i class="fa-solid fa-check"></i>
-	</div>
-}
-
-templ toPayButton(id string) {
-	<button
-		class="btn btn-danger btn-circle invoice-pay-button"
-		hx-target="closest tr"
-		hx-swap="outerHTML"
-		hx-trigger="pay"
-		hx-put={ "/invoice/" + id + "/pay" }
-	>
-		<i class="fa-solid fa-xmark"></i>
-	</button>
 }
