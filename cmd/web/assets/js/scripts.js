@@ -80,7 +80,7 @@ const enableDropDown = () => {
     dropdownElementList.forEach(element => new coreui.Dropdown(element))
 }
 
-const chartSettings = {
+const chartDefaultSettings = {
     type: 'line',
     data: {
         labels: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
@@ -138,18 +138,57 @@ const chartSettings = {
 };
 
 
-const enableCharts = () => {
-    const elements = document.querySelectorAll('.chart')
+const enableSalesCharts = () => {
+    const elements = document.querySelectorAll('.sales-chart')
     fetch('/sales/graph').then(res => {
         if (res.status === 200) {
             return res.json()
         }
     }).then(value => {
-        console.log(value)
+        const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
         chartSettings.data.labels = value.Labels
         chartSettings.data.datasets[0].data = value.Values
+        chartSettings.data.datasets[0].label = "Fatturato"
         elements.forEach(element => new Chart(element, chartSettings));
     });
+}
+
+
+const enableCollectedCharts = () => {
+    const elements = document.querySelectorAll('.collected-chart')
+    fetch('/collected/graph').then(res => {
+        if (res.status === 200) {
+            return res.json()
+        }
+    }).then(value => {
+        const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
+        chartSettings.data.labels = value.Labels
+        chartSettings.data.datasets[0].data = value.Values
+        chartSettings.data.datasets[0].label = "Riscosso"
+        elements.forEach(element => new Chart(element, chartSettings));
+    });
+}
+
+const enableToBeCollectedCharts = () => {
+    const elements = document.querySelectorAll('.to-be-collected-chart')
+    fetch('/to-be-collected/graph').then(res => {
+        if (res.status === 200) {
+            return res.json()
+        }
+    }).then(value => {
+        const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
+        chartSettings.data.labels = value.Labels
+        chartSettings.data.datasets[0].data = value.Values
+        chartSettings.data.datasets[0].label = "Da riscuotere"
+        elements.forEach(element => new Chart(element, chartSettings));
+    });
+}
+
+
+const enableCharts = () => {
+    enableSalesCharts();
+    enableCollectedCharts();
+    enableToBeCollectedCharts();
 }
 
 const updateValori = () => {

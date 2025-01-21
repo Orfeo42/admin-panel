@@ -22,6 +22,7 @@ type InvoiceRepository interface {
 	ReadAllByCustomerIDAndPaid(customerID uint, isPaid *bool) ([]Invoice, error)
 	SalesByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
 	CollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
+	ToBeCollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
 	SalesTotal(dateFrom, dateTo time.Time) (int64, error)
 	CollectedTotal(dateFrom, dateTo time.Time) (int64, error)
 	ToBeCollectedTotal(dateFrom, dateTo time.Time) (int64, error)
@@ -251,6 +252,30 @@ func (r *invoiceRepository) CollectedByMonth(dateFrom, dateTo time.Time) ([]Mone
 		Group("date_part('year', payment_date), date_part('month', payment_date)").
 		Order("date_part('year', payment_date), date_part('month', payment_date)").
 		Scan(&earningsByMonthResult)
+	return earningsByMonthResult, nil
+}
+
+func (r *invoiceRepository) ToBeCollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error) {
+	var earningsByMonthResult []MoneyByMonthResult
+
+	totalSales, err := r.SalesByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return nil, err
+	}
+	totalCollected, err := r.CollectedByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return nil, err
+	}
+	for i, sales := range totalSales {
+		collected := totalCollected[i]
+		earningsByMonthResult = append(earningsByMonthResult, MoneyByMonthResult{
+			Year:   sales.Year,
+			Month:  sales.Month,
+			Amount: sales.Amount - collected.Amount,
+		})
+	}
 	return earningsByMonthResult, nil
 }
 
