@@ -20,18 +20,18 @@ func RegisterRoutes(application *echo.Echo) {
 	controller := getControllerInstance()
 
 	homeGroup.GET("", controller.home)
-	homeGroup.GET("/sales/graph", controller.salesGraph)
-	homeGroup.GET("/collected/graph", controller.collectedGraph)
-	homeGroup.GET("/to-be-collected/graph", controller.toBeCollectedGraph)
 
+	homeGroup.GET("/sales/graph", controller.salesGraph)
 	homeGroup.GET("/sales/month", controller.salesMonth)
 	homeGroup.GET("/sales/year", controller.salesYear)
 	homeGroup.GET("/sales/all", controller.salesAll)
 
+	homeGroup.GET("/collected/graph", controller.collectedGraph)
 	homeGroup.GET("/collected/month", controller.collectedMonth)
 	homeGroup.GET("/collected/year", controller.collectedYear)
 	homeGroup.GET("/collected/all", controller.collectedAll)
 
+	homeGroup.GET("/to-be-collected/graph", controller.toBeCollectedGraph)
 	homeGroup.GET("/to-be-collected/month", controller.toBeCollectedMonth)
 	homeGroup.GET("/to-be-collected/year", controller.toBeCollectedYear)
 	homeGroup.GET("/to-be-collected/all", controller.toBeCollectedAll)

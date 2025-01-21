@@ -140,7 +140,7 @@ const chartSettings = {
 
 const enableCharts = () => {
     const elements = document.querySelectorAll('.chart')
-    fetch('/graph').then(res => {
+    fetch('/sales/graph').then(res => {
         if (res.status === 200) {
             return res.json()
         }
