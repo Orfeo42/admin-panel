@@ -145,7 +145,16 @@ const enableCharts = () => {
     });
 }
 
+const updateValori = () => {
+    const elementList = document.querySelectorAll('.total-button');
+    elementList.forEach(element => element.addEventListener('click', () => {
+        const selector = element.getAttribute("desc-target")
+        const targetList = document.querySelectorAll(selector);
+        targetList.forEach(target => target.innerHTML = element.innerHTML);
+    }));
+}
 
+updateValori();
 enableHeaderToggler();
 enableDropDown();
 enableCharts();

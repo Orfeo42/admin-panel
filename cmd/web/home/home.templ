@@ -10,9 +10,9 @@ templ HomeView() {
 					<div class="card-body pb-0 d-flex justify-content-between align-items-start">
 						<div>
 							<div class="fs-4 fw-semibold">
-								€<span hx-get="/sales/all" hx-trigger="load"></span>
+								€<span hx-get="/sales/all" hx-trigger="load" id="sales-target"></span>
 								<span class="fs-6 fw-normal">
-									(-12.4% <i class="cil-arrow-bottom"></i>)
+									(<span id="sales-desc-target">Totale</span>)
 								</span>
 							</div>
 							<div>Fatturato</div>
@@ -21,7 +21,26 @@ templ HomeView() {
 							<button class="btn btn-transparent text-white p-0" type="button" data-coreui-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="cil-options"></i>
 							</button>
-							<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+							<div class="dropdown-menu dropdown-menu-end">
+								<button
+									class="dropdown-item total-button"
+									desc-target="#sales-desc-target"
+									hx-get="/sales/all"
+									hx-target="#sales-target"
+								>Totale</button>
+								<button
+									class="dropdown-item total-button"
+									desc-target="#sales-desc-target"
+									hx-get="/sales/month"
+									hx-target="#sales-target"
+								>Mensile</button>
+								<button
+									class="dropdown-item total-button"
+									desc-target="#sales-desc-target"
+									hx-get="/sales/year"
+									hx-target="#sales-target"
+								>Annuale</button>
+							</div>
 						</div>
 					</div>
 					<div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
@@ -34,9 +53,9 @@ templ HomeView() {
 					<div class="card-body pb-0 d-flex justify-content-between align-items-start">
 						<div>
 							<div class="fs-4 fw-semibold">
-								€<span hx-get="/collected/all" hx-trigger="load"></span>
+								€<span hx-get="/collected/all" hx-trigger="load" id="collected-target"></span>
 								<span class="fs-6 fw-normal">
-									(40.9% <i class="cil-arrow-top"></i>)
+									(<span id="collected-desc-target">Totale</span>)
 								</span>
 							</div>
 							<div>Riscosso</div>
@@ -45,7 +64,26 @@ templ HomeView() {
 							<button class="btn btn-transparent text-white p-0" type="button" data-coreui-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="cil-options"></i>
 							</button>
-							<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+							<div class="dropdown-menu dropdown-menu-end">
+								<button
+									class="dropdown-item total-button"
+									desc-target="#collected-desc-target"
+									hx-get="/collected/all"
+									hx-target="#collected-target"
+								>Totale</button>
+								<button
+									class="dropdown-item total-button"
+									desc-target="#collected-desc-target"
+									hx-get="/collected/month"
+									hx-target="#collected-target"
+								>Mensile</button>
+								<button
+									class="dropdown-item total-button"
+									desc-target="#collected-desc-target"
+									hx-get="/collected/year"
+									hx-target="#collected-target"
+								>Annuale</button>
+							</div>
 						</div>
 					</div>
 					<div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
@@ -58,9 +96,9 @@ templ HomeView() {
 					<div class="card-body pb-0 d-flex justify-content-between align-items-start">
 						<div>
 							<div class="fs-4 fw-semibold">
-								€<span hx-get="/to-be-collected/all" hx-trigger="load"></span>
+								€<span hx-get="/to-be-collected/all" hx-trigger="load" id="to-be-collected-target"></span>
 								<span class="fs-6 fw-normal">
-									(84.7% <i class="cil-arrow-top"></i>)
+									(<span id="to-be-collected-desc-target">Totale</span>)
 								</span>
 							</div>
 							<div>Da riscuotere</div>
@@ -69,7 +107,26 @@ templ HomeView() {
 							<button class="btn btn-transparent text-white p-0" type="button" data-coreui-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="cil-options"></i>
 							</button>
-							<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+							<div class="dropdown-menu dropdown-menu-end">
+								<button
+									class="dropdown-item total-button"
+									desc-target="#to-be-collected-desc-target"
+									hx-get="/to-be-collected/all"
+									hx-target="#to-be-collected-target"
+								>Totale</button>
+								<button
+									class="dropdown-item total-button"
+									desc-target="#to-be-collected-desc-target"
+									hx-get="/to-be-collected/month"
+									hx-target="#to-be-collected-target"
+								>Mensile</button>
+								<button
+									class="dropdown-item total-button"
+									desc-target="#to-be-collected-desc-target"
+									hx-get="/to-be-collected/year"
+									hx-target="#to-be-collected-target"
+								>Annuale</button>
+							</div>
 						</div>
 					</div>
 					<div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
@@ -85,7 +142,7 @@ templ HomeView() {
 					<div class="card-body"></div>
 				</div>
 			</div>
-			<div class="col-xl-6 col-lg-6">
+			<!--<div class="col-xl-6 col-lg-6">
 				<div class="card">
 					<div class="card-header">Grafico Fatturato/Riscosso</div>
 					<div class="card-body">
@@ -94,7 +151,7 @@ templ HomeView() {
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 		</div>
 	}
 }

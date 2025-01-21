@@ -68,25 +68,8 @@ func getControllerInstance() Controller {
 
 func (c *controller) home(echoCtx echo.Context) error {
 	utils.SetPage(echoCtx, enum.Home)
+
 	utils.SetTitle(echoCtx, "Home Page")
-
-	/*salesMonth := salesData[len(salesData)-1]
-	salesMonth = utils.ToFixed(salesMonth, 2)
-
-	salesYear := float64(0)
-	for _, v := range salesData {
-		salesYear += v
-	}
-	salesYear = utils.ToFixed(salesYear, 2)
-
-	collectedMonth := collectedData[len(collectedData)-1]
-	collectedMonth = utils.ToFixed(collectedMonth, 2)
-
-	collectedYear := float64(0)
-	for _, v := range collectedData {
-		collectedYear += v
-	}
-	collectedYear = utils.ToFixed(collectedYear, 2)*/
 
 	return utils.Render(HomeView(), echoCtx)
 }
