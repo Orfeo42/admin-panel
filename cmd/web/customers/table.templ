@@ -6,21 +6,20 @@ import (
 )
 
 templ customerTable(items []database.CustomerWithTotals) {
-	<table class="table table-bordered table-striped table-hover" id="dataTable">
-		<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">Telefono</th>
-				<th scope="col">E-mail</th>
-				<th scope="col" style="text-align: right;">Totale fatturato</th>
-				<th scope="col" style="text-align: right;">Totale da pagare</th>
-				<th scope="col"></th>
-			</tr>
-		</thead>
-		<tbody id="data">
-			@AllCustomerRowsShow(items)
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped table-hover" id="dataTable">
+			<thead>
+				<tr>
+					<th scope="col" class="bg-body-secondary">Name</th>
+					<th scope="col" class="bg-body-secondary text-end">Totale fatturato</th>
+					<th scope="col" class="bg-body-secondary text-end">Totale da pagare</th>
+				</tr>
+			</thead>
+			<tbody id="data">
+				@AllCustomerRowsShow(items)
+			</tbody>
+		</table>
+	</div>
 }
 
 templ AllCustomerRowsShow(items []database.CustomerWithTotals) {
@@ -51,14 +50,11 @@ templ CustomerRowShowLast(item database.CustomerWithTotals) {
 }
 
 templ customerColumns(item database.CustomerWithTotals) {
-	<th scope="row">{ item.Name }</th>
-	<td>{ item.Phone }</td>
-	<td>{ item.Email }</td>
-	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
-	<td style="text-align: right;">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
-	<td style="text-align: center;">
-		<a class="btn btn-outline-warning" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID)) }>
+	<th scope="row">
+		<a class="btn btn-outline-warning me-3" href={ templ.SafeURL("/customer/" + utils.UintToString(item.ID)) }>
 			<i class="cil-user"></i>
-		</a>
-	</td>
+		</a>{ item.Name }
+	</th>
+	<td class="text-end text-nowrap">{ utils.AmountIntegerToString(item.TotalAmount) } €</td>
+	<td class="text-end text-nowrap">{ utils.AmountIntegerToString(item.TotalToPay) } €</td>
 }
