@@ -2,9 +2,9 @@ package home
 
 import (
 	"admin-panel/cmd/enum"
-	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
 	"admin-panel/utils"
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
@@ -20,7 +20,9 @@ func RegisterRoutes(application *echo.Echo) {
 	controller := getControllerInstance()
 
 	homeGroup.GET("", controller.home)
-	homeGroup.GET("/graph", controller.graph)
+	homeGroup.GET("/sales/graph", controller.salesGraph)
+	homeGroup.GET("/collected/graph", controller.collectedGraph)
+	homeGroup.GET("/to-be-collected/graph", controller.toBeCollectedGraph)
 
 	homeGroup.GET("/sales/month", controller.salesMonth)
 	homeGroup.GET("/sales/year", controller.salesYear)
@@ -39,14 +41,18 @@ var controllerInstance *controller
 
 type Controller interface {
 	home(echoCtx echo.Context) error
-	graph(echoCtx echo.Context) error
+
+	salesGraph(echoCtx echo.Context) error
 	salesMonth(echoCtx echo.Context) error
 	salesYear(echoCtx echo.Context) error
 	salesAll(echoCtx echo.Context) error
+
+	collectedGraph(echoCtx echo.Context) error
 	collectedMonth(echoCtx echo.Context) error
 	collectedYear(echoCtx echo.Context) error
 	collectedAll(echoCtx echo.Context) error
 
+	toBeCollectedGraph(echoCtx echo.Context) error
 	toBeCollectedMonth(echoCtx echo.Context) error
 	toBeCollectedYear(echoCtx echo.Context) error
 	toBeCollectedAll(echoCtx echo.Context) error
@@ -74,41 +80,117 @@ func (c *controller) home(echoCtx echo.Context) error {
 	return utils.Render(HomeView(), echoCtx)
 }
 
-func (c *controller) graph(echoCtx echo.Context) error {
+func (c *controller) salesGraph(echoCtx echo.Context) error {
 
-	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
-
-	dateFrom := startOfYear
 	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(-1, 0, 0)
 
 	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
 	if err != nil {
 		log.Errorf("Error in Sales retrive: %+v", err)
 		return err
 	}
-	salesData := earningsToAreaChartData(salesList)
+	chartData, err := earningsToAreaChartData(salesList)
 
-	collectedList, err := c.invRep.CollectedByMonth(startOfYear, dateTo)
+	return echoCtx.JSON(http.StatusOK, chartData)
+	/*
+		salesData := earningsToAreaChartData(salesList)
+		collectedList, err := c.invRep.CollectedByMonth(startOfYear, dateTo)
+		if err != nil {
+			log.Errorf("Error in collected retrive: %+v", err)
+			return err
+		}
+		collectedData := earningsToAreaChartData(collectedList)
+
+		dataSets := []components.AreaChartDataset{
+			components.LoadBlueData("Fatturato", salesData),
+			components.LoadGreenData("Riscosso", collectedData),
+		}
+
+		log.Infof("dataSets: %+v", dataSets)
+
+		labels := getMonthsBetweenDates(dateFrom, dateTo)
+		areaChartParams := components.AreaChartParams{
+			XAxesLabels: labels,
+			DataSets:    dataSets,
+		}
+
+		return utils.Render(components.AreaChart("salesChart", areaChartParams), echoCtx)*/
+}
+func (c *controller) collectedGraph(echoCtx echo.Context) error {
+
+	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(-1, 0, 0)
+
+	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
 	if err != nil {
-		log.Errorf("Error in collected retrive: %+v", err)
+		log.Errorf("Error in Sales retrive: %+v", err)
 		return err
 	}
-	collectedData := earningsToAreaChartData(collectedList)
+	chartData, err := earningsToAreaChartData(salesList)
 
-	dataSets := []components.AreaChartDataset{
-		components.LoadBlueData("Fatturato", salesData),
-		components.LoadGreenData("Riscosso", collectedData),
+	return echoCtx.JSON(http.StatusOK, chartData)
+	/*
+		salesData := earningsToAreaChartData(salesList)
+		collectedList, err := c.invRep.CollectedByMonth(startOfYear, dateTo)
+		if err != nil {
+			log.Errorf("Error in collected retrive: %+v", err)
+			return err
+		}
+		collectedData := earningsToAreaChartData(collectedList)
+
+		dataSets := []components.AreaChartDataset{
+			components.LoadBlueData("Fatturato", salesData),
+			components.LoadGreenData("Riscosso", collectedData),
+		}
+
+		log.Infof("dataSets: %+v", dataSets)
+
+		labels := getMonthsBetweenDates(dateFrom, dateTo)
+		areaChartParams := components.AreaChartParams{
+			XAxesLabels: labels,
+			DataSets:    dataSets,
+		}
+
+		return utils.Render(components.AreaChart("salesChart", areaChartParams), echoCtx)*/
+}
+
+func (c *controller) toBeCollectedGraph(echoCtx echo.Context) error {
+
+	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(-1, 0, 0)
+
+	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
 	}
+	chartData, err := earningsToAreaChartData(salesList)
 
-	log.Infof("dataSets: %+v", dataSets)
+	return echoCtx.JSON(http.StatusOK, chartData)
+	/*
+		salesData := earningsToAreaChartData(salesList)
+		collectedList, err := c.invRep.CollectedByMonth(startOfYear, dateTo)
+		if err != nil {
+			log.Errorf("Error in collected retrive: %+v", err)
+			return err
+		}
+		collectedData := earningsToAreaChartData(collectedList)
 
-	labels := getMonthsBetweenDates(dateFrom, dateTo)
-	areaChartParams := components.AreaChartParams{
-		XAxesLabels: labels,
-		DataSets:    dataSets,
-	}
+		dataSets := []components.AreaChartDataset{
+			components.LoadBlueData("Fatturato", salesData),
+			components.LoadGreenData("Riscosso", collectedData),
+		}
 
-	return utils.Render(components.AreaChart("salesChart", areaChartParams), echoCtx)
+		log.Infof("dataSets: %+v", dataSets)
+
+		labels := getMonthsBetweenDates(dateFrom, dateTo)
+		areaChartParams := components.AreaChartParams{
+			XAxesLabels: labels,
+			DataSets:    dataSets,
+		}
+
+		return utils.Render(components.AreaChart("salesChart", areaChartParams), echoCtx)*/
 }
 
 func (c *controller) salesMonth(echoCtx echo.Context) error {
@@ -298,12 +380,52 @@ func monthsBetween(dateFrom, dateTo time.Time) int {
 	return totalMonths
 }
 
-func earningsToAreaChartData(earningList []database.MoneyByMonthResult) []float64 {
+type ChartData struct {
+	Labels []string
+	Values []float64
+}
+
+func earningsToAreaChartData(earningList []database.MoneyByMonthResult) (ChartData, error) {
+	var labels []string
 	var data []float64
 	for _, earning := range earningList {
+		month, err := nomeMese(earning.Month)
+		month = month + " - " + strconv.Itoa(earning.Year)
+		if err != nil {
+			log.Errorf("Error in collected retrive: %+v", err)
+			return ChartData{}, err
+		}
+		labels = append(labels, month)
+
 		amount := float64(earning.Amount) / 100
 		amount = utils.ToFixed(amount, 2)
 		data = append(data, amount)
 	}
-	return data
+	return ChartData{
+		labels,
+		data,
+	}, nil
+}
+
+var mesi = map[int]string{
+	1:  "Gennaio",
+	2:  "Febbraio",
+	3:  "Marzo",
+	4:  "Aprile",
+	5:  "Maggio",
+	6:  "Giugno",
+	7:  "Luglio",
+	8:  "Agosto",
+	9:  "Settembre",
+	10: "Ottobre",
+	11: "Novembre",
+	12: "Dicembre",
+}
+
+// Funzione per ottenere il nome del mese
+func nomeMese(numero int) (string, error) {
+	if mese, exists := mesi[numero]; exists {
+		return mese, nil
+	}
+	return "", errors.New("numero del mese non valido")
 }

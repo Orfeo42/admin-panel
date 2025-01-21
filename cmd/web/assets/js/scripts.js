@@ -80,68 +80,75 @@ const enableDropDown = () => {
     dropdownElementList.forEach(element => new coreui.Dropdown(element))
 }
 
+const chartSettings = {
+    type: 'line',
+    data: {
+        labels: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+        datasets: [
+            {
+                label: 'My First dataset',
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255,255,255,.55)',
+                data: [65, 59, 84, 84, 51, 55, 40, 84, 84, 51, 55, 40]
+            }
+        ]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                border: {
+                    display: false
+                },
+                grid: {
+                    display: false,
+                    drawBorder: false
+                },
+                ticks: {
+                    display: false
+                }
+            },
+            y: {
+                display: false,
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    display: false
+                }
+            }
+        },
+        elements: {
+            line: {
+                borderWidth: 1,
+                tension: 0.4
+            },
+            point: {
+                radius: 4,
+                hitRadius: 10,
+                hoverRadius: 4
+            }
+        }
+    }
+};
+
 
 const enableCharts = () => {
     const elements = document.querySelectorAll('.chart')
-    elements.forEach(element => {
-        new Chart(element, {
-            type: 'line',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [
-                    {
-                        label: 'My First dataset',
-                        backgroundColor: 'transparent',
-                        borderColor: 'rgba(255,255,255,.55)',
-                        data: [65, 59, 84, 84, 51, 55, 40]
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        border: {
-                            display: false
-                        },
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        min: 30,
-                        max: 89,
-                        display: false,
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            display: false
-                        }
-                    }
-                },
-                elements: {
-                    line: {
-                        borderWidth: 1,
-                        tension: 0.4
-                    },
-                    point: {
-                        radius: 4,
-                        hitRadius: 10,
-                        hoverRadius: 4
-                    }
-                }
-            }
-        })
+    fetch('/graph').then(res => {
+        if (res.status === 200) {
+            return res.json()
+        }
+    }).then(value => {
+        console.log(value)
+        chartSettings.data.labels = value.Labels
+        chartSettings.data.datasets[0].data = value.Values
+        elements.forEach(element => new Chart(element, chartSettings));
     });
 }
 
