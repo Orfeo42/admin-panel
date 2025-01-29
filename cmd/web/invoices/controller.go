@@ -1,7 +1,6 @@
 package invoices
 
 import (
-	"net/http"
 	"time"
 
 	"admin-panel/cmd/enum"
@@ -159,11 +158,17 @@ func (c *controller) create(echoCtx echo.Context) error {
 		}), echoCtx)
 	}
 
-	_, err := c.invRep.Create(invoiceIn)
+	invoice, err := c.invRep.Create(invoiceIn)
 	if err != nil {
 		return err
 	}
-	return echoCtx.Redirect(http.StatusMovedPermanently, baseUrl)
+
+	invoice, err = c.invRep.Read(invoice.ID)
+	if err != nil {
+		return err
+	}
+
+	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
 /*--UPDATE HANDLER--*/

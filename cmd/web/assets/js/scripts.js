@@ -17,6 +17,25 @@ const enableDeleteButtons = () => {
     elements.forEach(element => element.addEventListener('click', () => buttonDeleteClick(element)));
 }
 
+const buttonAbortInsertClick = (element) => {
+    Swal.fire({
+        title: `Vuoi annullare l'inserimento?`,
+        showCancelButton: true,
+        confirmButtonText: 'Annulla',
+        cancelButtonText: 'Continua',
+        text: `Vuoi procedere all'annullamento del inserimento?`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            element.closest('tr').remove();
+        }
+    });
+}
+
+const enableAbortInsertButtons = () => {
+    const elements = document.querySelectorAll('.invoice-abort-add')
+    elements.forEach(element => element.addEventListener('click', () => buttonAbortInsertClick(element)));
+}
+
 const buttonEditClick = (element) => {
     let editing = document.querySelector('.editing')
     if (editing) {
@@ -41,11 +60,6 @@ const enableEditButtons = () => {
     const elements = document.querySelectorAll('.invoice-edit-button')
     elements.forEach(element => element.addEventListener('click', () => buttonEditClick(element)));
 }
-
-document.addEventListener("htmx:afterSwap", _ => {
-    enableDeleteButtons();
-    enableEditButtons();
-});
 
 const buttonPayClick = (element) => {
     Swal.fire({
@@ -214,6 +228,7 @@ document.addEventListener("htmx:afterSwap", _ => {
     enableDeleteButtons();
     enableEditButtons();
     enablePayButtons();
+    enableAbortInsertButtons();
 });
 
 const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
