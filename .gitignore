@@ -12,3 +12,6 @@
 *.xlsx
 
 **/*.log
+
+**/01 - customer.sql
+**/02 - invoices.sql

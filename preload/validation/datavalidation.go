@@ -14,5 +14,5 @@ func FindCustomerFromName(customers []database.Customer, name string) (database.
 		}
 	}
 	log.Infof("No customer with name '%s' found", name)
-	return database.Customer{}, errors.New("No customer with name " + name + " found")
+	return database.Customer{}, errors.New("No customer with name '" + name + "' found")
 }
