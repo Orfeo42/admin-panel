@@ -1,7 +1,6 @@
 services:
   app:
-    build: .
-    image: ${APP_NAME}-app:latest
+    image: orfeo42/admin-panel:latest
     container_name: ${APP_NAME}-app
     depends_on:
       - postgres
