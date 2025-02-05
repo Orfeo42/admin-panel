@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	_ "github.com/joho/godotenv/autoload"
+	//_ "github.com/joho/godotenv/autoload"
 	"gorm.io/gorm"
 
 	"admin-panel/internal/database"
