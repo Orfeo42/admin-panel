@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    tags: "*.*.*"
+    tags: [ "*.*.*" ]
 
 jobs:
 
@@ -26,12 +26,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}
-          tags: |
-            type=ref,event=push
-            type=semver,pattern={{version}}
-            type=sha
-          flavor: |
-            latest
 
       - name: Build and push Docker image
         id: build-and-push
