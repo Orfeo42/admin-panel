@@ -11,7 +11,7 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_USERNAME=${DB_USERNAME}
-      - DB_PORT=${DB_PORT}
+      - DB_PORT=5432
       - DB_HOST=postgres
 
   postgres:
