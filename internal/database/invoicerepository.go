@@ -22,6 +22,10 @@ type InvoiceRepository interface {
 	ReadAllByCustomerIDAndPaid(customerID uint, isPaid *bool) ([]Invoice, error)
 	SalesByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
 	CollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
+	ToBeCollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error)
+	SalesTotal(dateFrom, dateTo time.Time) (int64, error)
+	CollectedTotal(dateFrom, dateTo time.Time) (int64, error)
+	ToBeCollectedTotal(dateFrom, dateTo time.Time) (int64, error)
 }
 
 type invoiceRepository struct {
@@ -52,6 +56,7 @@ type Invoice struct {
 	ExpectedPaymentDate *time.Time
 	Rows                *[]InvoiceRow
 	Note                *string
+	DeletedAt           gorm.DeletedAt `gorm:"index"`
 }
 
 type InvoiceRow struct {
@@ -129,7 +134,7 @@ func (r *invoiceRepository) CreateList(invoiceList []Invoice) ([]Invoice, error)
 
 func (r *invoiceRepository) Read(id uint) (*Invoice, error) {
 	var invoice Invoice
-	tx := r.db.First(&invoice, id)
+	tx := r.db.Preload("Customer").First(&invoice, id)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -142,13 +147,12 @@ func (r *invoiceRepository) Update(invoice Invoice) error {
 }
 
 func (r *invoiceRepository) Delete(id uint) error {
-	var invoice Invoice
-	if err := r.db.First(&invoice, 1).Error; err != nil {
+	if err := r.db.First(&Invoice{}, id).Error; err != nil {
 		fmt.Println("Record not found!")
 		return err
 	}
 
-	if err := r.db.Delete(invoice, 1).Error; err != nil {
+	if err := r.db.Delete(&Invoice{}, id).Error; err != nil {
 		fmt.Println("Error deleting user:", err)
 		return err
 	}
@@ -243,10 +247,66 @@ func (r *invoiceRepository) CollectedByMonth(dateFrom, dateTo time.Time) ([]Mone
 	var earningsByMonthResult []MoneyByMonthResult
 
 	r.db.Table("invoices").
-		Select("date_part('year', payment_date) as Year, date_part('month', payment_date) as Month, sum(amount) as Amount").
+		Select("date_part('year', payment_date) as Year, date_part('month', payment_date) as Month, sum(paid_amount) as Amount").
 		Where("payment_date between ? and ?", dateFrom, dateTo).
 		Group("date_part('year', payment_date), date_part('month', payment_date)").
 		Order("date_part('year', payment_date), date_part('month', payment_date)").
 		Scan(&earningsByMonthResult)
 	return earningsByMonthResult, nil
+}
+
+func (r *invoiceRepository) ToBeCollectedByMonth(dateFrom, dateTo time.Time) ([]MoneyByMonthResult, error) {
+	var earningsByMonthResult []MoneyByMonthResult
+
+	totalSales, err := r.SalesByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return nil, err
+	}
+	totalCollected, err := r.CollectedByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return nil, err
+	}
+	for i, sales := range totalSales {
+		collected := totalCollected[i]
+		earningsByMonthResult = append(earningsByMonthResult, MoneyByMonthResult{
+			Year:   sales.Year,
+			Month:  sales.Month,
+			Amount: sales.Amount - collected.Amount,
+		})
+	}
+	return earningsByMonthResult, nil
+}
+
+func (r *invoiceRepository) SalesTotal(dateFrom, dateTo time.Time) (int64, error) {
+	var totalAmount int64
+	r.db.Table("invoices").
+		Select("sum(amount) as Amount").
+		Where("date between ? and ?", dateFrom, dateTo).
+		Scan(&totalAmount)
+	return totalAmount, nil
+}
+
+func (r *invoiceRepository) CollectedTotal(dateFrom, dateTo time.Time) (int64, error) {
+	var totalAmount int64
+	r.db.Table("invoices").
+		Select("sum(paid_amount) as Amount").
+		Where("payment_date between ? and ?", dateFrom, dateTo).
+		Scan(&totalAmount)
+	return totalAmount, nil
+}
+
+func (r *invoiceRepository) ToBeCollectedTotal(dateFrom, dateTo time.Time) (int64, error) {
+	totalSales, err := r.SalesTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return 0, err
+	}
+	totalCollected, err := r.CollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in query execution: %+v", err)
+		return 0, err
+	}
+	return totalSales - totalCollected, nil
 }

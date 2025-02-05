@@ -1,7 +1,6 @@
 package invoices
 
 import (
-	"net/http"
 	"time"
 
 	"admin-panel/cmd/enum"
@@ -28,7 +27,8 @@ func RegisterRoutes(application *echo.Echo) {
 
 	invoiceGroup.GET("/:id/edit", controller.updatePage)
 	invoiceGroup.PUT("/:id", controller.update)
-	invoiceGroup.PUT("/:id/pay", controller.payByID)
+	invoiceGroup.PUT("/:id/pay", controller.payByID) //TODO MEGLIO PATHC
+	invoiceGroup.DELETE("/:id", controller.delete)
 }
 
 const pageName = "Fatture"
@@ -45,6 +45,8 @@ type Controller interface {
 	updatePage(echoCtx echo.Context) error
 	update(echoCtx echo.Context) error
 	payByID(echoCtx echo.Context) error
+
+	delete(echoCtx echo.Context) error
 }
 
 type controller struct {
@@ -156,11 +158,17 @@ func (c *controller) create(echoCtx echo.Context) error {
 		}), echoCtx)
 	}
 
-	_, err := c.invRep.Create(invoiceIn)
+	invoice, err := c.invRep.Create(invoiceIn)
 	if err != nil {
 		return err
 	}
-	return echoCtx.Redirect(http.StatusMovedPermanently, baseUrl)
+
+	invoice, err = c.invRep.Read(invoice.ID)
+	if err != nil {
+		return err
+	}
+
+	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
 }
 
 /*--UPDATE HANDLER--*/
@@ -193,8 +201,8 @@ func (c *controller) update(echoCtx echo.Context) error {
 	invoice, errors := validateCreateUpdateRequest(echoCtx)
 	invoice.ID = id
 
-	log.Errorf("errors: %+v", errors)
 	if len(errors) > 0 {
+		log.Errorf("Errors in update validation: %+v", errors)
 		return utils.Render(InvoiceRowEdit(InvoiceEditParams{
 			Invoice: invoice,
 			Errors:  errors,
@@ -207,8 +215,12 @@ func (c *controller) update(echoCtx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	invoiceRes, err := c.invRep.Read(id)
+	if err != nil {
+		return err
+	}
 
-	return utils.Render(InvoiceTableRow(invoice), echoCtx)
+	return utils.Render(InvoiceTableRow(*invoiceRes), echoCtx)
 }
 
 func (c *controller) payByID(echoCtx echo.Context) error {
@@ -235,6 +247,22 @@ func (c *controller) payByID(echoCtx echo.Context) error {
 	}
 
 	return utils.Render(InvoiceTableRow(*invoice), echoCtx)
+}
+func (c *controller) delete(echoCtx echo.Context) error {
+	id, err := utils.StringToUint(echoCtx.Param("id"))
+	if err != nil {
+		//TODO GESTISCI ERRORE HTML
+
+		log.Errorf("errors: %+v", err)
+		return err
+	}
+	err = c.invRep.Delete(id)
+	if err != nil {
+		//TODO GESTISCI ERRORE HTML
+		log.Errorf("errors: %+v", err)
+		return err
+	}
+	return nil
 }
 
 /*--VARIUS FUNCTIONS--*/
@@ -297,19 +325,22 @@ func validateCreateUpdateRequest(echoCtx echo.Context) (database.Invoice, map[st
 		errors["date"] = "date is not valid"
 	}
 
-	invoice.PaymentDate, err = utils.StringToTimePtr(echoCtx.FormValue("paymentDate"))
+	invoice.PaidAmount, err = utils.StringToAmountValidEmpty(echoCtx.FormValue("paidAmount"))
 	if err != nil {
-		errors["paymentDate"] = "payment date is not valid"
+		errors["paidAmount"] = "paid amount is not valid"
+	}
+
+	paymentDate := echoCtx.FormValue("paymentDate")
+	if paymentDate != "" || invoice.PaidAmount != 0 {
+		invoice.PaymentDate, err = utils.StringToTimePtr(paymentDate)
+		if err != nil {
+			errors["paymentDate"] = "payment date is not valid"
+		}
 	}
 
 	invoice.Amount, err = utils.StringToAmount(echoCtx.FormValue("amount"))
 	if err != nil {
 		errors["amount"] = "amount is not valid"
-	}
-
-	invoice.PaidAmount, err = utils.StringToAmountValidEmpty(echoCtx.FormValue("paidAmount"))
-	if err != nil {
-		errors["paidAmount"] = "paid amount is not valid"
 	}
 
 	invoice.PaymentMethod = utils.StringPtrNilIfEmpty(echoCtx.FormValue("paymentMethod"))

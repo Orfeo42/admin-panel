@@ -1,9 +1,9 @@
 package invoices
 
 import (
-	"admin-panel/utils"
 	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
+	"admin-panel/utils"
 )
 
 type InvoiceEditParams struct {
@@ -23,18 +23,16 @@ templ InvoiceRowEdit(params InvoiceEditParams) {
 		@InvoiceRowForm(params)
 		<td style="white-space: nowrap; text-align: center">
 			<button
-				class="btn btn-primary"
+				class="btn btn-outline-info"
 				hx-put={ "/invoice/" + utils.UintToString(params.Invoice.ID) }
 				hx-include="closest tr"
 			>
-				<i class="fa-solid fa-floppy-disk"></i>
-				Salva
+				<i class="cil-save"></i>
 			</button>
 		</td>
 		<td>
-			<button class="btn btn-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) + "/row" }>
-				<i class="fa-solid fa-xmark"></i>
-				Annulla
+			<button class="btn btn-outline-danger" hx-get={ "/invoice/" + utils.UintToString(params.Invoice.ID) + "/row" }>
+				<i class="cil-x"></i>
 			</button>
 		</td>
 	</tr>
@@ -45,19 +43,15 @@ templ InvoiceRowAdd(params InvoiceEditParams) {
 		@InvoiceRowForm(params)
 		<td style="white-space: nowrap; text-align: center">
 			<button
-				class="btn btn-primary"
+				class="btn btn-outline-info"
 				hx-post={ "/invoice" }
 				hx-include="closest tr"
 			>
-				<i class="fa-solid fa-floppy-disk"></i>
-				Salva
+				<i class="cil-save"></i>
 			</button>
 		</td>
 		<td>
-			<button class="btn btn-danger">
-				<i class="fa-solid fa-xmark"></i>
-				Annulla
-			</button>
+			<button class="btn btn-outline-danger invoice-abort-add"><i class="cil-x"></i></button>
 		</td>
 	</tr>
 }
@@ -110,68 +104,4 @@ templ InvoiceRowForm(params InvoiceEditParams) {
 		})
 	</td>
 	<td style="text-align: center;"></td>
-}
-
-templ invoiceEditButton(id string) {
-	<button
-		class="btn btn-primary"
-		hx-get={ "/invoice/" + id + "/edit" }
-		hx-trigger="edit"
-		id={ "invoiceEditButton_" + id }
-	>
-		<i class="fa-regular fa-pen-to-square"></i> Modifica
-	</button>
-	@invoiceEditButtonScript(id)
-}
-
-script invoiceEditButtonScript(id string) {
-    const editButton = document.getElementById(`invoiceEditButton_${id}`);
-
-    function buttonEditClick(){
-        let editing = document.querySelector('.editing')
-        if(editing) {
-            Swal.fire({
-                title: 'Stai già modificando!',
-                showCancelButton: true,
-                confirmButtonText: 'Sì, Modifica questa riga!',
-                text:'Stai già modificando un altra riga. Vuoi annullare per modificare questa?'
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    htmx.trigger(editing, 'cancel')
-                    htmx.trigger(this, 'edit')
-                }
-            })
-        } else {
-            htmx.trigger(this, 'edit')
-        }
-    }
-
-    editButton.addEventListener('click', buttonEditClick);
-}
-
-templ invoiceDeleteButton(id string) {
-	<button class="btn btn-primary" hx-delete={ "/invoice/" + id } hx-trigger="delete" id={ "invoiceDeleteButton_" + id }>
-		<i class="fa-regular fa-pen-to-square"></i> Modifica
-	</button>
-	@invoiceDeleteButtonScript(id)
-}
-
-script invoiceDeleteButtonScript(id string) {
-    const button = document.getElementById(`invoiceDeleteButton_${id}`);
-
-    function buttonEditClick(){
-        Swal.fire({
-            title: 'Vuoi eliminare?',
-            showCancelButton: true,
-            confirmButtonText: 'Elimina',
-            text:'Vuoi procedere all''eliminazione di questo elemento?'
-        }).then((result) => {
-            if(result.isConfirmed) {
-                htmx.trigger(deleting, 'cancel')
-                htmx.trigger(this, 'delete')
-            }
-        })
-    }
-
-    button.addEventListener('click', buttonEditClick);
 }

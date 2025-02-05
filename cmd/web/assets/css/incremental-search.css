@@ -1,5 +1,5 @@
 /* Stili CSS per la barra di ricerca e l'anteprima */
-#search-container {
+.search-container {
     position: relative;
 }
 

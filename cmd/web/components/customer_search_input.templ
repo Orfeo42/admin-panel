@@ -9,9 +9,9 @@ type CustomerSearchInputParams struct {
 }
 
 templ CustomerSearchInput(params CustomerSearchInputParams) {
-	<div id="search-container">
+	<div class="search-container input-group">
 		if (params.ShowLabel) {
-			<label for={ "search-input_" + params.Id }>Cliente</label>
+			<label for={ "search-input_" + params.Id } class="input-group-text">Cliente</label>
 		}
 		<input
 			class={ "form-control", templ.KV("is-invalid", params.ErrorString != "") }

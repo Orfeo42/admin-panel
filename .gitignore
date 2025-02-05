@@ -10,3 +10,7 @@
 /bin/
 *.csv
 *.xlsx
+
+**/*.log
+
+init-db/*-data-*.sql

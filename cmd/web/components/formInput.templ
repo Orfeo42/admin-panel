@@ -23,22 +23,36 @@ type FormInputParam struct {
 	FormType    InputType
 	ComboItems  []ComboItem
 	ErrorString string
+	HideLabel   bool
 }
 
 templ FormInput(params FormInputParam) {
-	<label for={ params.Id }>{ params.Description }</label>
-	@Input(params)
+	{{
+	if params.Id == "" {
+		params.Id = params.Name
+	}
+	}}
+	<div class="input-group">
+		if !params.HideLabel {
+			<label for={ params.Id } class="input-group-text">{ params.Description }</label>
+		}
+		<input
+			class="form-control"
+			type={ string(params.FormType) }
+			id={ params.Id }
+			name={ params.Name }
+			aria-label={ params.Description }
+			value={ params.Value }
+			step=".01"
+		/>
+		{ children... }
+	</div>
+	if params.ErrorString != "" {
+		<div class="invalid-feedback">{ params.ErrorString }</div>
+	}
 }
 
 templ Input(params FormInputParam) {
-	<input
-		class={ "form-control", templ.KV("is-invalid", params.ErrorString != "") }
-		type={ string(params.FormType) }
-		name={ params.Name }
-		id={ params.Id }
-		placeholder={ params.Description }
-		value={ params.Value }
-		step=".01"
-	/>
-	<div>{ params.ErrorString }</div>
+	{{ params.HideLabel = true }}
+	@FormInput(params)
 }

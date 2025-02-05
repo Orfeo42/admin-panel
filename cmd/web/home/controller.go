@@ -2,9 +2,10 @@ package home
 
 import (
 	"admin-panel/cmd/enum"
-	"admin-panel/cmd/web/components"
 	"admin-panel/internal/database"
 	"admin-panel/utils"
+	"errors"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -19,12 +20,42 @@ func RegisterRoutes(application *echo.Echo) {
 	controller := getControllerInstance()
 
 	homeGroup.GET("", controller.home)
+
+	homeGroup.GET("/sales/graph", controller.salesGraph)
+	homeGroup.GET("/sales/month", controller.salesMonth)
+	homeGroup.GET("/sales/year", controller.salesYear)
+	homeGroup.GET("/sales/all", controller.salesAll)
+
+	homeGroup.GET("/collected/graph", controller.collectedGraph)
+	homeGroup.GET("/collected/month", controller.collectedMonth)
+	homeGroup.GET("/collected/year", controller.collectedYear)
+	homeGroup.GET("/collected/all", controller.collectedAll)
+
+	homeGroup.GET("/to-be-collected/graph", controller.toBeCollectedGraph)
+	homeGroup.GET("/to-be-collected/month", controller.toBeCollectedMonth)
+	homeGroup.GET("/to-be-collected/year", controller.toBeCollectedYear)
+	homeGroup.GET("/to-be-collected/all", controller.toBeCollectedAll)
 }
 
 var controllerInstance *controller
 
 type Controller interface {
 	home(echoCtx echo.Context) error
+
+	salesGraph(echoCtx echo.Context) error
+	salesMonth(echoCtx echo.Context) error
+	salesYear(echoCtx echo.Context) error
+	salesAll(echoCtx echo.Context) error
+
+	collectedGraph(echoCtx echo.Context) error
+	collectedMonth(echoCtx echo.Context) error
+	collectedYear(echoCtx echo.Context) error
+	collectedAll(echoCtx echo.Context) error
+
+	toBeCollectedGraph(echoCtx echo.Context) error
+	toBeCollectedMonth(echoCtx echo.Context) error
+	toBeCollectedYear(echoCtx echo.Context) error
+	toBeCollectedAll(echoCtx echo.Context) error
 }
 
 type controller struct {
@@ -43,67 +74,207 @@ func getControllerInstance() Controller {
 
 func (c *controller) home(echoCtx echo.Context) error {
 	utils.SetPage(echoCtx, enum.Home)
-	utils.SetTitle(echoCtx, "home Page")
 
-	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+	utils.SetTitle(echoCtx, "Home Page")
 
-	dateFrom := startOfYear
+	return utils.Render(HomeView(), echoCtx)
+}
+
+func (c *controller) salesGraph(echoCtx echo.Context) error {
+
 	dateTo := time.Now()
-
-	labels := getMonthsBetweenDates(dateFrom, dateTo)
+	dateFrom := dateTo.AddDate(-1, 0, 0)
 
 	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
 	if err != nil {
 		log.Errorf("Error in Sales retrive: %+v", err)
 		return err
 	}
-	collectedList, err := c.invRep.CollectedByMonth(startOfYear, time.Now())
+	chartData, err := earningsToAreaChartData(salesList)
+
+	return echoCtx.JSON(http.StatusOK, chartData)
+}
+func (c *controller) collectedGraph(echoCtx echo.Context) error {
+
+	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(-1, 0, 0)
+
+	collectedList, err := c.invRep.CollectedByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+	chartData, err := earningsToAreaChartData(collectedList)
+
+	return echoCtx.JSON(http.StatusOK, chartData)
+}
+
+func (c *controller) toBeCollectedGraph(echoCtx echo.Context) error {
+
+	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(-1, 0, 0)
+
+	earnings, err := c.invRep.ToBeCollectedByMonth(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
+	}
+	chartData, err := earningsToAreaChartData(earnings)
+
+	return echoCtx.JSON(http.StatusOK, chartData)
+}
+
+func (c *controller) salesMonth(echoCtx echo.Context) error {
+
+	dateTo := time.Now()
+
+	startOfMonth := time.Date(dateTo.Year(), dateTo.Month(), 1, 0, 0, 0, 0, dateTo.Location())
+
+	dateFrom := startOfMonth
+
+	amount, err := c.invRep.SalesTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
+	}
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) salesYear(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.SalesTotal(dateFrom, dateTo)
 	if err != nil {
 		log.Errorf("Error in collected retrive: %+v", err)
 		return err
 	}
 
-	salesData := earningsToAreaChartData(salesList)
-	collectedData := earningsToAreaChartData(collectedList)
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
 
-	salesMonth := salesData[len(salesData)-1]
-	salesMonth = utils.ToFixed(salesMonth, 2)
+func (c *controller) salesAll(echoCtx echo.Context) error {
+	dateTo := time.Now()
 
-	salesYear := float64(0)
-	for _, v := range salesData {
-		salesYear += v
-	}
-	salesYear = utils.ToFixed(salesYear, 2)
+	startOfYear := time.Date(1900, time.January, 1, 0, 0, 0, 0, time.Local)
 
-	collectedMonth := collectedData[len(collectedData)-1]
-	collectedMonth = utils.ToFixed(collectedMonth, 2)
+	dateFrom := startOfYear
 
-	collectedYear := float64(0)
-	for _, v := range collectedData {
-		collectedYear += v
-	}
-	collectedYear = utils.ToFixed(collectedYear, 2)
-
-	dataSets := []components.AreaChartDataset{
-		components.LoadBlueData("Fatturato", salesData),
-		components.LoadGreenData("Riscosso", collectedData),
+	amount, err := c.invRep.SalesTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
 	}
 
-	log.Infof("dataSets: %+v", dataSets)
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
 
-	areaChartParams := components.AreaChartParams{
-		XAxesLabels: labels,
-		DataSets:    dataSets,
+func (c *controller) collectedMonth(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfMonth := time.Date(dateTo.Year(), dateTo.Month(), 1, 0, 0, 0, 0, dateTo.Location())
+
+	dateFrom := startOfMonth
+
+	amount, err := c.invRep.CollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
 	}
 
-	homePrams := HomeParameters{
-		AreaChartParams: areaChartParams,
-		SalesMonth:      salesMonth,
-		SalesYear:       salesYear,
-		CollectedMonth:  collectedMonth,
-		CollectedYear:   collectedYear,
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) collectedYear(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.CollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
 	}
-	return utils.Render(HomeView(homePrams), echoCtx)
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) collectedAll(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(1900, time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.CollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) toBeCollectedMonth(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfMonth := time.Date(dateTo.Year(), dateTo.Month(), 1, 0, 0, 0, 0, dateTo.Location())
+
+	dateFrom := startOfMonth
+
+	amount, err := c.invRep.ToBeCollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) toBeCollectedYear(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.ToBeCollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) toBeCollectedAll(echoCtx echo.Context) error {
+	dateTo := time.Now()
+
+	startOfYear := time.Date(1900, time.January, 1, 0, 0, 0, 0, time.Local)
+
+	dateFrom := startOfYear
+
+	amount, err := c.invRep.ToBeCollectedTotal(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+
+	formattedAmount := utils.AmountIntegerToString(amount)
+	return echoCtx.String(http.StatusOK, formattedAmount)
 }
 
 func getMonthsBetweenDates(dateFrom, dateTo time.Time) []string {
@@ -140,12 +311,52 @@ func monthsBetween(dateFrom, dateTo time.Time) int {
 	return totalMonths
 }
 
-func earningsToAreaChartData(earningList []database.MoneyByMonthResult) []float64 {
+type ChartData struct {
+	Labels []string
+	Values []float64
+}
+
+func earningsToAreaChartData(earningList []database.MoneyByMonthResult) (ChartData, error) {
+	var labels []string
 	var data []float64
 	for _, earning := range earningList {
+		month, err := nomeMese(earning.Month)
+		month = month + " - " + strconv.Itoa(earning.Year)
+		if err != nil {
+			log.Errorf("Error in collected retrive: %+v", err)
+			return ChartData{}, err
+		}
+		labels = append(labels, month)
+
 		amount := float64(earning.Amount) / 100
 		amount = utils.ToFixed(amount, 2)
 		data = append(data, amount)
 	}
-	return data
+	return ChartData{
+		labels,
+		data,
+	}, nil
+}
+
+var mesi = map[int]string{
+	1:  "Gennaio",
+	2:  "Febbraio",
+	3:  "Marzo",
+	4:  "Aprile",
+	5:  "Maggio",
+	6:  "Giugno",
+	7:  "Luglio",
+	8:  "Agosto",
+	9:  "Settembre",
+	10: "Ottobre",
+	11: "Novembre",
+	12: "Dicembre",
+}
+
+// Funzione per ottenere il nome del mese
+func nomeMese(numero int) (string, error) {
+	if mese, exists := mesi[numero]; exists {
+		return mese, nil
+	}
+	return "", errors.New("numero del mese non valido")
 }

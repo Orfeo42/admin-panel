@@ -1,9 +1,8 @@
 package invoices
 
 import (
-	"admin-panel/cmd/web/components"
-	"admin-panel/utils"
 	"admin-panel/internal/database"
+	"admin-panel/utils"
 )
 
 type InvoiceTableParams struct {
@@ -12,28 +11,26 @@ type InvoiceTableParams struct {
 }
 
 templ InvoiceTable(params InvoiceTableParams) {
-	@components.CardComp() {
-		<div class="table-responsive">
-			<table class={ "table", "table-bordered", templ.KV("hideFirstColumn", !params.ShowCustomer) } id="dataTable">
-				<thead>
-					<tr>
-						<th>Cliente</th>
-						<th>Numero</th>
-						<th>Data Fattura</th>
-						<th style="text-align: right;">Importo Fattura</th>
-						<th>Data Pagamento</th>
-						<th style="text-align: right;">Importo Pagato</th>
-						<th>Pagato</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
-					@InvoiceTableRows(params.Items)
-				</tbody>
-			</table>
-		</div>
-	}
+	<div class="table-responsive">
+		<table class={ "table", "table-bordered", "table-striped", "table-hover", templ.KV("hideFirstColumn", !params.ShowCustomer) } id="dataTable">
+			<thead>
+				<tr>
+					<th scope="col" class="bg-body-secondary">Cliente</th>
+					<th scope="col" class="bg-body-secondary text-end">Numero</th>
+					<th scope="col" class="bg-body-secondary text-end">Data Fattura</th>
+					<th scope="col" class="bg-body-secondary text-end">Importo Fattura</th>
+					<th scope="col" class="bg-body-secondary text-end">Data Pagamento</th>
+					<th scope="col" class="bg-body-secondary text-end">Importo Pagato</th>
+					<th scope="col" class="bg-body-secondary">Pagato</th>
+					<th scope="col" class="bg-body-secondary"></th>
+					<th scope="col" class="bg-body-secondary"></th>
+				</tr>
+			</thead>
+			<tbody id="data" hx-target="closest tr" hx-swap="outerHTML">
+				@InvoiceTableRows(params.Items)
+			</tbody>
+		</table>
+	</div>
 }
 
 templ InvoiceTableRows(items []database.Invoice) {
@@ -64,32 +61,45 @@ templ invoiceTableRowLast(item database.Invoice) {
 }
 
 templ invoiceColumns(item database.Invoice) {
-	<td>{ item.Customer.Name }</td>
-	<td style="text-align: right;">{ item.Number }</td>
-	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.Date) }</td>
-	<td style="text-align: right;">{ utils.AmountIntegerToString(item.Amount) } €</td>
-	<td style="text-align: right;">{ utils.FormatTimePtrToTable(item.PaymentDate) }</td>
-	<td style="text-align: right;">{ utils.AmountIntegerToString(item.PaidAmount) } €</td>
-	<td style="text-align: center;">
+	<th scope="row">{ item.Customer.Name }</th>
+	<td class="text-end">{ item.Number }</td>
+	<td class="text-end">{ utils.FormatTimePtrToTable(item.Date) }</td>
+	<td class="text-end">{ utils.AmountIntegerToString(item.Amount) } €</td>
+	<td class="text-end">{ utils.FormatTimePtrToTable(item.PaymentDate) }</td>
+	<td class="text-end">{ utils.AmountIntegerToString(item.PaidAmount) } €</td>
+	<td class="text-center">
 		if item.Amount-item.PaidAmount == 0 {
-			<div class="btn-success btn-circle" style="pointer-events: none;">
-				<i class="fa-solid fa-check"></i>
+			<div class="btn btn-success rounded-pill" style="pointer-events: none;">
+				<i class="cil-toggle-on"></i>
 			</div>
 		} else {
 			<button
-				class="btn btn-danger btn-circle"
+				class="btn btn-warning rounded-pill invoice-pay-button"
 				hx-target="closest tr"
 				hx-swap="outerHTML"
+				hx-trigger="pay"
 				hx-put={ "/invoice/" + utils.UintToString(item.ID) + "/pay" }
 			>
-				<i class="fa-solid fa-xmark"></i>
+				<i class="cil-toggle-off"></i>
 			</button>
 		}
 	</td>
-	<td style="text-align: center">
-		@invoiceEditButton(utils.UintToString(item.ID))
+	<td class="text-center">
+		<button
+			class="btn btn-outline-secondary invoice-edit-button"
+			hx-get={ "/invoice/" + utils.UintToString(item.ID) + "/edit" }
+			hx-trigger="edit"
+		>
+			<i class="cil-pencil"></i>
+		</button>
 	</td>
-	<td style="text-align: center">
-		@invoiceEditButton(utils.UintToString(item.ID))
+	<td class="text-center">
+		<button
+			class="btn btn-outline-danger invoice-delete-button"
+			hx-trigger="delete"
+			hx-delete={ "/invoice/" + utils.UintToString(item.ID) }
+		>
+			<i class="cil-trash"></i>
+		</button>
 	</td>
 }

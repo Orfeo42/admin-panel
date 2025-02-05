@@ -12,26 +12,24 @@ type InvoiceListParams struct {
 
 templ InvoiceList(params InvoiceListParams) {
 	@layout.TableView() {
-		<div class="row">
-			<div class="col-12 mb-4">
-				<h1 class="h3 mb-2 text-gray-800">Lista Fatture</h1>
+		<h3 class="mb-4">Lista Fatture</h3>
+		<div class="card mb-4">
+			<div class="card-header">Filtri</div>
+			<div class="card-body">
+				@InvoiceFilterForm(InvoiceFilterParams{
+					Filter:       params.Filter,
+					ShowCustomer: true,
+				})
 			</div>
 		</div>
-		@InvoiceFilterForm(InvoiceFilterParams{
-			Filter:       params.Filter,
-			ShowCustomer: true,
-		})
-		<div class="row">
-			<div class="col-12 mb-4" style="text-align: right;">
-				<button
-					class="btn btn-primary"
-					hx-target="#data"
-					hx-swap="afterbegin"
-					hx-get={ "/invoice/add" }
-				>
-					<i class="fas fa-fw fa-plus"></i> Nuova fattura
-				</button>
-			</div>
+		<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+			<button
+				class="btn btn-outline-success"
+				type="button"
+				hx-target="#data"
+				hx-swap="afterbegin"
+				hx-get={ "/invoice/add" }
+			><i class="cil-plus"></i> Nuova fattura</button>
 		</div>
 		@InvoiceTable(InvoiceTableParams{
 			Items:        params.Items,

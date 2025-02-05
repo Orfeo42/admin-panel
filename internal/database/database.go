@@ -7,9 +7,8 @@ import (
 	"sync"
 	"time"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv/autoload"
+	//_ "github.com/jackc/pgx/v5/stdlib"
+	//_ "github.com/joho/godotenv/autoload"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -87,11 +86,6 @@ func createNewLogger() *log.Logger {
 }
 
 func getConnectionString() (string, error) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file", err)
-		return "", err
-	}
 	uri := fmt.Sprintf("host=%s port=%s dbname=%s sslmode=%s user=%s password=%s", host, port, database, "disable", username, password)
 	return uri, nil
 }
