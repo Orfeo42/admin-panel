@@ -12,7 +12,7 @@ RUN go mod tidy
 RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/api/main.go
 
 # Deploy.
-FROM alpine:latest  AS release-stage
+FROM alpine:latest AS release-stage
 
 WORKDIR /
 
