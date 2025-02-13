@@ -4,6 +4,9 @@ import "admin-panel/cmd/web/layout"
 
 templ HomeView() {
 	@layout.BaseView() {
+		<div class="card mb-4">
+			@MainChart()
+		</div>
 		<div class="row g-4 mb-4">
 			<div class="col-sm-6 col-xl-4">
 				<div class="card text-white bg-primary">
@@ -131,86 +134,6 @@ templ HomeView() {
 					</div>
 					<div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
 						<canvas class="to-be-collected-chart" height="70"></canvas>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row g-4 mb-4">
-			<div class="col-xl-6 col-lg-6">
-				<div class="card">
-					<div class="card-header">Fatture ultimo mese</div>
-					<div class="card-body"></div>
-				</div>
-			</div>
-			<!--<div class="col-xl-6 col-lg-6">
-				<div class="card">
-					<div class="card-header">Grafico Fatturato/Riscosso</div>
-					<div class="card-body">
-						<div hx-get="/graph" hx-trigger="load">
-							<i class="fa-solid fa-spinner htmx-indicator"></i>
-						</div>
-					</div>
-				</div>
-			</div>-->
-		</div>
-		<div class="card mb-4">
-			<div class="card-body">
-				<div class="d-flex justify-content-between">
-					<div>
-						<h4 class="card-title mb-0">Traffic</h4>
-						<div class="small text-body-secondary">January - July 2023</div>
-					</div>
-					<div class="btn-toolbar d-none d-md-block" role="toolbar" aria-label="Toolbar with buttons">
-						<div class="btn-group btn-group-toggle mx-3" data-coreui-toggle="buttons">
-							<input class="btn-check" id="option1" type="radio" name="options" autocomplete="off"/>
-							<label class="btn btn-outline-secondary" for="option1">Day</label>
-							<input class="btn-check" id="option2" type="radio" name="options" autocomplete="off" checked=""/>
-							<label class="btn btn-outline-secondary active" for="option2">Month</label>
-							<input class="btn-check" id="option3" type="radio" name="options" autocomplete="off"/>
-							<label class="btn btn-outline-secondary" for="option3">Year</label>
-						</div>
-					</div>
-				</div>
-				<div class="c-chart-wrapper" style="height:300px;margin-top:40px;">
-					<canvas class="chart" id="main-chart" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 1238px;" width="1238"></canvas>
-				</div>
-			</div>
-			<div class="card-footer">
-				<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 row-cols-xl-5 g-4 mb-2 text-center">
-					<div class="col">
-						<div class="text-body-secondary">Visits</div>
-						<div class="fw-semibold text-truncate">29.703 Users (40%)</div>
-						<div class="progress progress-thin mt-2">
-							<div class="progress-bar bg-success" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="text-body-secondary">Unique</div>
-						<div class="fw-semibold text-truncate">24.093 Users (20%)</div>
-						<div class="progress progress-thin mt-2">
-							<div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="text-body-secondary">Pageviews</div>
-						<div class="fw-semibold text-truncate">78.706 Views (60%)</div>
-						<div class="progress progress-thin mt-2">
-							<div class="progress-bar bg-warning" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="text-body-secondary">New Users</div>
-						<div class="fw-semibold text-truncate">22.123 Users (80%)</div>
-						<div class="progress progress-thin mt-2">
-							<div class="progress-bar bg-danger" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<div class="col d-none d-xl-block">
-						<div class="text-body-secondary">Bounce Rate</div>
-						<div class="fw-semibold text-truncate">40.15%</div>
-						<div class="progress progress-thin mt-2">
-							<div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
 					</div>
 				</div>
 			</div>

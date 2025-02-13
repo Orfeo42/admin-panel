@@ -1,3 +1,6 @@
+load-env:
+	export $(envsubst < .env)
+
 db-up:
 	@docker-compose -f docker-compose.yaml up -d postgres
 	@echo "🚀 Database is up and running!"
@@ -25,7 +28,7 @@ build:
 run-fresh: build db-reset
 	@./bin/admin-panel
 
-run: build db-up
+run: build load-env
 	@./bin/admin-panel
 
 test:

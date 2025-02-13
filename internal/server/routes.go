@@ -23,7 +23,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	fileServer := http.FileServer(http.FS(web.Files))
 
-	e.GET("/assets/*", echo.WrapHandler(fileServer)) //TODO
+	e.GET("/assets/*", echo.WrapHandler(fileServer))
 
 	home.RegisterRoutes(e)
 

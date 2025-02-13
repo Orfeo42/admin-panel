@@ -35,6 +35,8 @@ func RegisterRoutes(application *echo.Echo) {
 	homeGroup.GET("/to-be-collected/month", controller.toBeCollectedMonth)
 	homeGroup.GET("/to-be-collected/year", controller.toBeCollectedYear)
 	homeGroup.GET("/to-be-collected/all", controller.toBeCollectedAll)
+
+	homeGroup.GET("main-chart", controller.mainChart)
 }
 
 var controllerInstance *controller
@@ -56,6 +58,8 @@ type Controller interface {
 	toBeCollectedMonth(echoCtx echo.Context) error
 	toBeCollectedYear(echoCtx echo.Context) error
 	toBeCollectedAll(echoCtx echo.Context) error
+
+	mainChart(echoCtx echo.Context) error
 }
 
 type controller struct {
@@ -275,6 +279,10 @@ func (c *controller) toBeCollectedAll(echoCtx echo.Context) error {
 
 	formattedAmount := utils.AmountIntegerToString(amount)
 	return echoCtx.String(http.StatusOK, formattedAmount)
+}
+
+func (c *controller) mainChart(echoCtx echo.Context) error {
+	return echoCtx.String(http.StatusOK, "")
 }
 
 func getMonthsBetweenDates(dateFrom, dateTo time.Time) []string {

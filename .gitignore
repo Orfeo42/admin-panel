@@ -15,4 +15,4 @@
 
 init-db/*-data-*.sql
 
-**/.env
+.env

@@ -7,8 +7,6 @@ import (
 	"sync"
 	"time"
 
-	//_ "github.com/jackc/pgx/v5/stdlib"
-	//_ "github.com/joho/godotenv/autoload"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -65,7 +63,7 @@ func createDatabase() {
 	}
 	db, err := gorm.Open(postgres.Open(connString), &gorm.Config{Logger: logLocal})
 	if err != nil {
-		log.Fatal("Error in db connection", err)
+		log.Fatal("Error in db connection: ", err)
 	}
 	dbInstance = db
 }
