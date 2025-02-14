@@ -1,4 +1,4 @@
-import {mainChart} from "./chart-main";
+import {mainChart} from "./chart-main.js";
 
 const chartDefaultSettings = {
     type: 'line',
@@ -60,7 +60,7 @@ const chartDefaultSettings = {
 
 const enableSalesCharts = () => {
     const elements = document.querySelectorAll('.sales-chart')
-    fetch('/sales/graph').then(res => {
+    fetch('/chart/sales').then(res => {
         if (res.status === 200) {
             return res.json()
         }
@@ -76,7 +76,7 @@ const enableSalesCharts = () => {
 
 const enableCollectedCharts = () => {
     const elements = document.querySelectorAll('.collected-chart')
-    fetch('/collected/graph').then(res => {
+    fetch('/chart/collected').then(res => {
         if (res.status === 200) {
             return res.json()
         }
@@ -91,7 +91,7 @@ const enableCollectedCharts = () => {
 
 const enableToBeCollectedCharts = () => {
     const elements = document.querySelectorAll('.to-be-collected-chart')
-    fetch('/to-be-collected/graph').then(res => {
+    fetch('/chart/to-be-collected').then(res => {
         if (res.status === 200) {
             return res.json()
         }

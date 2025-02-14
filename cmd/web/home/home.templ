@@ -1,11 +1,12 @@
 package home
 
 import "admin-panel/cmd/web/layout"
+import "admin-panel/cmd/web/charts"
 
 templ HomeView() {
 	@layout.BaseView() {
 		<div class="card mb-4">
-			@MainChart()
+			@charts.MainChart()
 		</div>
 		<div class="row g-4 mb-4">
 			<div class="col-sm-6 col-xl-4">

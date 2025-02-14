@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"admin-panel/cmd/web"
+	"admin-panel/cmd/web/charts"
 	"admin-panel/cmd/web/customers"
 	"admin-panel/cmd/web/home"
 	"admin-panel/cmd/web/invoices"
@@ -26,6 +27,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/assets/*", echo.WrapHandler(fileServer))
 
 	home.RegisterRoutes(e)
+
+	charts.RegisterRoutes(e)
 
 	customers.RegisterCustomerRoutes(e)
 

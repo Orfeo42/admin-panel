@@ -1,5 +1,5 @@
-load-env:
-	export $(envsubst < .env)
+include .env
+export $(shell sed 's/=.*//' .env)
 
 db-up:
 	@docker-compose -f docker-compose.yaml up -d postgres
@@ -28,7 +28,7 @@ build:
 run-fresh: build db-reset
 	@./bin/admin-panel
 
-run: build load-env
+run: build
 	@./bin/admin-panel
 
 test:
