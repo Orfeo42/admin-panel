@@ -3,16 +3,22 @@ const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 const defaultInputChart = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     datasets: [{
-        label: 'My First dataset',
-        backgroundColor: `rgba(51, 153, 255, .1)`,
-        borderColor: "#39f",
+        label: 'Fatturato',
+        backgroundColor: `rgba(36, 149, 66, .1)`,
+        borderColor: "#1b9e3e",
         pointHoverBackgroundColor: '#fff',
         borderWidth: 2,
         data: [random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200)],
         fill: true
     }, {
-        label: 'My Second dataset',
-        borderColor: "#1b9e3e",
+        label: 'Riscosso',
+        borderColor: "#39f",
+        pointHoverBackgroundColor: '#fff',
+        borderWidth: 2,
+        data: [random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200)]
+    }, {
+        label: 'Da Riscuotere',
+        borderColor: `rgba(219, 93, 93, 1)`,
         pointHoverBackgroundColor: '#fff',
         borderWidth: 2,
         data: [random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200)]
@@ -21,10 +27,13 @@ const defaultInputChart = {
 
 let mainChartElement;
 
-export function mainChart(inputData = defaultInputChart) {
+export function mainChart() {
     if (mainChartElement) {
         mainChartElement.destroy()
     }
+
+    const inputData = defaultInputChart
+
     new Chart(document.getElementById('main-chart'), {
         type: 'line',
         data: inputData,
