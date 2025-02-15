@@ -1,7 +1,7 @@
 package update
 
 import (
-	"admin-panel/cmd/web/update/dbupdate"
+	"admin-panel/cmd/web/update/dbUpdate"
 	"admin-panel/cmd/web/update/validation"
 	"admin-panel/internal/database"
 	"github.com/labstack/echo/v4"
@@ -66,12 +66,12 @@ func (p *preloadController) update(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Errore validazione excel"})
 	}
 
-	err = dbupdate.EmptyData()
+	err = dbUpdate.EmptyData()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Errore svuotamento vecchi"})
 	}
 
-	err = dbupdate.LoadData(customerList, invoiceList)
+	err = dbUpdate.LoadData(customerList, invoiceList)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Errore caricamento dati"})
 	}

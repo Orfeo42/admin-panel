@@ -1,4 +1,4 @@
-package dbupdate
+package dbUpdate
 
 import (
 	"admin-panel/cmd/web/update/validation"
