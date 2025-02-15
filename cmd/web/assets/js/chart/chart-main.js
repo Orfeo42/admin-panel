@@ -27,12 +27,23 @@ const defaultInputChart = {
 
 let mainChartElement;
 
-export function mainChart() {
+export function mainChart({labels, sales, collected, toBeCollected}) {
     if (mainChartElement) {
         mainChartElement.destroy()
     }
 
     const inputData = defaultInputChart
+
+    inputData.labels = labels
+    if (sales) {
+        inputData.datasets[0] = sales
+    }
+    if (collected) {
+        inputData.datasets[1] = collected
+    }
+    if (toBeCollected) {
+        inputData.datasets[2] = toBeCollected
+    }
 
     new Chart(document.getElementById('main-chart'), {
         type: 'line',
