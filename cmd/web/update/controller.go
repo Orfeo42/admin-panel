@@ -12,9 +12,9 @@ import (
 )
 
 func RegisterRoutes(application *echo.Echo) {
-	group := application.Group("/update-data")
+	group := application.Group("/update")
 	controller := getControllerInstance()
-	group.POST("", controller.update)
+	group.POST("/excel", controller.update)
 }
 
 func getControllerInstance() Controller {

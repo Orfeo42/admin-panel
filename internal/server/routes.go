@@ -1,6 +1,7 @@
 package server
 
 import (
+	"admin-panel/cmd/web/update"
 	"net/http"
 
 	"admin-panel/cmd/web"
@@ -25,6 +26,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 
 	e.GET("/assets/*", echo.WrapHandler(fileServer))
+
+	update.RegisterRoutes(e)
 
 	home.RegisterRoutes(e)
 
