@@ -7,12 +7,12 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func LoadData(customerList []database.Customer, invoiceList []database.Invoice) {
+func LoadData(customerList []database.Customer, invoiceList []database.Invoice) error {
 	log.Info("Start creating customers")
 	customerList, err := initializeCustomersData(customerList)
 	if err != nil {
 		log.Error("Error Creating customers: ", err)
-		return
+		return err
 	}
 	log.Info("All customers are bean created")
 	log.Info("Start creating Invoices")
@@ -31,25 +31,9 @@ func LoadData(customerList []database.Customer, invoiceList []database.Invoice) 
 	_, err = initializeInvoiceData(invoiceList)
 	if err != nil {
 		log.Error("Error creating Invoices", err)
-		return
-	}
-	log.Info("All Invoices are created")
-}
-
-func SchemaUpdate() error {
-	log.Info("Updating Schema...")
-	dbInstance := database.DBInstance()
-
-	err := dbInstance.AutoMigrate(
-		&database.Customer{},
-		&database.Invoice{},
-		&database.InvoiceRow{},
-	)
-	if err != nil {
-		log.Fatalf("Error in Updating Schema")
 		return err
 	}
-	log.Info("Schema Updated!")
+	log.Info("All Invoices are created")
 	return nil
 }
 
@@ -62,4 +46,19 @@ func initializeInvoiceData(invoiceList []database.Invoice) ([]database.Invoice, 
 	invRepo := database.InvoiceRepositoryInstance()
 
 	return invRepo.CreateListInTransaction(invoiceList)
+}
+
+func EmptyData() error {
+	db := database.DBInstance()
+	result := db.Exec("TRUNCATE TABLE invoices RESTART IDENTITY CASCADE")
+	if result.Error != nil {
+		log.Errorf("Error removing all invoices")
+		return result.Error
+	}
+	result = db.Exec("TRUNCATE TABLE customers RESTART IDENTITY CASCADE")
+	if result.Error != nil {
+		log.Errorf("Error removing all customers")
+		return result.Error
+	}
+	return nil
 }
