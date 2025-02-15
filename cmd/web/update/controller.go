@@ -1,9 +1,9 @@
 package update
 
 import (
+	"admin-panel/cmd/web/update/dbupdate"
 	"admin-panel/cmd/web/update/validation"
 	"admin-panel/internal/database"
-	"admin-panel/preload/dbupdate"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"io"
