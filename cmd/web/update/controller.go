@@ -5,7 +5,9 @@ import (
 	"admin-panel/internal/database"
 	"admin-panel/preload/dbupdate"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 	"io"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -47,7 +49,12 @@ func (p *preloadController) update(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Impossibile aprire il file"})
 	}
 
-	defer file.Close()
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			log.Error("Error closing file")
+		}
+	}(file)
 
 	data, err := io.ReadAll(file)
 	if err != nil {
