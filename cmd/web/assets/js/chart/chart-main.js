@@ -45,7 +45,7 @@ export function mainChart({labels, sales, collected, toBeCollected}) {
         inputData.datasets[2] = toBeCollected
     }
 
-    new Chart(document.getElementById('main-chart'), {
+    mainChartElement = new Chart(document.getElementById('main-chart'), {
         type: 'line',
         data: inputData,
         options: {
