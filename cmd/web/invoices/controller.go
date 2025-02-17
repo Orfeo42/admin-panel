@@ -148,7 +148,6 @@ func (c *controller) createPage(echoCtx echo.Context) error {
 }
 
 func (c *controller) create(echoCtx echo.Context) error {
-
 	invoiceIn, errors := validateCreateUpdateRequest(echoCtx)
 
 	if len(errors) > 0 {

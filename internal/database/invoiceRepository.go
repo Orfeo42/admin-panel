@@ -313,7 +313,7 @@ func (r *invoiceRepository) CollectedByDate(dateFrom, dateTo time.Time) ([]Money
 func (r *invoiceRepository) ToBeCollectedByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error) {
 	var earningsByDateResult []MoneyByDateResult
 	r.db.Table("invoices").
-		Select("date, sum(paid_amount-amount) as Amount"). //TODO
+		Select("date, sum(paid_amount)-sum(amount) as Amount"). //TODO
 		Where("date between ? and ?", dateFrom, dateTo).
 		Group("date").
 		Order("date").

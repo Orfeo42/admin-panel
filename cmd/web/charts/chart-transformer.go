@@ -19,9 +19,7 @@ func earningsToAreaChartData(earningList []database.MoneyByMonthResult) (ChartDa
 			return ChartData{}, err
 		}
 		labels = append(labels, month)
-
-		amount := float64(earning.Amount) / 100
-		amount = utils.ToFixed(amount, 2)
+		amount := utils.AmountIntegerToFloat(earning.Amount)
 		data = append(data, amount)
 	}
 	return ChartData{
@@ -31,8 +29,8 @@ func earningsToAreaChartData(earningList []database.MoneyByMonthResult) (ChartDa
 }
 
 type ChartData struct {
-	Labels []string
-	Values []float64
+	Labels []string  `json:"labels"`
+	Values []float64 `json:"values"`
 }
 
 var mesi = map[int]string{
@@ -50,7 +48,6 @@ var mesi = map[int]string{
 	12: "Dicembre",
 }
 
-// Funzione per ottenere il nome del mese
 func nomeMese(numero int) (string, error) {
 	if mese, exists := mesi[numero]; exists {
 		return mese, nil
@@ -63,4 +60,23 @@ type MainChartData struct {
 	Sales         []float64 `json:"sales"`
 	Collected     []float64 `json:"collected"`
 	ToBeCollected []float64 `json:"to-be-collected"`
+}
+
+func mainChartAreas(salesByDate []database.MoneyByDateResult, collectedByDate []database.MoneyByDateResult, toBeCollectedByDate []database.MoneyByDateResult) MainChartData {
+	labels := make([]string, len(salesByDate))
+	sales := make([]float64, len(salesByDate))
+	collected := make([]float64, len(salesByDate))
+	toBeCollected := make([]float64, len(salesByDate))
+	for i := range salesByDate {
+		labels[i] = salesByDate[i].Date.Format("02-01-2006")
+		sales[i] = utils.AmountIntegerToFloat(salesByDate[i].Amount)
+		collected[i] = utils.AmountIntegerToFloat(collectedByDate[i].Amount)
+		toBeCollected[i] = utils.AmountIntegerToFloat(toBeCollectedByDate[i].Amount)
+	}
+	return MainChartData{
+		Labels:        labels,
+		Sales:         sales,
+		Collected:     collected,
+		ToBeCollected: toBeCollected,
+	}
 }

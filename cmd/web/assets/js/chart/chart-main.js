@@ -10,24 +10,12 @@ const defaultInputChart = {
         borderWidth: 2,
         data: [random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200)],
         fill: true
-    }, {
-        label: 'Riscosso',
-        borderColor: "#39f",
-        pointHoverBackgroundColor: '#fff',
-        borderWidth: 2,
-        data: [random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200)]
-    }, {
-        label: 'Da Riscuotere',
-        borderColor: `rgba(219, 93, 93, 1)`,
-        pointHoverBackgroundColor: '#fff',
-        borderWidth: 2,
-        data: [random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200), random(50, 200)]
     }]
 };
 
 let mainChartElement;
 
-function mainChart({labels, sales, collected, toBeCollected}) {
+function mainChart({labels, values}) {
     if (mainChartElement) {
         mainChartElement.destroy()
     }
@@ -35,21 +23,15 @@ function mainChart({labels, sales, collected, toBeCollected}) {
     const inputData = defaultInputChart
 
     inputData.labels = labels
-    if (sales) {
-        inputData.datasets[0] = sales
+    if (values) {
+        inputData.datasets[0].data = values
     }
-    if (collected) {
-        inputData.datasets[1] = collected
-    }
-    if (toBeCollected) {
-        inputData.datasets[2] = toBeCollected
-    }
-
-    mainChartElement = new Chart(document.getElementById('main-chart'), {
+    const element = document.getElementById('main-chart')
+    const chartParam = {
         type: 'line',
         data: inputData,
         options: {
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             plugins: {
                 annotation: {
                     annotations: {
@@ -86,10 +68,9 @@ function mainChart({labels, sales, collected, toBeCollected}) {
                     },
                     ticks: {
                         beginAtZero: true,
-                        color: `rgba(37, 43, 54, 0.95)`,
+                        color: `rgba(255, 255, 255, 0.95)`,
                         max: 250,
-                        maxTicksLimit: 5,
-                        stepSize: Math.ceil(250 / 5)
+                        maxTicksLimit: 5
                     }
                 }
             },
@@ -98,22 +79,24 @@ function mainChart({labels, sales, collected, toBeCollected}) {
                     tension: 0.4
                 },
                 point: {
-                    radius: 0,
+                    radius: 4,
                     hitRadius: 10,
                     hoverRadius: 4,
                     hoverBorderWidth: 3
                 }
             }
         }
-    });
+    }
+
+    mainChartElement = new Chart(element, chartParam);
 }
 
 
 export function loadMainCharData() {
-    fetch('/chart/main').then(res => {
+    fetch('/chart/sales?dateFrom=2024-01-01&dateTo=2025-01-31').then(async res => {
         if (res.status === 200) {
-            return res.json()
+            return await res.json()
         }
-        throw "Errore chiamata /chart/to-be-collected";
-    }).then(async value => mainChart(await value));
+        throw "Errore chiamata /chart/sales";
+    }).then(value => mainChart(value));
 }

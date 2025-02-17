@@ -54,6 +54,12 @@ func AmountIntegerToString[T int | int64](number T) string {
 	return addThousandsSeparator(numberAsString)
 }
 
+func AmountIntegerToFloat[T int | int64](number T) float64 {
+	amount := float64(number) / 100
+	amount = ToFixed(amount, 2)
+	return amount
+}
+
 func FormatIntToAmount[T int | int64](valueFrom *T) string {
 	if valueFrom == nil {
 		return ""

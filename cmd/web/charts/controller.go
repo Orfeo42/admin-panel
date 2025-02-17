@@ -40,10 +40,36 @@ type chartController struct {
 	invRep database.InvoiceRepository
 }
 
-func (c *chartController) sales(echoCtx echo.Context) error {
+type dateBetweenRequest struct {
+	DateFrom time.Time `json:"dateFrom"`
+	DateTo   time.Time `json:"dateTo"`
+}
 
-	dateTo := time.Now()
-	dateFrom := dateTo.AddDate(-1, 0, 0)
+func (c *chartController) sales(echoCtx echo.Context) error {
+	var dateTo time.Time
+	var dateFrom time.Time
+	var err error
+
+	dateFromReq := echoCtx.QueryParam("dateFrom")
+	dateToReq := echoCtx.QueryParam("dateTo")
+
+	if dateToReq != "" {
+		dateTo, err = time.Parse(time.DateOnly, dateToReq)
+		if err != nil {
+			return echoCtx.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid dateTo format."})
+		}
+	} else {
+		dateTo = time.Now()
+	}
+
+	if dateFromReq != "" {
+		dateFrom, err = time.Parse(time.DateOnly, dateFromReq)
+		if err != nil {
+			return echoCtx.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid dateFrom format."})
+		}
+	} else {
+		dateFrom = dateTo.AddDate(-1, 0, 0)
+	}
 
 	salesList, err := c.invRep.SalesByMonth(dateFrom, dateTo)
 	if err != nil {
@@ -85,14 +111,22 @@ func (c *chartController) toBeCollected(echoCtx echo.Context) error {
 }
 
 func (c *chartController) main(echoCtx echo.Context) error {
-
-	//chartData, err := earningsToAreaChartData(earnings)
-	//return echoCtx.JSON(http.StatusOK, chartData)
-	//
-	return echoCtx.JSON(http.StatusOK, map[string]string{
-		"labels":        "",
-		"sales":         "",
-		"collected":     "",
-		"toBeCollected": "",
-	})
+	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(-1, 0, 0)
+	sales, err := c.invRep.SalesByDate(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return err
+	}
+	collected, err := c.invRep.CollectedByDate(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in collected retrive: %+v", err)
+		return err
+	}
+	toBeCollected, err := c.invRep.ToBeCollectedByDate(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in To be collected retrive: %+v", err)
+		return err
+	}
+	return echoCtx.JSON(http.StatusOK, mainChartAreas(sales, collected, toBeCollected))
 }

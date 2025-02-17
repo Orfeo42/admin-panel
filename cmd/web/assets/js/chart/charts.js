@@ -60,15 +60,15 @@ const chartDefaultSettings = {
 
 const enableSalesCharts = () => {
     const elements = document.querySelectorAll('.sales-chart')
-    fetch('/chart/sales').then(res => {
+    fetch('/chart/sales').then(async res => {
         if (res.status === 200) {
-            return res.json()
+            return await res.json()
         }
         throw "Errore chiamata /chart/sales";
     }).then(value => {
         const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
-        chartSettings.data.labels = value.Labels
-        chartSettings.data.datasets[0].data = value.Values
+        chartSettings.data.labels = value.labels
+        chartSettings.data.datasets[0].data = value.values
         chartSettings.data.datasets[0].label = "Fatturato"
         elements.forEach(element => new Chart(element, chartSettings));
     });
@@ -84,8 +84,8 @@ const enableCollectedCharts = () => {
         throw "Errore chiamata /chart/collected";
     }).then(value => {
         const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
-        chartSettings.data.labels = value.Labels
-        chartSettings.data.datasets[0].data = value.Values
+        chartSettings.data.labels = value.labels
+        chartSettings.data.datasets[0].data = value.values
         chartSettings.data.datasets[0].label = "Riscosso"
         elements.forEach(element => new Chart(element, chartSettings));
     });
@@ -100,8 +100,8 @@ const enableToBeCollectedCharts = () => {
         throw "Errore chiamata /chart/to-be-collected";
     }).then(value => {
         const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
-        chartSettings.data.labels = value.Labels
-        chartSettings.data.datasets[0].data = value.Values
+        chartSettings.data.labels = value.labels
+        chartSettings.data.datasets[0].data = value.values
         chartSettings.data.datasets[0].label = "Da riscuotere"
         elements.forEach(element => new Chart(element, chartSettings));
     });
