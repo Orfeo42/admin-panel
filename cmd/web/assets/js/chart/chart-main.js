@@ -27,7 +27,7 @@ const defaultInputChart = {
 
 let mainChartElement;
 
-export function mainChart({labels, sales, collected, toBeCollected}) {
+function mainChart({labels, sales, collected, toBeCollected}) {
     if (mainChartElement) {
         mainChartElement.destroy()
     }
@@ -106,4 +106,14 @@ export function mainChart({labels, sales, collected, toBeCollected}) {
             }
         }
     });
+}
+
+
+export function loadMainCharData() {
+    fetch('/chart/main').then(res => {
+        if (res.status === 200) {
+            return res.json()
+        }
+        throw "Errore chiamata /chart/to-be-collected";
+    }).then(async value => mainChart(await value));
 }

@@ -1,4 +1,4 @@
-import {mainChart} from "./chart-main.js";
+import {loadMainCharData} from "./chart-main.js";
 
 const chartDefaultSettings = {
     type: 'line',
@@ -64,6 +64,7 @@ const enableSalesCharts = () => {
         if (res.status === 200) {
             return res.json()
         }
+        throw "Errore chiamata /chart/sales";
     }).then(value => {
         const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
         chartSettings.data.labels = value.Labels
@@ -80,6 +81,7 @@ const enableCollectedCharts = () => {
         if (res.status === 200) {
             return res.json()
         }
+        throw "Errore chiamata /chart/collected";
     }).then(value => {
         const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
         chartSettings.data.labels = value.Labels
@@ -95,6 +97,7 @@ const enableToBeCollectedCharts = () => {
         if (res.status === 200) {
             return res.json()
         }
+        throw "Errore chiamata /chart/to-be-collected";
     }).then(value => {
         const chartSettings = JSON.parse(JSON.stringify(chartDefaultSettings));
         chartSettings.data.labels = value.Labels
@@ -109,5 +112,5 @@ export function enableCharts() {
     enableSalesCharts();
     enableCollectedCharts();
     enableToBeCollectedCharts();
-    mainChart();
+    loadMainCharData()
 }

@@ -88,6 +88,11 @@ func (c *chartController) main(echoCtx echo.Context) error {
 
 	//chartData, err := earningsToAreaChartData(earnings)
 	//return echoCtx.JSON(http.StatusOK, chartData)
-
-	return echoCtx.String(http.StatusOK, "")
+	//
+	return echoCtx.JSON(http.StatusOK, map[string]string{
+		"labels":        "",
+		"sales":         "",
+		"collected":     "",
+		"toBeCollected": "",
+	})
 }

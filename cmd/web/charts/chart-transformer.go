@@ -57,3 +57,10 @@ func nomeMese(numero int) (string, error) {
 	}
 	return "", errors.New("numero del mese non valido")
 }
+
+type MainChartData struct {
+	Labels        []string  `json:"labels"`
+	Sales         []float64 `json:"sales"`
+	Collected     []float64 `json:"collected"`
+	ToBeCollected []float64 `json:"to-be-collected"`
+}

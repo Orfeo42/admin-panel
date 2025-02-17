@@ -26,6 +26,10 @@ type InvoiceRepository interface {
 	SalesTotal(dateFrom, dateTo time.Time) (int64, error)
 	CollectedTotal(dateFrom, dateTo time.Time) (int64, error)
 	ToBeCollectedTotal(dateFrom, dateTo time.Time) (int64, error)
+
+	SalesByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error)
+	CollectedByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error)
+	ToBeCollectedByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error)
 }
 
 type invoiceRepository struct {
@@ -93,6 +97,11 @@ func NewInvoiceFilter() InvoiceFilter {
 type MoneyByMonthResult struct {
 	Year   int
 	Month  int
+	Amount int64
+}
+
+type MoneyByDateResult struct {
+	Date   time.Time
 	Amount int64
 }
 
@@ -277,6 +286,39 @@ func (r *invoiceRepository) ToBeCollectedByMonth(dateFrom, dateTo time.Time) ([]
 		})
 	}
 	return earningsByMonthResult, nil
+}
+
+func (r *invoiceRepository) SalesByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error) {
+	var earningsByDateResult []MoneyByDateResult
+	r.db.Table("invoices").
+		Select("date, sum(amount) as Amount").
+		Where("date between ? and ?", dateFrom, dateTo).
+		Group("date").
+		Order("date").
+		Scan(&earningsByDateResult)
+	return earningsByDateResult, nil
+}
+
+func (r *invoiceRepository) CollectedByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error) {
+	var earningsByDateResult []MoneyByDateResult
+	r.db.Table("invoices").
+		Select("date, sum(paid_amount) as Amount").
+		Where("date between ? and ?", dateFrom, dateTo).
+		Group("date").
+		Order("date").
+		Scan(&earningsByDateResult)
+	return earningsByDateResult, nil
+}
+
+func (r *invoiceRepository) ToBeCollectedByDate(dateFrom, dateTo time.Time) ([]MoneyByDateResult, error) {
+	var earningsByDateResult []MoneyByDateResult
+	r.db.Table("invoices").
+		Select("date, sum(paid_amount-amount) as Amount"). //TODO
+		Where("date between ? and ?", dateFrom, dateTo).
+		Group("date").
+		Order("date").
+		Scan(&earningsByDateResult)
+	return earningsByDateResult, nil
 }
 
 func (r *invoiceRepository) SalesTotal(dateFrom, dateTo time.Time) (int64, error) {
