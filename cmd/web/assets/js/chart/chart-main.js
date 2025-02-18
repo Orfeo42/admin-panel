@@ -56,7 +56,7 @@ function mainChart({labels, values}) {
                         drawOnChartArea: false
                     },
                     ticks: {
-                        color: `rgba(37, 43, 54, 0.95)`
+                        color: `rgba(255, 255, 255, 0.95)`
                     }
                 },
                 y: {
@@ -93,7 +93,7 @@ function mainChart({labels, values}) {
 
 
 export function loadMainCharData() {
-    fetch('/chart/sales?dateFrom=2024-01-01&dateTo=2025-01-31').then(async res => {
+    fetch('/chart/sales/month').then(async res => {
         if (res.status === 200) {
             return await res.json()
         }

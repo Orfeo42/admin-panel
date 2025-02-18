@@ -10,11 +10,41 @@ import (
 
 func RegisterRoutes(application *echo.Echo) {
 	chartGroup := application.Group("/chart")
+
 	controller := getControllerInstance()
+	invRep := database.InvoiceRepositoryInstance()
+
 	chartGroup.GET("/sales", controller.sales)
+
+	chartGroup.GET("/sales/month", func(echoCtx echo.Context) error {
+		dateTo := time.Now()
+		dateFrom := dateTo.AddDate(0, -1, 0)
+		log.Info(dateTo)
+		log.Info(dateFrom)
+		chartData, err := saleByDate(dateFrom, dateTo, invRep)
+		if err != nil {
+			return echoCtx.JSON(http.StatusBadRequest, echo.Map{"error": "Error in data retrieving."})
+		}
+
+		return echoCtx.JSON(http.StatusOK, chartData)
+	})
+
 	chartGroup.GET("/collected", controller.collected)
 	chartGroup.GET("/to-be-collected", controller.toBeCollected)
-	chartGroup.GET("/main", controller.main)
+	//chartGroup.GET("/main", controller.main)
+}
+
+func saleByDate(dateFrom time.Time, dateTo time.Time, invRep database.InvoiceRepository) (ChartData, error) {
+	var err error
+
+	salesList, err := invRep.SalesByDate(dateFrom, dateTo)
+	if err != nil {
+		log.Errorf("Error in Sales retrive: %+v", err)
+		return ChartData{}, err
+	}
+	chartData := moneyByDateToChartData(salesList)
+
+	return chartData, nil
 }
 
 func getControllerInstance() Controller {
@@ -33,16 +63,11 @@ type Controller interface {
 	sales(echoCtx echo.Context) error
 	collected(echoCtx echo.Context) error
 	toBeCollected(echoCtx echo.Context) error
-	main(echoCtx echo.Context) error
+	//main(echoCtx echo.Context) error
 }
 
 type chartController struct {
 	invRep database.InvoiceRepository
-}
-
-type dateBetweenRequest struct {
-	DateFrom time.Time `json:"dateFrom"`
-	DateTo   time.Time `json:"dateTo"`
 }
 
 func (c *chartController) sales(echoCtx echo.Context) error {
@@ -76,10 +101,11 @@ func (c *chartController) sales(echoCtx echo.Context) error {
 		log.Errorf("Error in Sales retrive: %+v", err)
 		return err
 	}
-	chartData, err := earningsToAreaChartData(salesList)
+	chartData, err := moneyByMonthToChartData(salesList)
 
 	return echoCtx.JSON(http.StatusOK, chartData)
 }
+
 func (c *chartController) collected(echoCtx echo.Context) error {
 
 	dateTo := time.Now()
@@ -90,7 +116,7 @@ func (c *chartController) collected(echoCtx echo.Context) error {
 		log.Errorf("Error in collected retrive: %+v", err)
 		return err
 	}
-	chartData, err := earningsToAreaChartData(collectedList)
+	chartData, err := moneyByMonthToChartData(collectedList)
 
 	return echoCtx.JSON(http.StatusOK, chartData)
 }
@@ -105,12 +131,12 @@ func (c *chartController) toBeCollected(echoCtx echo.Context) error {
 		log.Errorf("Error in Sales retrive: %+v", err)
 		return err
 	}
-	chartData, err := earningsToAreaChartData(earnings)
+	chartData, err := moneyByMonthToChartData(earnings)
 
 	return echoCtx.JSON(http.StatusOK, chartData)
 }
 
-func (c *chartController) main(echoCtx echo.Context) error {
+/*func (c *chartController) main(echoCtx echo.Context) error {
 	dateTo := time.Now()
 	dateFrom := dateTo.AddDate(-1, 0, 0)
 	sales, err := c.invRep.SalesByDate(dateFrom, dateTo)
@@ -128,5 +154,5 @@ func (c *chartController) main(echoCtx echo.Context) error {
 		log.Errorf("Error in To be collected retrive: %+v", err)
 		return err
 	}
-	return echoCtx.JSON(http.StatusOK, mainChartAreas(sales, collected, toBeCollected))
-}
+	return echoCtx.JSON(http.StatusOK, moneyByDateToChartData(sales, collected, toBeCollected))
+}*/

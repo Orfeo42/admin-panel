@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func earningsToAreaChartData(earningList []database.MoneyByMonthResult) (ChartData, error) {
+func moneyByMonthToChartData(earningList []database.MoneyByMonthResult) (ChartData, error) {
 	var labels []string
 	var data []float64
 	for _, earning := range earningList {
@@ -62,7 +62,7 @@ type MainChartData struct {
 	ToBeCollected []float64 `json:"to-be-collected"`
 }
 
-func mainChartAreas(salesByDate []database.MoneyByDateResult, collectedByDate []database.MoneyByDateResult, toBeCollectedByDate []database.MoneyByDateResult) MainChartData {
+func earningsToAreaChartData(salesByDate []database.MoneyByDateResult, collectedByDate []database.MoneyByDateResult, toBeCollectedByDate []database.MoneyByDateResult) MainChartData {
 	labels := make([]string, len(salesByDate))
 	sales := make([]float64, len(salesByDate))
 	collected := make([]float64, len(salesByDate))
@@ -78,5 +78,18 @@ func mainChartAreas(salesByDate []database.MoneyByDateResult, collectedByDate []
 		Sales:         sales,
 		Collected:     collected,
 		ToBeCollected: toBeCollected,
+	}
+}
+
+func moneyByDateToChartData(valByDate []database.MoneyByDateResult) ChartData {
+	labels := make([]string, len(valByDate))
+	values := make([]float64, len(valByDate))
+	for i := range valByDate {
+		labels[i] = valByDate[i].Date.Format("02-01-2006")
+		values[i] = utils.AmountIntegerToFloat(valByDate[i].Amount)
+	}
+	return ChartData{
+		Labels: labels,
+		Values: values,
 	}
 }
